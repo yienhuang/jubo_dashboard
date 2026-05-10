@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { createHashRouter, Navigate } from 'react-router-dom'
 import MainLayout from '@/layouts/MainLayout'
 import Dashboard from '@/pages/Dashboard'
 import Residents from '@/pages/Residents'
@@ -6,7 +6,7 @@ import CareRecords from '@/pages/CareRecords'
 import Settings from '@/pages/Settings'
 import NotFound from '@/pages/NotFound'
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: '/',
     element: <MainLayout />,

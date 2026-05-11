@@ -38,34 +38,19 @@ export const kpis = [
 export const serviceShare = [
   { name: '住宿長照', value: 282, color: '#0097A7' },
   { name: '居家服務', value: 163, color: '#26A69A' },
-  { name: '日間照顧', value: 98, color: '#80CBC4' },
+  { name: '日間照顧', value: 98, color: '#005F64' },
 ]
 
 export const headcount = {
   total: 603,
   newHired: 42,
+  newHiredDelta: { dir: 'up', text: '+5' },
   resigned: 18,
+  resignedDelta: { dir: 'down', text: '-3' },
   resignRate: '1.44%',
-  licensed: 410,
-  licensedRate: 68,
-  composition: [
-    { role: '照服員', count: 328, ratio: 54.5 },
-    { role: '護理師', count: 116, ratio: 19.2 },
-    { role: '社工', count: 58, ratio: 9.6 },
-    { role: '行政', count: 45, ratio: 7.5 },
-    { role: '物治／職治', count: 36, ratio: 6.0 },
-    { role: '其他', count: 20, ratio: 3.2 },
-  ],
+  resignRateDelta: { dir: 'down', text: '-0.12%' },
+  staffRatio: '1:1.7',
 }
-
-export const trend6m = [
-  { month: '10月', 空床率: 18.1, 出席率: 86.4 },
-  { month: '11月', 空床率: 17.5, 出席率: 87.1 },
-  { month: '12月', 空床率: 17.2, 出席率: 87.9 },
-  { month: '1月', 空床率: 16.8, 出席率: 88.6 },
-  { month: '2月', 空床率: 16.4, 出席率: 89.4 },
-  { month: '3月', 空床率: 15.7, 出席率: 90.3 },
-]
 
 export const facilities = [
   {
@@ -124,8 +109,3 @@ export const facilities = [
   },
 ]
 
-export const statusMeta = {
-  stable: { label: '穩定', color: 'success' },
-  watch: { label: '留意', color: 'warning' },
-  shortage: { label: '人員緊缺', color: 'error' },
-}

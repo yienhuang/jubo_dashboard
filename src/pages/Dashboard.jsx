@@ -1,20 +1,13 @@
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardContent,
-  Chip,
   Divider,
   Grid,
   IconButton,
-  LinearProgress,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from '@mui/material'
 import GroupIcon from '@mui/icons-material/Group'
@@ -22,18 +15,16 @@ import BadgeIcon from '@mui/icons-material/Badge'
 import HotelIcon from '@mui/icons-material/Hotel'
 import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 import IosShareIcon from '@mui/icons-material/IosShare'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import StatCard from '@/components/StatCard'
-import OccupancyChart from '@/components/charts/OccupancyChart'
 import ServiceShareChart from '@/components/charts/ServiceShareChart'
 import {
   reportDate,
   kpis,
   serviceShare,
   headcount,
-  trend6m,
   facilities,
-  statusMeta,
 } from '@/features/dashboard/mockData'
 
 const kpiIcons = {
@@ -128,13 +119,13 @@ function ServiceShareCard() {
                       bgcolor: item.color,
                     }}
                   />
-                  <Typography variant="body2">{item.name}</Typography>
+                  <Typography sx={{ fontSize: 16 }}>{item.name}</Typography>
                 </Box>
-                <Box className="flex items-baseline gap-2">
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                <Box className="flex items-baseline gap-4">
+                  <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
                     {item.value} 人
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography sx={{ fontSize: 16 }} color="text.secondary">
                     {ratio}%
                   </Typography>
                 </Box>
@@ -148,216 +139,145 @@ function ServiceShareCard() {
 }
 
 function HeadcountCard() {
+  const metrics = [
+    {
+      label: '本月新入職',
+      value: headcount.newHired,
+      unit: '人',
+      delta: headcount.newHiredDelta,
+      downIsGood: false,
+    },
+    {
+      label: '本月離職',
+      value: headcount.resigned,
+      unit: '人',
+      delta: headcount.resignedDelta,
+      downIsGood: true,
+    },
+    {
+      label: '離職率',
+      value: headcount.resignRate,
+      delta: headcount.resignRateDelta,
+      downIsGood: true,
+    },
+    {
+      label: '全集團人力比',
+      value: headcount.staffRatio,
+      note: '員工 ÷ 服務個案',
+      delta: null,
+    },
+  ]
+
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
         <SectionHeader title="全集團人力概況" />
 
-        <Box className="grid grid-cols-3 gap-2" sx={{ mb: 2 }}>
-          {[
-            { label: '本月新入職', value: headcount.newHired, tone: '#2E7D32' },
-            { label: '本月離職', value: headcount.resigned, tone: '#D32F2F' },
-            { label: '離職率', value: headcount.resignRate, tone: '#546E7A' },
-          ].map((m) => (
-            <Box
-              key={m.label}
-              sx={{
-                bgcolor: '#ECEFF1',
-                borderRadius: '8px',
-                p: 1.5,
-                textAlign: 'center',
-              }}
-            >
-              <Typography
-                sx={{ fontSize: 22, fontWeight: 500, color: m.tone, lineHeight: 1.2 }}
+        <Box className="grid grid-cols-2 gap-3" sx={{ mb: 2 }}>
+          {metrics.map((m) => {
+            const DeltaIcon = m.delta?.dir === 'up' ? ArrowUpwardIcon : ArrowDownwardIcon
+
+            return (
+              <Box
+                key={m.label}
+                sx={{
+                  bgcolor: 'rgba(120,144,156,0.08)',
+                  borderRadius: '8px',
+                  pl: '15px',
+                  pr: '12px',
+                  py: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  gap: 1,
+                }}
               >
-                {m.value}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {m.label}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-
-        <Box sx={{ mb: 2 }}>
-          <Box className="mb-1 flex items-center justify-between">
-            <Typography variant="body2" color="text.secondary">
-              專業執照持有率
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>
-              {headcount.licensed} 人 · {headcount.licensedRate}%
-            </Typography>
-          </Box>
-          <LinearProgress
-            variant="determinate"
-            value={headcount.licensedRate}
-            sx={{
-              height: 16,
-              borderRadius: 4,
-              bgcolor: 'rgba(120,144,156,0.08)',
-              '& .MuiLinearProgress-bar': {
-                bgcolor: '#0097A7',
-                borderRadius: 4,
-              },
-            }}
-          />
-        </Box>
-
-        <Divider sx={{ my: 1.5 }} />
-
-        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
-          職類組成
-        </Typography>
-        <Box>
-          {headcount.composition.map((row) => (
-            <Box
-              key={row.role}
-              className="flex items-center justify-between"
-              sx={{ py: 0.5 }}
-            >
-              <Typography variant="body2">{row.role}</Typography>
-              <Box className="flex items-baseline gap-2">
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  {row.count}
+                <Typography sx={{ fontSize: 14, color: 'rgba(0,0,0,0.87)' }}>
+                  {m.label}
                 </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ minWidth: 44, textAlign: 'right' }}>
-                  {row.ratio}%
-                </Typography>
+                <Box className="flex items-baseline gap-1">
+                  <Typography
+                    sx={{ fontSize: 24, fontWeight: 500, lineHeight: 1.2, color: 'text.primary' }}
+                  >
+                    {m.value}
+                  </Typography>
+                  {m.unit && (
+                    <Typography variant="caption" color="text.secondary">
+                      {m.unit}
+                    </Typography>
+                  )}
+                </Box>
+                {m.delta ? (
+                  <Box className="flex items-center gap-0.5">
+                    <DeltaIcon sx={{ fontSize: 12, color: '#0097A7' }} />
+                    <Typography variant="caption" sx={{ color: '#0097A7', fontWeight: 500 }}>
+                      較上月 {m.delta.text}
+                    </Typography>
+                  </Box>
+                ) : m.note ? (
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'rgba(0,0,0,0.38)', display: 'block' }}
+                  >
+                    {m.note}
+                  </Typography>
+                ) : null}
               </Box>
-            </Box>
-          ))}
+            )
+          })}
         </Box>
+
+        <Alert severity="warning" sx={{ mt: 2, py: 0.75, fontSize: '0.8125rem' }}>
+          <strong>新北板橋居服所照服員短缺</strong>
+          <br />
+          人力比 1:22 已超出法規標準，建議緊急調度支援。
+        </Alert>
       </CardContent>
     </Card>
   )
 }
 
-function TrendCard() {
+const FACILITY_GROUPS = [
+  { label: '住宿長照', type: '住宿長照', color: '#0097A7' },
+  { label: '居家服務', type: '居家服務', color: '#26A69A' },
+  { label: '日間照顧', type: '日間照顧', color: '#005F64' },
+]
+
+function FacilitySummaryCard() {
+  const groups = FACILITY_GROUPS.map((g) => ({
+    ...g,
+    items: facilities.filter((f) => f.type === g.type),
+  }))
+
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-        <SectionHeader
-          title="近 6 個月空床率與出席率"
-          action={
-            <Typography variant="caption" color="text.secondary">
-              單位：%
-            </Typography>
-          }
-        />
-        <OccupancyChart data={trend6m} />
-      </CardContent>
-    </Card>
-  )
-}
+        <SectionHeader title="旗下機構總覽" />
 
-function FacilityTable() {
-  return (
-    <Card>
-      <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
-        <Box
-          className="flex items-center justify-between"
-          sx={{ px: 2, py: 1.5 }}
-        >
-          <Typography variant="h6">旗下機構總覽</Typography>
-          <Button size="small" sx={{ color: '#0097A7' }}>
-            查看全部
-          </Button>
+        <Box className="flex flex-col">
+          {groups.map((g, i) => (
+            <Box key={g.type}>
+              {i > 0 && <Divider sx={{ my: 1.5 }} />}
+              <Box className="flex items-center" sx={{ mb: 0.75 }}>
+                <Typography sx={{ fontSize: 16, fontWeight: 600, color: g.color }}>
+                  {g.items.length} 間{g.label}
+                </Typography>
+              </Box>
+              {g.items.map((f) => (
+                <Box
+                  key={f.id}
+                  className="flex items-center justify-between"
+                  sx={{ py: 0.5 }}
+                >
+                  <Typography variant="body2">{f.name}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    核定 {f.capacity} 人
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          ))}
         </Box>
-        <TableContainer component={Paper} sx={{ boxShadow: 'none', borderRadius: 0 }}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>機構名稱</TableCell>
-                <TableCell>類型</TableCell>
-                <TableCell align="right">在院 / 出席</TableCell>
-                <TableCell align="right">核定人數</TableCell>
-                <TableCell sx={{ width: 200 }}>使用率</TableCell>
-                <TableCell>狀態</TableCell>
-                <TableCell align="right" sx={{ width: 56 }} />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {facilities.map((f) => {
-                const meta = statusMeta[f.status]
-                const chipColor =
-                  meta.color === 'success'
-                    ? { bg: 'rgba(46,125,50,0.12)', text: '#2E7D32' }
-                    : meta.color === 'warning'
-                      ? { bg: 'rgba(245,124,0,0.12)', text: '#E65100' }
-                      : { bg: 'rgba(211,47,47,0.12)', text: '#D32F2F' }
-                return (
-                  <TableRow key={f.id} hover>
-                    <TableCell>
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {f.name}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {f.id}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" color="text.secondary">
-                        {f.type}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {f.inService}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="body2" color="text.secondary">
-                        {f.capacity}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Box className="flex items-center gap-2">
-                        <Box sx={{ flex: 1 }}>
-                          <LinearProgress
-                            variant="determinate"
-                            value={f.utilization}
-                            sx={{
-                              height: 8,
-                              borderRadius: 4,
-                              bgcolor: 'rgba(120,144,156,0.12)',
-                              '& .MuiLinearProgress-bar': {
-                                bgcolor: f.utilization >= 85 ? '#0097A7' : '#80CBC4',
-                                borderRadius: 4,
-                              },
-                            }}
-                          />
-                        </Box>
-                        <Typography
-                          variant="caption"
-                          sx={{ minWidth: 44, textAlign: 'right', color: '#37474F' }}
-                        >
-                          {f.utilization.toFixed(1)}%
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        size="small"
-                        label={meta.label}
-                        sx={{
-                          bgcolor: chipColor.bg,
-                          color: chipColor.text,
-                          fontWeight: 500,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton size="small" sx={{ color: '#546E7A' }}>
-                        <OpenInNewIcon fontSize="small" />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
       </CardContent>
     </Card>
   )
@@ -374,17 +294,15 @@ export default function Dashboard() {
 
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 4 }}>
+          <FacilitySummaryCard />
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
           <ServiceShareCard />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <HeadcountCard />
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <TrendCard />
-        </Grid>
       </Grid>
-
-      <FacilityTable />
     </Box>
   )
 }

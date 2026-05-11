@@ -50,7 +50,7 @@ export default function ServiceShareChart({ data, height = 220, totalLabel = 'æœ
         <Typography variant="caption" sx={{ color: '#546E7A' }}>
           {totalLabel}
         </Typography>
-        <Typography sx={{ fontSize: 28, fontWeight: 500, color: '#005F64', lineHeight: 1.2 }}>
+        <Typography sx={{ fontSize: 28, fontWeight: 500, color: 'text.primary', lineHeight: 1.2 }}>
           {total.toLocaleString()}
         </Typography>
         <Typography variant="caption" sx={{ color: '#546E7A' }}>

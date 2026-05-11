@@ -16,9 +16,8 @@ import {
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import DashboardIcon from '@mui/icons-material/Dashboard'
-import GroupIcon from '@mui/icons-material/Group'
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital'
-import SettingsIcon from '@mui/icons-material/Settings'
+import PeopleIcon from '@mui/icons-material/People'
+import SpeedIcon from '@mui/icons-material/Speed'
 import Logo from '@/components/Logo'
 
 const RAIL_WIDTH = 72
@@ -30,13 +29,9 @@ const navGroups = [
     label: '集團總部',
     items: [
       { label: '首頁總覽', to: '/', icon: <DashboardIcon /> },
-      { label: '住民管理', to: '/residents', icon: <GroupIcon /> },
-      { label: '照護紀錄', to: '/care-records', icon: <LocalHospitalIcon /> },
+      { label: '產能管理', to: '/capacity', icon: <SpeedIcon /> },
+      { label: '人力管理', to: '/workforce', icon: <PeopleIcon /> },
     ],
-  },
-  {
-    label: '系統',
-    items: [{ label: '系統設定', to: '/settings', icon: <SettingsIcon /> }],
   },
 ]
 

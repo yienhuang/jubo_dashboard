@@ -10,12 +10,12 @@ import {
 } from 'recharts'
 
 const sample = [
-  { month: '10月', 空床率: 18.1, 出席率: 86.4 },
-  { month: '11月', 空床率: 17.5, 出席率: 87.1 },
-  { month: '12月', 空床率: 17.2, 出席率: 87.9 },
-  { month: '1月', 空床率: 16.8, 出席率: 88.6 },
-  { month: '2月', 空床率: 16.4, 出席率: 89.4 },
-  { month: '3月', 空床率: 15.7, 出席率: 90.3 },
+  { month: '10月', 住宿空床率: 18.1, 日照出席率: 86.4 },
+  { month: '11月', 住宿空床率: 17.5, 日照出席率: 87.1 },
+  { month: '12月', 住宿空床率: 17.2, 日照出席率: 87.9 },
+  { month: '1月', 住宿空床率: 16.8, 日照出席率: 88.6 },
+  { month: '2月', 住宿空床率: 16.4, 日照出席率: 89.4 },
+  { month: '3月', 住宿空床率: 15.7, 日照出席率: 90.3 },
 ]
 
 const axisStyle = {
@@ -61,7 +61,7 @@ export default function OccupancyChart({ data = sample, height = 280 }) {
         />
         <Line
           type="monotone"
-          dataKey="空床率"
+          dataKey="住宿空床率"
           stroke="#0097A7"
           strokeWidth={2}
           dot={{ r: 3, fill: '#0097A7' }}
@@ -69,7 +69,7 @@ export default function OccupancyChart({ data = sample, height = 280 }) {
         />
         <Line
           type="monotone"
-          dataKey="出席率"
+          dataKey="日照出席率"
           stroke="#005F64"
           strokeWidth={2}
           dot={{ r: 3, fill: '#005F64' }}

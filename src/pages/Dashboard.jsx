@@ -152,7 +152,7 @@ function OccupancyTrendCard() {
           flexDirection: 'column',
         }}
       >
-        <SectionHeader title="近 6 個月空床率與出席率" />
+        <SectionHeader title="近 6 個月住宿空床率與日照出席率" />
         <Box sx={{ flex: 1, minHeight: 0 }}>
           <OccupancyChart height="100%" />
         </Box>

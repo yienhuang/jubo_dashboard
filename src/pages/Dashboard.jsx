@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import {
   Box,
   Button,
@@ -275,8 +276,9 @@ function SectionStatCard({ title, value, unit, hint, delta, alert }) {
   )
 }
 
-function ServiceOverviewSection({ overview }) {
+function ServiceOverviewSection({ overview, tabIndex }) {
   const { label, icon, badgeColor, facilities: facs, stats } = overview
+  const navigate = useNavigate()
   return (
     <Box>
       <Box className="flex items-center justify-between" sx={{ mb: 1.5 }}>
@@ -308,6 +310,7 @@ function ServiceOverviewSection({ overview }) {
           size="small"
           endIcon={<ChevronRightIcon />}
           sx={{ color: '#546E7A' }}
+          onClick={() => navigate(`/capacity?tab=${tabIndex}`)}
         >
           看更多
         </Button>
@@ -344,9 +347,9 @@ export default function Dashboard() {
         </Grid>
       </Grid>
 
-      {serviceOverviews.map((overview) => (
+      {serviceOverviews.map((overview, i) => (
         <Paper key={overview.key} sx={{ borderRadius: '8px', p: 2 }}>
-          <ServiceOverviewSection overview={overview} />
+          <ServiceOverviewSection overview={overview} tabIndex={i} />
         </Paper>
       ))}
     </Box>

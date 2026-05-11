@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   Alert,
   Box,
@@ -574,7 +575,13 @@ const TABS = [
 ]
 
 export default function Capacity() {
-  const [tab, setTab] = useState(0)
+  const [searchParams] = useSearchParams()
+  const initialTab = Math.min(Math.max(parseInt(searchParams.get('tab') ?? '0', 10), 0), TABS.length - 1)
+  const [tab, setTab] = useState(initialTab)
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [])
 
   return (
     <Box className="flex flex-col gap-3">

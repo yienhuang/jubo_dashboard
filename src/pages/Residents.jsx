@@ -8,7 +8,7 @@ export default function Residents() {
       </Typography>
       <Card>
         <CardContent>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="textSecondary">
             待開發：住民列表、搜尋、篩選、新增 / 編輯。
           </Typography>
         </CardContent>

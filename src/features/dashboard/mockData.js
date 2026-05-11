@@ -52,6 +52,48 @@ export const headcount = {
   staffRatio: '1:1.7',
 }
 
+export const serviceOverviews = [
+  {
+    key: 'residential',
+    label: '住宿長照',
+    icon: 'hotel',
+    badgeColor: '#0097A7',
+    facilities: ['台北大安', '桃園慈愛'],
+    stats: [
+      { title: '今日在院總人數', value: '236', unit: '位', delta: { dir: 'up', text: '+3.2% 較上月', isWarning: false } },
+      { title: '今日新入住', value: '3', unit: '人', delta: { dir: 'up', text: '較昨日 +1', isWarning: false } },
+      { title: '今日退住人數', value: '1', unit: '人', delta: { dir: 'flat', text: '與昨日持平' } },
+      { title: '平均空床率', value: '12.4', unit: '%', delta: { dir: 'down', text: '-1.5% 較上月', isWarning: true } },
+    ],
+  },
+  {
+    key: 'daycare',
+    label: '日間照顧',
+    icon: 'sun',
+    badgeColor: '#005F64',
+    facilities: ['高雄幸福', '台中建德'],
+    stats: [
+      { title: '總核定人數', value: '92', unit: '人', hint: '兩間日照合計名額' },
+      { title: '今日應到人數', value: '88', unit: '人', hint: '扣除事先請假' },
+      { title: '今日未到人數', value: '9', unit: '人', delta: { dir: 'up', text: '+3 較昨日', isWarning: true } },
+      { title: '空位率', value: '10.9', unit: '%', delta: { dir: 'down', text: '-2.1% 較上月', isWarning: false } },
+    ],
+  },
+  {
+    key: 'homecare',
+    label: '居家服務',
+    icon: 'home',
+    badgeColor: '#26A69A',
+    facilities: ['新北板橋', '台南安康'],
+    stats: [
+      { title: '今日服務個案數', value: '198', unit: '案', hint: '今日排定服務個案' },
+      { title: '今日已排班居服員', value: '62', unit: '人', alert: '板橋缺工 6 人' },
+      { title: '今日服務總時數', value: '412', unit: '時', delta: { dir: 'up', text: '+3% 較上周', isWarning: false } },
+      { title: '個案服務達成率', value: '94.4', unit: '%', delta: { dir: 'down', text: '-1.2% 較昨日', isWarning: false } },
+    ],
+  },
+]
+
 export const facilities = [
   {
     id: 'F-001',

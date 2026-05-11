@@ -8,7 +8,7 @@ export default function Settings() {
       </Typography>
       <Card>
         <CardContent>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="textSecondary">
             待開發：使用者、角色、機構設定。
           </Typography>
         </CardContent>

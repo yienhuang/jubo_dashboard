@@ -15,7 +15,7 @@ export default function StatCard({ title, value, unit, hint, delta, icon }) {
     <Card sx={{ height: '100%' }}>
       <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
         <Box className="flex items-start justify-between">
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body1">
             {title}
           </Typography>
           {icon && (
@@ -50,7 +50,7 @@ export default function StatCard({ title, value, unit, hint, delta, icon }) {
             {value}
           </Typography>
           {unit && (
-            <Typography variant="body2" color="text.secondary" sx={{ pb: '4px' }}>
+            <Typography variant="body2" color="textSecondary" sx={{ pb: '4px' }}>
               {unit}
             </Typography>
           )}
@@ -72,7 +72,7 @@ export default function StatCard({ title, value, unit, hint, delta, icon }) {
             </Box>
           )}
           {hint && (
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" color="textSecondary">
               {hint}
             </Typography>
           )}

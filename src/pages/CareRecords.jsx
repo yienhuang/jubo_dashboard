@@ -8,7 +8,7 @@ export default function CareRecords() {
       </Typography>
       <Card>
         <CardContent>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="textSecondary">
             待開發：照護紀錄列表、表單、時間軸。
           </Typography>
         </CardContent>

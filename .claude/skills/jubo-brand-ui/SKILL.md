@@ -83,18 +83,23 @@ Load via Google Fonts:
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 ```
 
-| Role          | Size  | Weight | Line Height | Letter Spacing |
-|---------------|-------|--------|-------------|----------------|
-| H5 (數字大字) | 24px  | 400    | 1.334       | 0              |
-| H6 / Card title | 20px | 500   | 1.6         | 0.15px         |
-| Body 1        | 16px  | 400    | 1.5         | 0.15px         |
-| Body 2 / Caption | 14px | 400 | 1.43        | 0.17px         |
-| Table header  | 14px  | **700** | 24px       | 0.17px         |
-| Button (medium) | 14px | 500  | 24px        | 0.4px          |
-| Chip          | 13px  | 400    | 18px        | 0.16px         |
-| Caption small | 12px  | 400    | 1.66        | 0.4px          |
+| Role              | Size  | Weight   | Line Height | Letter Spacing | MUI variant |
+|-------------------|-------|----------|-------------|----------------|-------------|
+| H5（數字大字）    | 24px  | 400      | 1.334       | 0              | `h5`        |
+| H6 / 卡片標題     | 20px  | 500      | 1.6         | 0.15px         | `h6`        |
+| Body 1（主要內容）| 16px  | 400      | 1.5         | 0.15px         | `body1`     |
+| Body 2（次要內容）| 14px  | 400      | 1.43        | 0.17px         | `body2`     |
+| Table header      | 14px  | **700**  | 24px        | 0.17px         | —           |
+| Button (medium)   | 14px  | 500      | 24px        | 0.4px          | `button`    |
+| Chip              | 13px  | 400      | 18px        | 0.16px         | —           |
+| Caption（附註）   | 12px  | 400      | 1.66        | 0.4px          | `caption`   |
 
-**Rule:** Use Regular (400) for body text, Medium (500) for titles and buttons, Bold (700) only for table headers and rare emphasis.
+**Body text rule:**
+- `body1` (16px) — 主要內容：說明文字、列表項目、表格內容、輸入框文字
+- `body2` (14px) — 次要內容：輔助說明、次要標籤、表格次要欄位
+- `caption` (12px) — 附註文字，**非常少用**：時間戳記、輔助提示、圖例說明
+
+**Weight rule:** Regular (400) for body text, Medium (500) for titles and buttons, Bold (700) only for table headers.
 
 ---
 

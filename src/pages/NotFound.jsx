@@ -7,7 +7,7 @@ export default function NotFound() {
       <Typography variant="h3" sx={{ fontWeight: 700 }}>
         404
       </Typography>
-      <Typography color="text.secondary">找不到此頁面</Typography>
+      <Typography color="textSecondary">找不到此頁面</Typography>
       <Button component={RouterLink} to="/" variant="contained">
         回到總覽
       </Button>

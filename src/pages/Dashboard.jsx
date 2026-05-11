@@ -17,6 +17,10 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 import IosShareIcon from '@mui/icons-material/IosShare'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
+import TrendingFlatIcon from '@mui/icons-material/TrendingFlat'
+import WbSunnyIcon from '@mui/icons-material/WbSunny'
+import HomeIcon from '@mui/icons-material/Home'
+import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import StatCard from '@/components/StatCard'
 import ServiceShareChart from '@/components/charts/ServiceShareChart'
 import {
@@ -25,7 +29,14 @@ import {
   serviceShare,
   headcount,
   facilities,
+  serviceOverviews,
 } from '@/features/dashboard/mockData'
+
+const SERVICE_ICONS = {
+  hotel: <HotelIcon />,
+  sun: <WbSunnyIcon />,
+  home: <HomeIcon />,
+}
 
 const kpiIcons = {
   serviceTotal: <GroupIcon />,
@@ -59,7 +70,7 @@ function PageHeader() {
         <Typography variant="h6" sx={{ lineHeight: 1.2 }}>
           集團總覽
         </Typography>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" color="textSecondary">
           {reportDate}
         </Typography>
       </Box>
@@ -119,13 +130,13 @@ function ServiceShareCard() {
                       bgcolor: item.color,
                     }}
                   />
-                  <Typography sx={{ fontSize: 16 }}>{item.name}</Typography>
+                  <Typography variant="body1">{item.name}</Typography>
                 </Box>
                 <Box className="flex items-baseline gap-4">
-                  <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
                     {item.value} 人
                   </Typography>
-                  <Typography sx={{ fontSize: 16 }} color="text.secondary">
+                  <Typography variant="body1" color="textSecondary">
                     {ratio}%
                   </Typography>
                 </Box>
@@ -192,7 +203,7 @@ function HeadcountCard() {
                   gap: 1,
                 }}
               >
-                <Typography sx={{ fontSize: 14, color: 'rgba(0,0,0,0.87)' }}>
+                <Typography variant="body2">
                   {m.label}
                 </Typography>
                 <Box className="flex items-baseline gap-1">
@@ -202,7 +213,7 @@ function HeadcountCard() {
                     {m.value}
                   </Typography>
                   {m.unit && (
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" color="textSecondary">
                       {m.unit}
                     </Typography>
                   )}
@@ -259,7 +270,7 @@ function FacilitySummaryCard() {
             <Box key={g.type}>
               {i > 0 && <Divider sx={{ my: 1.5 }} />}
               <Box className="flex items-center" sx={{ mb: 0.75 }}>
-                <Typography sx={{ fontSize: 16, fontWeight: 600, color: g.color }}>
+                <Typography variant="body1" sx={{ fontWeight: 500, color: g.color }}>
                   {g.items.length} 間{g.label}
                 </Typography>
               </Box>
@@ -269,8 +280,8 @@ function FacilitySummaryCard() {
                   className="flex items-center justify-between"
                   sx={{ py: 0.5 }}
                 >
-                  <Typography variant="body2">{f.name}</Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body1">{f.name}</Typography>
+                  <Typography variant="body1" color="textSecondary">
                     核定 {f.capacity} 人
                   </Typography>
                 </Box>
@@ -280,6 +291,120 @@ function FacilitySummaryCard() {
         </Box>
       </CardContent>
     </Card>
+  )
+}
+
+function SectionStatCard({ title, value, unit, hint, delta, alert }) {
+  let DeltaIcon = null
+  if (delta?.dir === 'up') DeltaIcon = ArrowUpwardIcon
+  else if (delta?.dir === 'down') DeltaIcon = ArrowDownwardIcon
+  else if (delta?.dir === 'flat') DeltaIcon = TrendingFlatIcon
+
+  const deltaColor = delta?.isWarning ? 'warning.main' : delta?.dir === 'flat' ? 'text.secondary' : 'primary.main'
+
+  return (
+    <Box
+      sx={{
+        bgcolor: 'rgba(120,144,156,0.08)',
+        borderRadius: '8px',
+        pl: '15px',
+        pr: '12px',
+        py: 2,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        gap: 1,
+        boxSizing: 'border-box',
+      }}
+    >
+      <Typography variant="body2">
+        {title}
+      </Typography>
+      <Box className="flex items-baseline gap-1">
+        <Typography
+          sx={{ fontSize: 24, fontWeight: 500, lineHeight: 1.2, color: 'text.primary', letterSpacing: 0 }}
+        >
+          {value}
+        </Typography>
+        {unit && (
+          <Typography variant="caption" color="textSecondary">
+            {unit}
+          </Typography>
+        )}
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+        {delta && DeltaIcon && (
+          <>
+            <DeltaIcon sx={{ fontSize: 12, color: deltaColor }} />
+            <Typography variant="caption" sx={{ color: deltaColor, fontWeight: 500 }}>
+              {delta.text}
+            </Typography>
+          </>
+        )}
+        {alert && (
+          <>
+            <WarningAmberIcon sx={{ fontSize: 12, color: 'warning.main' }} />
+            <Typography variant="caption" sx={{ color: 'warning.main', fontWeight: 500 }}>
+              {alert}
+            </Typography>
+          </>
+        )}
+        {hint && !delta && !alert && (
+          <Typography variant="caption" color="textSecondary">
+            {hint}
+          </Typography>
+        )}
+      </Box>
+    </Box>
+  )
+}
+
+function ServiceOverviewSection({ overview }) {
+  const { label, icon, badgeColor, facilities: facs, stats } = overview
+  return (
+    <Box>
+      <Box className="flex items-center justify-between" sx={{ mb: 1.5 }}>
+        <Box className="flex items-center gap-2">
+          <Box
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 0.75,
+              bgcolor: badgeColor,
+              color: '#fff',
+              borderRadius: '16px',
+              px: 1.5,
+              py: 0.75,
+              '& svg': { fontSize: 18 },
+            }}
+          >
+            {SERVICE_ICONS[icon]}
+            <Typography variant="body2" sx={{ fontWeight: 500, color: 'inherit', lineHeight: 1 }}>
+              {label}
+            </Typography>
+          </Box>
+          <Typography variant="body2" color="textSecondary">
+            {facs.join(' + ')} · 今日合計
+          </Typography>
+        </Box>
+        <Box className="flex items-center gap-1">
+          <Button variant="text" size="small" sx={{ color: '#546E7A' }}>
+            看更多
+          </Button>
+          <IconButton size="small" sx={{ color: '#546E7A' }} aria-label="share">
+            <IosShareIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      </Box>
+      <Box sx={{ display: 'flex', gap: 2 }}>
+        {stats.map((stat) => (
+          <Box key={stat.title} sx={{ flex: 1, minWidth: 0 }}>
+            <SectionStatCard {...stat} />
+          </Box>
+        ))}
+      </Box>
+    </Box>
   )
 }
 
@@ -303,6 +428,12 @@ export default function Dashboard() {
           <HeadcountCard />
         </Grid>
       </Grid>
+
+      {serviceOverviews.map((overview) => (
+        <Paper key={overview.key} sx={{ borderRadius: '8px', p: 2 }}>
+          <ServiceOverviewSection overview={overview} />
+        </Paper>
+      ))}
     </Box>
   )
 }

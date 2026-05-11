@@ -1,33 +1,33 @@
 import {
-  Alert,
   Box,
   Button,
   Card,
   CardContent,
   Divider,
   Grid,
-  IconButton,
   Paper,
   Typography,
 } from '@mui/material'
 import GroupIcon from '@mui/icons-material/Group'
 import BadgeIcon from '@mui/icons-material/Badge'
-import HotelIcon from '@mui/icons-material/Hotel'
-import EventAvailableIcon from '@mui/icons-material/EventAvailable'
-import IosShareIcon from '@mui/icons-material/IosShare'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import WbSunnyIcon from '@mui/icons-material/WbSunny'
 import HomeIcon from '@mui/icons-material/Home'
+import HotelIcon from '@mui/icons-material/Hotel'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import StatCard from '@/components/StatCard'
 import ServiceShareChart from '@/components/charts/ServiceShareChart'
+import OccupancyChart from '@/components/charts/OccupancyChart'
+import { green } from '@mui/material/colors'
 import {
   reportDate,
   kpis,
   serviceShare,
-  headcount,
   facilities,
   serviceOverviews,
 } from '@/features/dashboard/mockData'
@@ -41,8 +41,8 @@ const SERVICE_ICONS = {
 const kpiIcons = {
   serviceTotal: <GroupIcon />,
   staffTotal: <BadgeIcon />,
-  vacancyRate: <HotelIcon />,
-  attendanceRate: <EventAvailableIcon />,
+  newHired: <PersonAddIcon />,
+  resigned: <PersonRemoveIcon />,
 }
 
 function SectionHeader({ title, action }) {
@@ -58,29 +58,20 @@ function PageHeader() {
   return (
     <Box
       sx={{
-        height: 64,
         px: 2,
+        py: 2,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderBottom: '1px solid rgba(0,0,0,0.08)',
       }}
     >
-      <Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
         <Typography variant="h6" sx={{ lineHeight: 1.2 }}>
           集團總覽
         </Typography>
-        <Typography variant="caption" color="textSecondary">
+        <Typography variant="body1" color="textSecondary">
           {reportDate}
         </Typography>
-      </Box>
-      <Box className="flex items-center gap-1">
-        <IconButton size="small" sx={{ color: '#546E7A' }} aria-label="share">
-          <IosShareIcon fontSize="small" />
-        </IconButton>
-        <Button variant="contained" size="medium">
-          匯出報表
-        </Button>
       </Box>
     </Box>
   )
@@ -149,109 +140,31 @@ function ServiceShareCard() {
   )
 }
 
-function HeadcountCard() {
-  const metrics = [
-    {
-      label: '本月新入職',
-      value: headcount.newHired,
-      unit: '人',
-      delta: headcount.newHiredDelta,
-      downIsGood: false,
-    },
-    {
-      label: '本月離職',
-      value: headcount.resigned,
-      unit: '人',
-      delta: headcount.resignedDelta,
-      downIsGood: true,
-    },
-    {
-      label: '離職率',
-      value: headcount.resignRate,
-      delta: headcount.resignRateDelta,
-      downIsGood: true,
-    },
-    {
-      label: '全集團人力比',
-      value: headcount.staffRatio,
-      note: '員工 ÷ 服務個案',
-      delta: null,
-    },
-  ]
-
+function OccupancyTrendCard() {
   return (
-    <Card sx={{ height: '100%' }}>
-      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-        <SectionHeader title="全集團人力概況" />
-
-        <Box className="grid grid-cols-2 gap-3" sx={{ mb: 2 }}>
-          {metrics.map((m) => {
-            const DeltaIcon = m.delta?.dir === 'up' ? ArrowUpwardIcon : ArrowDownwardIcon
-
-            return (
-              <Box
-                key={m.label}
-                sx={{
-                  bgcolor: 'rgba(120,144,156,0.08)',
-                  borderRadius: '8px',
-                  pl: '15px',
-                  pr: '12px',
-                  py: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  gap: 1,
-                }}
-              >
-                <Typography variant="body2">
-                  {m.label}
-                </Typography>
-                <Box className="flex items-baseline gap-1">
-                  <Typography
-                    sx={{ fontSize: 24, fontWeight: 500, lineHeight: 1.2, color: 'text.primary' }}
-                  >
-                    {m.value}
-                  </Typography>
-                  {m.unit && (
-                    <Typography variant="caption" color="textSecondary">
-                      {m.unit}
-                    </Typography>
-                  )}
-                </Box>
-                {m.delta ? (
-                  <Box className="flex items-center gap-0.5">
-                    <DeltaIcon sx={{ fontSize: 12, color: '#0097A7' }} />
-                    <Typography variant="caption" sx={{ color: '#0097A7', fontWeight: 500 }}>
-                      較上月 {m.delta.text}
-                    </Typography>
-                  </Box>
-                ) : m.note ? (
-                  <Typography
-                    variant="caption"
-                    sx={{ color: 'rgba(0,0,0,0.38)', display: 'block' }}
-                  >
-                    {m.note}
-                  </Typography>
-                ) : null}
-              </Box>
-            )
-          })}
+    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <CardContent
+        sx={{
+          p: 2,
+          '&:last-child': { pb: 2 },
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <SectionHeader title="近 6 個月空床率與出席率" />
+        <Box sx={{ flex: 1, minHeight: 0 }}>
+          <OccupancyChart height="100%" />
         </Box>
-
-        <Alert severity="warning" sx={{ mt: 2, py: 0.75, fontSize: '0.8125rem' }}>
-          <strong>新北板橋居服所照服員短缺</strong>
-          <br />
-          人力比 1:22 已超出法規標準，建議緊急調度支援。
-        </Alert>
       </CardContent>
     </Card>
   )
 }
 
 const FACILITY_GROUPS = [
-  { label: '住宿長照', type: '住宿長照', color: '#0097A7' },
-  { label: '居家服務', type: '居家服務', color: '#26A69A' },
-  { label: '日間照顧', type: '日間照顧', color: '#005F64' },
+  { label: '住宿長照', type: '住宿長照', color: '#0097A7', capacityUnit: '床' },
+  { label: '日間照顧', type: '日間照顧', color: '#005F64', capacityUnit: '人' },
+  { label: '居家服務', type: '居家服務', color: '#26A69A', capacityUnit: null },
 ]
 
 function FacilitySummaryCard() {
@@ -281,9 +194,11 @@ function FacilitySummaryCard() {
                   sx={{ py: 0.5 }}
                 >
                   <Typography variant="body1">{f.name}</Typography>
-                  <Typography variant="body1" color="textSecondary">
-                    核定 {f.capacity} 人
-                  </Typography>
+                  {g.capacityUnit && (
+                    <Typography variant="body1" color="textSecondary">
+                      核定 {f.capacity} {g.capacityUnit}
+                    </Typography>
+                  )}
                 </Box>
               ))}
             </Box>
@@ -300,7 +215,7 @@ function SectionStatCard({ title, value, unit, hint, delta, alert }) {
   else if (delta?.dir === 'down') DeltaIcon = ArrowDownwardIcon
   else if (delta?.dir === 'flat') DeltaIcon = TrendingFlatIcon
 
-  const deltaColor = delta?.isWarning ? 'warning.main' : delta?.dir === 'flat' ? 'text.secondary' : 'primary.main'
+  const deltaColor = delta?.isWarning ? 'warning.main' : delta?.dir === 'flat' ? 'text.secondary' : green[500]
 
   return (
     <Box
@@ -318,7 +233,7 @@ function SectionStatCard({ title, value, unit, hint, delta, alert }) {
         boxSizing: 'border-box',
       }}
     >
-      <Typography variant="body2">
+      <Typography variant="body1">
         {title}
       </Typography>
       <Box className="flex items-baseline gap-1">
@@ -388,14 +303,14 @@ function ServiceOverviewSection({ overview }) {
             {facs.join(' + ')} · 今日合計
           </Typography>
         </Box>
-        <Box className="flex items-center gap-1">
-          <Button variant="text" size="small" sx={{ color: '#546E7A' }}>
-            看更多
-          </Button>
-          <IconButton size="small" sx={{ color: '#546E7A' }} aria-label="share">
-            <IosShareIcon fontSize="small" />
-          </IconButton>
-        </Box>
+        <Button
+          variant="text"
+          size="small"
+          endIcon={<ChevronRightIcon />}
+          sx={{ color: '#546E7A' }}
+        >
+          看更多
+        </Button>
       </Box>
       <Box sx={{ display: 'flex', gap: 2 }}>
         {stats.map((stat) => (
@@ -425,7 +340,7 @@ export default function Dashboard() {
           <ServiceShareCard />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <HeadcountCard />
+          <OccupancyTrendCard />
         </Grid>
       </Grid>
 

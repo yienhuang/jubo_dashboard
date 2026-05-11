@@ -1,14 +1,14 @@
 import { Box, Card, CardContent, Typography } from '@mui/material'
+import { green } from '@mui/material/colors'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 
 export default function StatCard({ title, value, unit, hint, delta, icon }) {
-  const deltaColor =
-    delta?.dir === 'up'
-      ? '#2E7D32'
-      : delta?.dir === 'down'
-        ? '#0288D1'
-        : '#546E7A'
+  const deltaColor = delta?.isWarning
+    ? 'warning.main'
+    : delta?.dir === 'flat'
+      ? 'text.secondary'
+      : green[500]
   const DeltaIcon = delta?.dir === 'up' ? ArrowUpwardIcon : ArrowDownwardIcon
 
   return (

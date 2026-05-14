@@ -111,7 +111,7 @@ export const facilityRankings = [
     rank: 1,
     name: '台北信義長照分院',
     type: '長照',
-    grade: '優秀',
+    grade: '良好',
     metrics: [
       { label: '月營收 YoY', value: '+9.2%', status: 'ok' },
       { label: '佔床率',     value: '96.2%', status: 'ok' },
@@ -122,7 +122,7 @@ export const facilityRankings = [
     rank: 2,
     name: '桃園龜山日照中心',
     type: '日照',
-    grade: '優秀',
+    grade: '良好',
     metrics: [
       { label: '月營收 YoY', value: '+22.7%', status: 'ok' },
       { label: '出席率',     value: '91.4%',  status: 'ok' },
@@ -166,11 +166,11 @@ export const facilityRankings = [
 
 // ── 各機構概況列表（當月） ────────────────────────────────
 export const facilityList = [
-  { name: '台北信義長照分院',   type: '住宿長照',   service: 163, serviceNew: 3, staff: 52, staffNew: 3, turnover: 3.8,  careRatio: '1:3.1', incidents: 24, revenue: 438, yoy: 9.2,  grade: '優秀' },
+  { name: '台北信義長照分院',   type: '住宿長照',   service: 163, serviceNew: 3, staff: 52, staffNew: 3, turnover: 3.8,  careRatio: '1:3.1', incidents: 24, revenue: 438, yoy: 9.2,  grade: '良好' },
   { name: '台中大里日照中心',   type: '日照中心',   service:  58, serviceNew: 1, staff: 14, staffNew: 1, turnover: 11.4, careRatio: '1:4.1', incidents: 12, revenue:  91, yoy: 5.6,  grade: '觀察' },
   { name: '新北板橋居家服務部', type: '居家服務部', service: 174, serviceNew: 2, staff: 71, staffNew: 2, turnover: 14.3, careRatio: '1:2.4', incidents: 14, revenue: 168, yoy: 18.3, grade: '觀察' },
   { name: '高雄左營長照分院',   type: '住宿長照',   service:  79, serviceNew: 1, staff: 24, staffNew: 1, turnover: 5.1,  careRatio: '1:3.3', incidents:  8, revenue: 294, yoy: 7.8,  grade: '良好' },
-  { name: '桃園龜山日照中心',   type: '日照中心',   service:  32, serviceNew: 0, staff: 10, staffNew: 0, turnover: 0,    careRatio: '1:3.2', incidents:  4, revenue:  91, yoy: 22.7, grade: '優秀' },
+  { name: '桃園龜山日照中心',   type: '日照中心',   service:  32, serviceNew: 0, staff: 10, staffNew: 0, turnover: 0,    careRatio: '1:3.2', incidents:  4, revenue:  91, yoy: 22.7, grade: '良好' },
 ]
 
 // 流動率異常閾值（> 10% 用警示色）
@@ -178,7 +178,6 @@ export const TURNOVER_WARNING_THRESHOLD = 10
 
 // 健康度標籤色（沿用 brand：success / primary / warning）
 export const GRADE_CONFIG = {
-  優秀: { bg: 'rgba(46,125,50,0.12)',  color: '#2E7D32' },
-  良好: { bg: 'rgba(0,151,167,0.12)',  color: '#0097A7' },
+  良好: { bg: 'rgba(46,125,50,0.12)',  color: '#2E7D32' },
   觀察: { bg: 'rgba(237,108,2,0.12)',  color: '#ED6C02' },
 }

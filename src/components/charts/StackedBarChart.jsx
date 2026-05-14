@@ -1,23 +1,30 @@
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
 
-export default function TrendLineChart({ months, series, yAxisSuffix = '', height = 200 }) {
+export default function StackedBarChart({
+  months,
+  series,
+  yAxisSuffix = '',
+  height = 240,
+  valueFormatter,
+}) {
   const data = months.map((month, i) => ({
     month,
     ...series.reduce((acc, s) => ({ ...acc, [s.name]: s.data[i] }), {}),
   }))
+  const format = valueFormatter ?? ((v) => `${v}${yAxisSuffix}`)
 
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <LineChart data={data} margin={{ top: 4, right: 16, bottom: 0, left: -8 }}>
+      <BarChart data={data} margin={{ top: 4, right: 16, bottom: 0, left: -8 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.08)" vertical={false} />
         <XAxis
           dataKey="month"
@@ -38,7 +45,7 @@ export default function TrendLineChart({ months, series, yAxisSuffix = '', heigh
             boxShadow: 'none',
             fontSize: 12,
           }}
-          formatter={(value, name) => [`${value}${yAxisSuffix}`, name]}
+          formatter={(value, name) => [format(value), name]}
         />
         <Legend
           iconType="circle"
@@ -47,18 +54,15 @@ export default function TrendLineChart({ months, series, yAxisSuffix = '', heigh
           formatter={(value) => <span style={{ color: 'rgba(0,0,0,0.6)' }}>{value}</span>}
         />
         {series.map((s) => (
-          <Line
+          <Bar
             key={s.name}
-            type="monotone"
             dataKey={s.name}
-            stroke={s.color}
-            strokeWidth={s.dashed ? 1.5 : 2}
-            strokeDasharray={s.dashed ? '4 4' : undefined}
-            dot={false}
-            activeDot={{ r: 4, strokeWidth: 0 }}
+            stackId="a"
+            fill={s.color}
+            maxBarSize={26}
           />
         ))}
-      </LineChart>
+      </BarChart>
     </ResponsiveContainer>
   )
 }

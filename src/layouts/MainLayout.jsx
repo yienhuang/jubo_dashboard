@@ -16,8 +16,9 @@ import {
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import DashboardIcon from '@mui/icons-material/Dashboard'
-import PeopleIcon from '@mui/icons-material/People'
-import SpeedIcon from '@mui/icons-material/Speed'
+import HotelIcon from '@mui/icons-material/Hotel'
+import WbSunnyIcon from '@mui/icons-material/WbSunny'
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService'
 import Logo from '@/components/Logo'
 
 const RAIL_WIDTH = 72
@@ -27,10 +28,14 @@ const APPBAR_HEIGHT = 64
 const navGroups = [
   {
     label: '集團總部',
+    items: [{ label: '總覽', to: '/', icon: <DashboardIcon /> }],
+  },
+  {
+    label: '服務類型',
     items: [
-      { label: '首頁總覽', to: '/', icon: <DashboardIcon /> },
-      { label: '產能管理', to: '/capacity', icon: <SpeedIcon /> },
-      { label: '人力管理', to: '/workforce', icon: <PeopleIcon /> },
+      { label: '住宿', to: '/accommodation', icon: <HotelIcon /> },
+      { label: '日照', to: '/day-care', icon: <WbSunnyIcon /> },
+      { label: '居服', to: '/home-care', icon: <HomeRepairServiceIcon /> },
     ],
   },
 ]
@@ -157,7 +162,7 @@ export default function MainLayout() {
               sx={{ color: '#37474F', fontWeight: 500 }}
               component="div"
             >
-              長照集團
+              智齡照護集團
             </Typography>
           </Box>
 
@@ -266,15 +271,13 @@ export default function MainLayout() {
         className="flex-1"
         sx={{
           pt: `${APPBAR_HEIGHT}px`,
-          px: 2,
+          pr: 2,
           pb: 2,
           minHeight: '100vh',
           width: { xs: '100%', sm: `calc(100% - ${RAIL_WIDTH}px)` },
         }}
       >
-        <Box sx={{ pt: 2 }}>
-          <Outlet />
-        </Box>
+        <Outlet />
       </Box>
     </Box>
   )

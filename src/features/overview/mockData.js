@@ -116,7 +116,6 @@ export const facilityRankings = [
       { label: '月營收 YoY', value: '+9.2%', status: 'ok' },
       { label: '佔床率',     value: '96.2%', status: 'ok' },
       { label: '照護比',     value: '1:3.1', status: 'ok' },
-      { label: '新住民率',   value: '+4.2%', status: 'ok' },
     ],
   },
   {
@@ -127,7 +126,6 @@ export const facilityRankings = [
     metrics: [
       { label: '月營收 YoY', value: '+22.7%', status: 'ok' },
       { label: '出席率',     value: '91.4%',  status: 'ok' },
-      { label: '新個案率',   value: '+6.8%',  status: 'ok' },
       { label: '照護比',     value: '1:3.2',  status: 'ok' },
     ],
   },
@@ -140,7 +138,6 @@ export const facilityRankings = [
       { label: '月營收 YoY', value: '+7.8%', status: 'ok' },
       { label: '佔床率',     value: '82.3%', status: 'ok' },
       { label: '照護比',     value: '1:3.3', status: 'ok' },
-      { label: '新住民率',   value: '+1.5%', status: 'watch' },
     ],
   },
   {
@@ -152,7 +149,6 @@ export const facilityRankings = [
       { label: '月營收 YoY',     value: '+18.3%', status: 'ok' },
       { label: '服務時數達成率', value: '78.2%',  status: 'watch' },
       { label: '個案留任率',     value: '71.4%',  status: 'watch' },
-      { label: '新個案率',       value: '+3.1%',  status: 'ok' },
     ],
   },
   {
@@ -163,7 +159,6 @@ export const facilityRankings = [
     metrics: [
       { label: '月營收 YoY', value: '+5.6%', status: 'ok' },
       { label: '出席率',     value: '68.9%', status: 'watch' },
-      { label: '新個案率',   value: '-2.3%', status: 'watch' },
       { label: '照護比',     value: '1:4.1', status: 'watch' },
     ],
   },

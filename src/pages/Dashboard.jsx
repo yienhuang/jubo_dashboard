@@ -175,7 +175,7 @@ function SectionCard({ title, subtitle, headerRight, children }) {
       >
         <Box className="flex items-start justify-between" sx={{ mb: 2 }}>
           <Box>
-            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+            <Typography variant="h6">
               {title}
             </Typography>
             {subtitle && (
@@ -467,12 +467,9 @@ function PageHeader() {
             集團總覽
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-            全集團當月營運快照與近 13 個月趨勢
+            {reportDate}
           </Typography>
         </Box>
-        <Typography variant="caption" color="textSecondary" sx={{ mt: 0.5, flexShrink: 0 }}>
-          {reportDate}
-        </Typography>
       </Box>
     </Paper>
   )
@@ -605,11 +602,11 @@ function RankingSection() {
   return (
     <Paper sx={{ borderRadius: '8px', p: 2 }}>
       <Box sx={{ mb: 2 }}>
-        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+        <Typography variant="h6">
           機構健康度排名
         </Typography>
         <Typography variant="caption" color="textSecondary">
-          當月（2026/05）— Top 3 + Bottom 2
+          當月（2026/05）
         </Typography>
       </Box>
       <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
@@ -627,11 +624,11 @@ function FacilityListSection() {
   return (
     <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
       <Box sx={{ px: 2, pt: 2, pb: 1 }}>
-        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+        <Typography variant="h6">
           各機構概況
         </Typography>
         <Typography variant="caption" color="textSecondary">
-          當月（2026/05）— 流動率超過 {TURNOVER_WARNING_THRESHOLD}% 以橙色加粗顯示
+          當月（2026/05）
         </Typography>
       </Box>
       <FacilityTable />

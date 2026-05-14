@@ -32,22 +32,30 @@ const theme = createTheme({
     fontWeightRegular: 400,
     fontWeightMedium: 500,
     fontWeightBold: 700,
-    h5: { fontSize: '24px', fontWeight: 400, lineHeight: 1.334, letterSpacing: 0 },
-    h6: { fontSize: '20px', fontWeight: 500, lineHeight: 1.6, letterSpacing: '0.15px' },
-    body1: { fontSize: '16px', fontWeight: 400, lineHeight: 1.5, letterSpacing: '0.15px' },
-    body2: { fontSize: '14px', fontWeight: 400, lineHeight: 1.43, letterSpacing: '0.17px' },
-    caption: { fontSize: '12px', fontWeight: 400, lineHeight: 1.66, letterSpacing: '0.4px' },
-    button: {
-      fontSize: '14px',
+    subtitle3: {
+      fontSize: '16px',
       fontWeight: 500,
-      lineHeight: '24px',
+      lineHeight: 1.5,
+      letterSpacing: '0.1px',
+    },
+    captionMedium: {
+      fontSize: '12px',
+      fontWeight: 500,
+      lineHeight: 1.66,
       letterSpacing: '0.4px',
-      textTransform: 'uppercase',
     },
   },
   shape: { borderRadius: 4 },
   shadows: ['none', ...Array(24).fill('none')],
   components: {
+    MuiTypography: {
+      defaultProps: {
+        variantMapping: {
+          subtitle3: 'p',
+          captionMedium: 'span',
+        },
+      },
+    },
     MuiCssBaseline: {
       styleOverrides: {
         body: { backgroundColor: '#EAF3F5' },

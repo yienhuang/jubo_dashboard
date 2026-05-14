@@ -83,23 +83,32 @@ Load via Google Fonts:
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 ```
 
-| Role              | Size  | Weight   | Line Height | Letter Spacing | MUI variant |
-|-------------------|-------|----------|-------------|----------------|-------------|
-| H5（數字大字）    | 24px  | 400      | 1.334       | 0              | `h5`        |
-| H6 / 卡片標題     | 20px  | 500      | 1.6         | 0.15px         | `h6`        |
-| Body 1（主要內容）| 16px  | 400      | 1.5         | 0.15px         | `body1`     |
-| Body 2（次要內容）| 14px  | 400      | 1.43        | 0.17px         | `body2`     |
-| Table header      | 14px  | **700**  | 24px        | 0.17px         | —           |
-| Button (medium)   | 14px  | 500      | 24px        | 0.4px          | `button`    |
-| Chip              | 13px  | 400      | 18px        | 0.16px         | —           |
-| Caption（附註）   | 12px  | 400      | 1.66        | 0.4px          | `caption`   |
+Jubo 直接沿用 MUI 預設的 typography variant（`h1`~`h6`, `subtitle1`, `subtitle2`, `body1`, `body2`, `caption`, `button`, `overline`），**不要在 `theme.typography` 內重新覆寫這些預設值**。
+
+僅以下為自訂或 override：
+
+| Role              | Size  | Weight   | Letter Spacing | MUI variant       | 備註                         |
+|-------------------|-------|----------|----------------|-------------------|------------------------------|
+| Subtitle 3        | 16px  | 500      | 0.1px          | `subtitle3`       | 自訂 variant                 |
+| Caption Medium    | 12px  | 500      | 0.4px          | `captionMedium`   | 自訂 variant                 |
+| Table header      | 14px  | **700**  | 0.17px         | —                 | MUI 預設 + 在 `MuiTableCell.head` 強制改為 Bold |
+
+使用方式：
+
+```jsx
+<Typography variant="subtitle3">小標題</Typography>
+<Typography variant="captionMedium">強調附註</Typography>
+
+// 或透過 sx
+<Box sx={{ typography: 'subtitle3' }}>...</Box>
+```
 
 **Body text rule:**
 - `body1` (16px) — 主要內容：說明文字、列表項目、表格內容、輸入框文字
 - `body2` (14px) — 次要內容：輔助說明、次要標籤、表格次要欄位
 - `caption` (12px) — 附註文字，**非常少用**：時間戳記、輔助提示、圖例說明
 
-**Weight rule:** Regular (400) for body text, Medium (500) for titles and buttons, Bold (700) only for table headers.
+**Weight rule:** Regular (400) for body text, Medium (500) for titles / buttons / 自訂 medium variants, Bold (700) only for table headers.
 
 ---
 
@@ -291,16 +300,21 @@ const theme = createTheme({
     fontWeightRegular: 400,
     fontWeightMedium:  500,
     fontWeightBold:    700,
-    h5: { fontSize: '24px', fontWeight: 400, lineHeight: 1.334, letterSpacing: 0 },
-    h6: { fontSize: '20px', fontWeight: 500, lineHeight: 1.6,   letterSpacing: '0.15px' },
-    body1: { fontSize: '16px', fontWeight: 400, lineHeight: 1.5,   letterSpacing: '0.15px' },
-    body2: { fontSize: '14px', fontWeight: 400, lineHeight: 1.43,  letterSpacing: '0.17px' },
-    caption: { fontSize: '12px', fontWeight: 400, lineHeight: 1.66,  letterSpacing: '0.4px' },
-    button: { fontSize: '14px', fontWeight: 500, lineHeight: '24px', letterSpacing: '0.4px', textTransform: 'uppercase' },
+    // 其餘 variant 全沿用 MUI 預設，不要再覆寫
+    subtitle3:     { fontSize: '16px', fontWeight: 500, lineHeight: 1.5,  letterSpacing: '0.1px' },
+    captionMedium: { fontSize: '12px', fontWeight: 500, lineHeight: 1.66, letterSpacing: '0.4px' },
   },
   shape: { borderRadius: 4 },  // MUI default; override per-component as needed
   shadows: ['none', ...Array(24).fill('none')],  // all shadows off by default
   components: {
+    MuiTypography: {
+      defaultProps: {
+        variantMapping: {
+          subtitle3: 'p',
+          captionMedium: 'span',
+        },
+      },
+    },
     MuiCard:      { styleOverrides: { root: { borderRadius: 8, boxShadow: 'none' } } },
     MuiAppBar:    { styleOverrides: { root: { backgroundColor: '#EAF3F5', boxShadow: 'none' } } },
     MuiDialog:    { styleOverrides: { paper: { boxShadow: '0px 11px 15px rgba(0,0,0,0.2)' } } },

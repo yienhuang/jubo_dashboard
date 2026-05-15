@@ -24,20 +24,13 @@ import PeopleIcon from '@mui/icons-material/People'
 import BadgeIcon from '@mui/icons-material/Badge'
 import BedIcon from '@mui/icons-material/Bed'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   LabelList,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -48,6 +41,7 @@ import TrendLineChart from '@/components/charts/TrendLineChart'
 import RevenueComposedChart from '@/components/charts/RevenueComposedChart'
 import HorizontalBarChart from '@/components/charts/HorizontalBarChart'
 import ServiceShareChart from '@/components/charts/ServiceShareChart'
+import MovementWaterfallChart from '@/components/charts/MovementWaterfallChart'
 
 import {
   reportDate,
@@ -71,21 +65,6 @@ const KPI_ICONS_OVERVIEW = {
   staffTotal: <BadgeIcon />,
   occupancy: <BedIcon />,
   revenue: <AttachMoneyIcon />,
-}
-
-const KPI_ICONS_OPERATION = {
-  service: <PeopleIcon />,
-  newIn: <PersonAddAlt1Icon />,
-  newOut: <PersonRemoveIcon />,
-  occupancy: <BedIcon />,
-}
-
-const KPI_ICONS_FINANCE = {
-  revenue: <AttachMoneyIcon />,
-  collected: <AccountBalanceWalletIcon />,
-  overdue: <WarningAmberIcon />,
-  staffCost: <ReceiptLongIcon />,
-  costRatio: <ReceiptLongIcon />,
 }
 
 // ── Shared atoms ──────────────────────────────────────────
@@ -192,8 +171,7 @@ function OutlinedBlock({ title, subtitle, headerRight, children, fullHeight = tr
     <Box
       sx={{
         height: fullHeight ? '100%' : 'auto',
-        bgcolor: '#FFFFFF',
-        border: '1px solid rgba(0,0,0,0.12)',
+        bgcolor: 'rgba(84,110,122,0.06)',
         borderRadius: '8px',
         p: 2,
         display: 'flex',
@@ -218,35 +196,17 @@ function OutlinedBlock({ title, subtitle, headerRight, children, fullHeight = tr
   )
 }
 
-function KpiTile({ title, value, unit, delta, icon, warningBg }) {
+function KpiTile({ title, value, unit, delta, warningBg }) {
   return (
     <Box
       sx={{
         height: '100%',
-        bgcolor: warningBg ? 'rgba(237,108,2,0.08)' : 'rgba(84,110,122,0.08)',
+        bgcolor: warningBg ? 'rgba(237,108,2,0.06)' : 'rgba(84,110,122,0.06)',
         borderRadius: '8px',
         p: 2,
       }}
     >
-      <Box className="flex items-start justify-between">
-        <Typography variant="body1">{title}</Typography>
-        <Box
-          sx={{
-            width: 32,
-            height: 32,
-            borderRadius: '8px',
-            bgcolor: '#FFFFFF',
-            color: warningBg ? WARNING : PRIMARY_DARK,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            '& svg': { fontSize: 20 },
-          }}
-        >
-          {icon}
-        </Box>
-      </Box>
+      <Typography variant="body1">{title}</Typography>
       <Box className="mt-3 flex items-baseline gap-1">
         <Typography sx={{ fontSize: 28, fontWeight: 500, lineHeight: 1.2, color: 'text.primary', letterSpacing: 0 }}>
           {value}
@@ -344,65 +304,6 @@ function StaffCostBarChart({ months, data, height = 280 }) {
   )
 }
 
-// ── Pie Chart (disability ratio) ──────────────────────────
-
-const RADIAN = Math.PI / 180
-function PieLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }) {
-  if (percent < 0.06) return null
-  const r = innerRadius + (outerRadius - innerRadius) * 0.5
-  const x = cx + r * Math.cos(-midAngle * RADIAN)
-  const y = cy + r * Math.sin(-midAngle * RADIAN)
-  return (
-    <text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central" fontSize={11}>
-      {`${(percent * 100).toFixed(1)}%`}
-    </text>
-  )
-}
-
-function DisabilityPieChart({ data }) {
-  const total = data.reduce((s, d) => s + d.value, 0)
-  return (
-    <Box className="flex items-center gap-3">
-      <Box sx={{ flexShrink: 0 }}>
-        <ResponsiveContainer width={180} height={180}>
-          <PieChart>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              outerRadius={80}
-              dataKey="value"
-              labelLine={false}
-              label={PieLabel}
-            >
-              {data.map((entry, i) => (
-                <Cell key={i} fill={entry.color} />
-              ))}
-            </Pie>
-            <Tooltip
-              contentStyle={{ borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)', boxShadow: 'none', fontSize: 12 }}
-              formatter={(value, name) => [`${value} 人（${((value / total) * 100).toFixed(1)}%）`, name]}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </Box>
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        {data.map((item) => (
-          <Box key={item.name} className="flex items-center justify-between" sx={{ py: 0.5 }}>
-            <Box className="flex items-center gap-1.5">
-              <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: item.color, flexShrink: 0 }} />
-              <Typography variant="body2" sx={{ lineHeight: 1.3 }}>{item.name}</Typography>
-            </Box>
-            <Typography variant="body2" sx={{ fontWeight: 500, ml: 1, flexShrink: 0 }}>
-              {item.value} 人
-            </Typography>
-          </Box>
-        ))}
-      </Box>
-    </Box>
-  )
-}
-
 // ── CMS Level Bar Chart ───────────────────────────────────
 
 function CmsBarChart({ data }) {
@@ -445,8 +346,8 @@ function QualityAlertCard({ alerts }) {
   return (
     <Box
       sx={{
-        bgcolor: '#FFFFFF',
-        border: '1px solid rgba(0,0,0,0.12)',
+        height: '100%',
+        bgcolor: 'rgba(84,110,122,0.06)',
         borderRadius: '8px',
         p: 2,
       }}
@@ -843,7 +744,6 @@ function BranchTab({ branchName }) {
                   value={kpi.value}
                   unit={kpi.unit}
                   delta={kpi.delta}
-                  icon={KPI_ICONS_FINANCE[kpi.key]}
                   warningBg={kpi.delta?.isWarning}
                 />
               </Grid>
@@ -889,7 +789,6 @@ function BranchTab({ branchName }) {
                 value={kpi.value}
                 unit={kpi.unit}
                 delta={kpi.delta}
-                icon={KPI_ICONS_OPERATION[kpi.key]}
               />
             </Grid>
           ))}
@@ -905,10 +804,10 @@ function BranchTab({ branchName }) {
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <OutlinedBlock title="住民異動分析" subtitle="近 13 個月（25/05 ～ 26/05）">
-              <TrendLineChart
+              <MovementWaterfallChart
                 months={data.residentMovement.months}
                 series={data.residentMovement.series}
-                yAxisSuffix=" 人"
+                baseline={data.residentMovement.baselineResidents}
                 height={260}
               />
             </OutlinedBlock>
@@ -916,8 +815,8 @@ function BranchTab({ branchName }) {
         </Grid>
       </CategoryPaper>
 
-      {/* 住民結構 */}
-      <CategoryPaper title="住民結構">
+      {/* 住民分析 */}
+      <CategoryPaper title="住民分析">
         <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
           <Grid size={{ xs: 12, md: 6 }}>
             <OutlinedBlock title="服務類型分佈" subtitle="當月（2026/05）">
@@ -931,7 +830,11 @@ function BranchTab({ branchName }) {
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <OutlinedBlock title="身障比例" subtitle="當月（2026/05）">
-              <DisabilityPieChart data={data.disabilityRatio} />
+              <ShareCardContent
+                data={data.disabilityRatio}
+                totalLabel="住民總數"
+                unit="人"
+              />
             </OutlinedBlock>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -939,7 +842,12 @@ function BranchTab({ branchName }) {
               <CmsBarChart data={data.cmsLevels} />
             </OutlinedBlock>
           </Grid>
-          <Grid size={{ xs: 12 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <OutlinedBlock title="退住原因" subtitle="當月（2026/05）">
+              <HorizontalBarChart data={data.dischargeReasons} color={PRIMARY} height={260} />
+            </OutlinedBlock>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
             <QualityAlertCard alerts={data.qualityAlerts} />
           </Grid>
         </Grid>

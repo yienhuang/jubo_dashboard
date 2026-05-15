@@ -114,6 +114,7 @@ export const branchData = {
     ],
     residentMovement: {
       months: trendMonths,
+      baselineResidents: 141,
       series: [
         { name: '新入住', color: '#0097A7', data: [5, 6, 4, 7, 5, 6, 4, 8, 5, 6, 7, 4, 5] },
         { name: '退住',   color: '#EF5350', data: [3, 4, 3, 5, 4, 3, 5, 4, 3, 4, 3, 5, 4] },
@@ -157,6 +158,14 @@ export const branchData = {
       { name: '約束移除成功率',   current: '14.3%', threshold: '10%' },
       { name: '感染發生密度',     current: '5.2%',  threshold: '3.0%' },
     ],
+    dischargeReasons: [
+      { name: '轉院',     value: 3 },
+      { name: '死亡',     value: 2 },
+      { name: '返家',     value: 4 },
+      { name: '在院死亡', value: 1 },
+      { name: '其他',     value: 2 },
+      { name: '特殊',     value: 1 },
+    ],
     financeKpis: [
       { key: 'revenue',     title: '營收',     value: '$438', unit: '萬', delta: { dir: 'up',   text: 'YoY +9.2%',      isWarning: false } },
       { key: 'collected',   title: '已收款',   value: '$378', unit: '萬', delta: { dir: 'flat', text: '回收率 86.3%',    isWarning: false } },
@@ -185,6 +194,7 @@ export const branchData = {
     ],
     residentMovement: {
       months: trendMonths,
+      baselineResidents: 69,
       series: [
         { name: '新入住', color: '#0097A7', data: [3, 4, 3, 4, 3, 4, 3, 5, 3, 4, 4, 3, 3] },
         { name: '退住',   color: '#EF5350', data: [2, 2, 2, 3, 2, 2, 3, 2, 2, 3, 2, 3, 2] },
@@ -223,6 +233,14 @@ export const branchData = {
       { level: '8', value: 2  },
     ],
     qualityAlerts: [],
+    dischargeReasons: [
+      { name: '轉院',     value: 2 },
+      { name: '死亡',     value: 1 },
+      { name: '返家',     value: 2 },
+      { name: '在院死亡', value: 0 },
+      { name: '其他',     value: 1 },
+      { name: '特殊',     value: 1 },
+    ],
     financeKpis: [
       { key: 'revenue',   title: '營收',       value: '$198', unit: '萬', delta: { dir: 'up',   text: 'YoY +22.4%',    isWarning: false } },
       { key: 'collected', title: '已收款',     value: '$172', unit: '萬', delta: { dir: 'flat', text: '回收率 86.9%',  isWarning: false } },
@@ -251,6 +269,7 @@ export const branchData = {
     ],
     residentMovement: {
       months: trendMonths,
+      baselineResidents: 67,
       series: [
         { name: '新入住', color: '#0097A7', data: [2, 3, 2, 3, 2, 3, 2, 4, 2, 3, 3, 2, 2] },
         { name: '退住',   color: '#EF5350', data: [1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 1, 2, 2] },
@@ -290,6 +309,14 @@ export const branchData = {
     ],
     qualityAlerts: [
       { name: '感染發生密度', current: '4.1%', threshold: '3.0%' },
+    ],
+    dischargeReasons: [
+      { name: '轉院',     value: 2 },
+      { name: '死亡',     value: 1 },
+      { name: '返家',     value: 2 },
+      { name: '在院死亡', value: 1 },
+      { name: '其他',     value: 1 },
+      { name: '特殊',     value: 1 },
     ],
     financeKpis: [
       { key: 'revenue',   title: '營收',       value: '$222', unit: '萬', delta: { dir: 'up',   text: 'YoY +7.8%',     isWarning: false } },

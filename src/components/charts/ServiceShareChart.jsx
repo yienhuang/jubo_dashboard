@@ -29,6 +29,7 @@ export default function ServiceShareChart({
         />
         <Tooltip
           formatter={(value, name) => [`${value.toLocaleString()} ${unit} (${((value / total) * 100).toFixed(1)}%)`, name]}
+          wrapperStyle={{ zIndex: 10, outline: 'none' }}
           contentStyle={{
             border: '1px solid rgba(0,0,0,0.12)',
             borderRadius: 8,

@@ -12,21 +12,35 @@ export const yearMonths = ['1月', '2月', '3月', '4月', '5月', '6月', '7月
 
 // ── 總覽 KPI ──────────────────────────────────────────────
 export const overviewKpis = [
+  { key: 'revenue',      title: '月營收',          value: '$858', unit: '萬', delta: { dir: 'up',  text: 'YoY +15.8%',      isWarning: false } },
   { key: 'serviceTotal', title: '當月總服務人數', value: '327', unit: '人',   delta: { dir: 'up',  text: '較上個月 +8 人',   isWarning: false } },
   { key: 'staffTotal',   title: '當月員工人數',   value: '104', unit: '人',   delta: { dir: 'up',  text: '較上個月 +2 人',   isWarning: false } },
   { key: 'occupancy',    title: '占床率',          value: '91.2', unit: '%',  delta: { dir: 'up',  text: '較上個月 +0.5pp', isWarning: false } },
-  { key: 'revenue',      title: '月營收',          value: '$858', unit: '萬', delta: { dir: 'up',  text: 'YoY +15.8%',      isWarning: false } },
 ]
 
 // ── 各機構占床率趨勢 ──────────────────────────────────────
 export const occupancyTrend = {
   months: trendMonths,
   series: [
-    { name: '台北信義長照分院', color: '#0097A7', data: [94.1, 94.5, 95.0, 95.3, 95.6, 95.8, 95.2, 95.5, 95.9, 95.7, 96.0, 95.8, 96.2] },
-    { name: '台中南屯長照分院', color: '#00838F', data: [84.2, 84.8, 85.3, 85.7, 86.0, 86.4, 86.8, 87.1, 87.3, 87.0, 87.4, 87.2, 87.6] },
-    { name: '高雄左營長照分院', color: '#26A69A', data: [79.1, 79.5, 80.0, 80.4, 80.8, 81.2, 81.5, 81.9, 82.1, 81.8, 82.0, 81.9, 82.3] },
+    { name: '整體', color: '#546E7A', dashed: true, data: [87.9, 87.3, 86.6, 86.2, 87.5, 87.6, 88.1, 88.3, 89.2, 90.1, 89.1, 90.3, 90.6] },
+    { name: '台北信義長照分院', color: '#0097A7', data: [94.1, 93.6, 94.8, 94.2, 95.3, 94.6, 95.8, 95.0, 95.5, 96.1, 95.2, 95.9, 96.2] },
+    { name: '台中南屯長照分院', color: '#00838F', data: [84.2, 85.1, 83.5, 85.6, 86.4, 85.0, 86.8, 85.5, 86.7, 87.5, 86.2, 87.8, 87.6] },
+    { name: '高雄左營長照分院', color: '#26A69A', data: [79.1, 76.5, 73.2, 70.5, 72.8, 76.1, 73.8, 77.5, 78.9, 80.5, 79.6, 81.4, 82.3] },
   ],
 }
+
+// ── 三機構佔比（當月） ────────────────────────────────────
+export const branchServiceShare = [
+  { name: '台北信義', value: 163, color: '#0097A7' },
+  { name: '台中南屯', value:  85, color: '#00838F' },
+  { name: '高雄左營', value:  79, color: '#26A69A' },
+]
+
+export const branchRevenueShare = [
+  { name: '台北信義', value: 438, color: '#0097A7' },
+  { name: '台中南屯', value: 198, color: '#00838F' },
+  { name: '高雄左營', value: 222, color: '#26A69A' },
+]
 
 // ── 各機構整體服務營收 ────────────────────────────────────
 export const revenueByBranch = {
@@ -36,36 +50,68 @@ export const revenueByBranch = {
     { name: '台中南屯', color: '#00838F', data: [162, 175, 168, 180, 172, 185, 176, 192, 170, 183, 178, 195, 198] },
     { name: '高雄左營', color: '#26A69A', data: [188, 203, 195, 205, 199, 212, 203, 222, 200, 215, 205, 226, 222] },
   ],
-  yoy: [null, null, null, null, null, null, null, null, null, null, null, null, 15.8],
+  yoy: [7.2, 9.4, 8.5, 10.8, 9.6, 11.3, 10.5, 13.2, 11.4, 12.8, 12.1, 14.5, 15.8],
   yoyCurrent: 15.8,
 }
+
+// ── 住宿機構排行（依本月營收） ───────────────────────────
+// status: good | warning  ／  alertTone: warning | none
+export const branchRanking = [
+  {
+    rank: 1,
+    name: '台北信義長照分院',
+    status: 'good',
+    ytdRevenue: 2125,
+    ytdYoy: 8.5,
+    monthRevenue: 438,
+    monthYoy: 9.2,
+    vacancyRate: 3.8,
+    staffCost: 198,
+    collectionRate: 86.3,
+    alert: '無',
+    alertTone: 'none',
+  },
+  {
+    rank: 2,
+    name: '高雄左營長照分院',
+    status: 'warning',
+    ytdRevenue: 1068,
+    ytdYoy: 6.4,
+    monthRevenue: 222,
+    monthYoy: 7.8,
+    vacancyRate: 17.7,
+    staffCost: 88,
+    collectionRate: 87.4,
+    alert: '占床率偏低、需積極招收',
+    alertTone: 'warning',
+  },
+  {
+    rank: 3,
+    name: '台中南屯長照分院',
+    status: 'warning',
+    ytdRevenue: 924,
+    ytdYoy: 19.6,
+    monthRevenue: 198,
+    monthYoy: 22.4,
+    vacancyRate: 12.4,
+    staffCost: 98,
+    collectionRate: 86.9,
+    alert: '占床率未達目標',
+    alertTone: 'warning',
+  },
+]
 
 // ── 三機構資料 ────────────────────────────────────────────
 export const BRANCHES = ['台北信義長照分院', '台中南屯長照分院', '高雄左營長照分院']
 
 export const branchData = {
   台北信義長照分院: {
-    kpis: [
+    operationKpis: [
       { key: 'service',   title: '當月服務人數', value: '163', unit: '人',  delta: { dir: 'up', text: '較上個月 +3 人',   isWarning: false } },
-      { key: 'staff',     title: '當月員工人數', value: '52',  unit: '人',  delta: { dir: 'up', text: '較上個月 +3 人',   isWarning: false } },
-      { key: 'occupancy', title: '占床率',        value: '96.2', unit: '%', delta: { dir: 'up', text: '較上個月 +0.3pp', isWarning: false } },
-      { key: 'revenue',   title: '月營收',        value: '$438', unit: '萬', delta: { dir: 'up', text: 'YoY +9.2%',      isWarning: false } },
+      { key: 'newIn',     title: '本月新入住',   value: '5',   unit: '人',  delta: { dir: 'up', text: '較上個月 +1 人',   isWarning: false } },
+      { key: 'newOut',    title: '本月退住',     value: '4',   unit: '人',  delta: { dir: 'down', text: '較上個月 -1 人', isWarning: false } },
+      { key: 'occupancy', title: '占床率',       value: '96.2', unit: '%', delta: { dir: 'up', text: '較上個月 +0.3pp', isWarning: false } },
     ],
-    aiInsights: [
-      { text: '人事成本率 62.3%，已接近警戒線，需持續監控', status: 'warning' },
-      { text: '占床率 96.2%，超越集團目標 90%',             status: 'success' },
-      { text: '月營收 YoY +9.2%，穩健成長',                 status: 'success' },
-    ],
-    yearOccupancy: [
-      { month: '1月', value: 95.1 }, { month: '2月', value: 94.8 }, { month: '3月', value: 95.6 },
-      { month: '4月', value: 95.9 }, { month: '5月', value: 96.2 }, { month: '6月', value: null  },
-      { month: '7月', value: null  }, { month: '8月', value: null  }, { month: '9月', value: null  },
-      { month: '10月', value: null }, { month: '11月', value: null }, { month: '12月', value: null },
-    ],
-    patientDays: {
-      months: trendMonths,
-      data: [2958, 3041, 3100, 3072, 3015, 2448, 2125, 1834, 1402, 1011, 748, 521, 714],
-    },
     residentMovement: {
       months: trendMonths,
       series: [
@@ -121,31 +167,22 @@ export const branchData = {
     revenueTrend: {
       months: trendMonths,
       data: [370, 412, 385, 420, 396, 433, 402, 446, 395, 430, 410, 452, 438],
+      yoy: [6.5, 7.2, 7.8, 8.3, 7.5, 8.8, 8.0, 9.4, 8.1, 8.7, 8.4, 9.6, 9.2],
+      yoyCurrent: 9.2,
+    },
+    staffCostTrend: {
+      months: trendMonths,
+      data: [178, 180, 182, 183, 185, 186, 188, 189, 190, 192, 193, 195, 198],
     },
   },
 
   台中南屯長照分院: {
-    kpis: [
-      { key: 'service',   title: '當月服務人數', value: '85',   unit: '人',  delta: { dir: 'up', text: '較上個月 +2 人',   isWarning: false } },
-      { key: 'staff',     title: '當月員工人數', value: '28',   unit: '人',  delta: { dir: 'up', text: '較上個月 +1 人',   isWarning: false } },
-      { key: 'occupancy', title: '占床率',        value: '87.6', unit: '%',  delta: { dir: 'up', text: '較上個月 +0.4pp', isWarning: false } },
-      { key: 'revenue',   title: '月營收',        value: '$198', unit: '萬', delta: { dir: 'up', text: 'YoY +22.4%',      isWarning: false } },
+    operationKpis: [
+      { key: 'service',   title: '當月服務人數', value: '85', unit: '人',  delta: { dir: 'up',   text: '較上個月 +2 人',   isWarning: false } },
+      { key: 'newIn',     title: '本月新入住',   value: '3',  unit: '人',  delta: { dir: 'flat', text: '較上個月 持平',   isWarning: false } },
+      { key: 'newOut',    title: '本月退住',     value: '2',  unit: '人',  delta: { dir: 'down', text: '較上個月 -1 人', isWarning: false } },
+      { key: 'occupancy', title: '占床率',       value: '87.6', unit: '%', delta: { dir: 'up',   text: '較上個月 +0.4pp', isWarning: false } },
     ],
-    aiInsights: [
-      { text: '占床率 87.6%，低於集團目標 90%，需加強招募', status: 'warning' },
-      { text: '月營收 YoY +22.4%，成長最快',                status: 'success' },
-      { text: '員工人數穩定，流動率正常',                    status: 'success' },
-    ],
-    yearOccupancy: [
-      { month: '1月', value: 85.2 }, { month: '2月', value: 85.8 }, { month: '3月', value: 86.3 },
-      { month: '4月', value: 87.0 }, { month: '5月', value: 87.6 }, { month: '6月', value: null  },
-      { month: '7月', value: null  }, { month: '8月', value: null  }, { month: '9月', value: null  },
-      { month: '10月', value: null }, { month: '11月', value: null }, { month: '12月', value: null },
-    ],
-    patientDays: {
-      months: trendMonths,
-      data: [1520, 1580, 1610, 1590, 1565, 1480, 1420, 1380, 1310, 1240, 1180, 1050, 1120],
-    },
     residentMovement: {
       months: trendMonths,
       series: [
@@ -196,31 +233,22 @@ export const branchData = {
     revenueTrend: {
       months: trendMonths,
       data: [162, 175, 168, 180, 172, 185, 176, 192, 170, 183, 178, 195, 198],
+      yoy: [15.2, 16.8, 17.5, 18.6, 17.2, 19.4, 18.5, 20.8, 18.9, 20.2, 19.8, 21.5, 22.4],
+      yoyCurrent: 22.4,
+    },
+    staffCostTrend: {
+      months: trendMonths,
+      data: [88, 89, 90, 91, 92, 93, 94, 95, 95, 96, 96, 97, 98],
     },
   },
 
   高雄左營長照分院: {
-    kpis: [
-      { key: 'service',   title: '當月服務人數', value: '79',   unit: '人',  delta: { dir: 'up', text: '較上個月 +1 人',   isWarning: false } },
-      { key: 'staff',     title: '當月員工人數', value: '24',   unit: '人',  delta: { dir: 'flat', text: '較上個月 持平', isWarning: false } },
-      { key: 'occupancy', title: '占床率',        value: '82.3', unit: '%',  delta: { dir: 'up', text: '較上個月 +0.4pp', isWarning: false } },
-      { key: 'revenue',   title: '月營收',        value: '$222', unit: '萬', delta: { dir: 'up', text: 'YoY +7.8%',       isWarning: false } },
+    operationKpis: [
+      { key: 'service',   title: '當月服務人數', value: '79', unit: '人',  delta: { dir: 'up',   text: '較上個月 +1 人',   isWarning: false } },
+      { key: 'newIn',     title: '本月新入住',   value: '2',  unit: '人',  delta: { dir: 'flat', text: '較上個月 持平',   isWarning: false } },
+      { key: 'newOut',    title: '本月退住',     value: '2',  unit: '人',  delta: { dir: 'flat', text: '較上個月 持平',   isWarning: false } },
+      { key: 'occupancy', title: '占床率',       value: '82.3', unit: '%', delta: { dir: 'up',   text: '較上個月 +0.4pp', isWarning: false } },
     ],
-    aiInsights: [
-      { text: '占床率 82.3%，仍低於集團目標 90%，需積極招收', status: 'warning' },
-      { text: '月營收 YoY +7.8%，持續正成長',                  status: 'success' },
-      { text: '員工人數穩定無異動',                             status: 'success' },
-    ],
-    yearOccupancy: [
-      { month: '1月', value: 80.5 }, { month: '2月', value: 81.0 }, { month: '3月', value: 81.4 },
-      { month: '4月', value: 81.9 }, { month: '5月', value: 82.3 }, { month: '6月', value: null  },
-      { month: '7月', value: null  }, { month: '8月', value: null  }, { month: '9月', value: null  },
-      { month: '10月', value: null }, { month: '11月', value: null }, { month: '12月', value: null },
-    ],
-    patientDays: {
-      months: trendMonths,
-      data: [1420, 1465, 1490, 1478, 1455, 1380, 1310, 1260, 1200, 1140, 1080, 980, 1050],
-    },
     residentMovement: {
       months: trendMonths,
       series: [
@@ -273,6 +301,12 @@ export const branchData = {
     revenueTrend: {
       months: trendMonths,
       data: [188, 203, 195, 205, 199, 212, 203, 222, 200, 215, 205, 226, 222],
+      yoy: [5.1, 5.8, 6.2, 6.9, 6.3, 7.1, 6.5, 7.8, 6.9, 7.4, 7.0, 8.1, 7.8],
+      yoyCurrent: 7.8,
+    },
+    staffCostTrend: {
+      months: trendMonths,
+      data: [78, 80, 81, 82, 83, 84, 85, 85, 86, 86, 87, 87, 88],
     },
   },
 }

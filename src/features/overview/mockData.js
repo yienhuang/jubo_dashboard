@@ -10,21 +10,14 @@ export const SERVICE_COLORS = {
   homecare: '#26A69A',    // 居服
 }
 
-// ── KPI 摘要 ─────────────────────────────────────────────
-export const kpis = [
+// ── KPI 摘要：營收 ────────────────────────────────────────
+export const revenueKpis = [
   {
-    key: 'serviceTotal',
-    title: '當月總服務人數',
-    value: '506',
-    unit: '人',
-    delta: { dir: 'up', text: 'vs 上月 +2.8% (+14 人)' },
-  },
-  {
-    key: 'staffTotal',
-    title: '當月總員工數',
-    value: '171',
-    unit: '人',
-    delta: { dir: 'up', text: 'vs 上月 +1.2% (+2 人)' },
+    key: 'ytdRevenue',
+    title: '今年累計營收',
+    value: '4,876',
+    unit: '萬元',
+    hint: '2026 年度截至本月',
   },
   {
     key: 'monthlyRevenue',
@@ -34,11 +27,50 @@ export const kpis = [
     delta: { dir: 'up', text: 'MoM +4.3%・YoY +12.7%' },
   },
   {
-    key: 'ytdRevenue',
-    title: '今年累計營收',
-    value: '4,876',
+    key: 'collected',
+    title: '本月已收帳款',
+    value: '892',
     unit: '萬元',
-    hint: '2026 年度截至本月',
+    hint: '收款率 82.4%',
+  },
+  {
+    key: 'staffCost',
+    title: '本月人事成本',
+    value: '623',
+    unit: '萬元',
+    hint: '佔營收 57.6%',
+  },
+]
+
+// ── KPI 摘要：人員 ────────────────────────────────────────
+export const peopleKpis = [
+  {
+    key: 'serviceTotal',
+    title: '當月總服務人數',
+    value: '506',
+    unit: '人',
+    delta: { dir: 'up', text: 'vs 上月 +2.8% (+14 人)' },
+  },
+  {
+    key: 'newCases',
+    title: '當月新個案數',
+    value: '18',
+    unit: '人',
+    delta: { dir: 'up', text: 'vs 上月 +5 人' },
+  },
+  {
+    key: 'staffTotal',
+    title: '當月總員工數',
+    value: '171',
+    unit: '人',
+    delta: { dir: 'up', text: 'vs 上月 +1.2% (+2 人)' },
+  },
+  {
+    key: 'staffLeavers',
+    title: '當月離職員工',
+    value: '3',
+    unit: '人',
+    delta: { dir: 'down', text: 'vs 上月 -1 人' },
   },
 ]
 

@@ -2,7 +2,6 @@ import {
   Box,
   Card,
   CardContent,
-  Divider,
   Grid,
   Paper,
   Table,
@@ -17,12 +16,14 @@ import { green } from '@mui/material/colors'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import GroupIcon from '@mui/icons-material/Group'
 import BadgeIcon from '@mui/icons-material/Badge'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
+import PaidIcon from '@mui/icons-material/Paid'
+import PaymentsIcon from '@mui/icons-material/Payments'
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 
 import ServiceShareChart from '@/components/charts/ServiceShareChart'
 import StackedBarChart from '@/components/charts/StackedBarChart'
@@ -31,14 +32,14 @@ import RevenueComposedChart from '@/components/charts/RevenueComposedChart'
 
 import {
   reportDate,
-  kpis,
+  revenueKpis,
+  peopleKpis,
   serviceTrend,
   serviceShareCurrent,
   staffTrend,
   turnoverTrend,
   revenueShareCurrent,
   revenueTrend,
-  facilityRankings,
   facilityList,
   GRADE_CONFIG,
   TURNOVER_WARNING_THRESHOLD,
@@ -46,14 +47,17 @@ import {
 
 // ── Color tokens ──────────────────────────────────────────
 const WARNING = '#ED6C02'
-const PRIMARY = '#0097A7'
 const PRIMARY_DARK = '#005F64'
 
 const KPI_ICONS = {
-  serviceTotal: GroupIcon,
-  staffTotal: BadgeIcon,
-  monthlyRevenue: AttachMoneyIcon,
   ytdRevenue: AccountBalanceWalletIcon,
+  monthlyRevenue: AttachMoneyIcon,
+  collected: PaidIcon,
+  staffCost: PaymentsIcon,
+  serviceTotal: GroupIcon,
+  newCases: PersonAddAlt1Icon,
+  staffTotal: BadgeIcon,
+  staffLeavers: PersonRemoveIcon,
 }
 
 // ── Shared atoms ──────────────────────────────────────────
@@ -244,90 +248,6 @@ function ShareCardContent({ data, totalLabel, unit, valueFormatter }) {
   )
 }
 
-// ── Health rank card (Top 3 + Bottom 2, single visual per user choice) ─
-
-function RankCard({ item }) {
-  return (
-    <Card sx={{ height: '100%', border: '1px solid rgba(0,0,0,0.08)' }}>
-      <CardContent
-        sx={{
-          p: 2,
-          '&:last-child': { pb: 2 },
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1.5,
-        }}
-      >
-        <Box className="flex items-start gap-2">
-          <Box
-            sx={{
-              width: 28,
-              height: 28,
-              borderRadius: '50%',
-              bgcolor: PRIMARY,
-              color: '#fff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 13,
-              fontWeight: 500,
-              flexShrink: 0,
-            }}
-          >
-            #{item.rank}
-          </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Box className="flex items-start justify-between gap-1">
-              <Typography
-                variant="body1"
-                sx={{
-                  fontWeight: 500,
-                  lineHeight: 1.3,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {item.name}
-              </Typography>
-              <GradeChip grade={item.grade} />
-            </Box>
-            <Typography variant="caption" color="textSecondary">
-              {item.type}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Divider />
-
-        <Box className="flex flex-col gap-1">
-          {item.metrics.map((m) => {
-            const isOk = m.status === 'ok'
-            const Icon = isOk ? CheckCircleIcon : WarningAmberIcon
-            const iconColor = isOk ? green[500] : WARNING
-            return (
-              <Box
-                key={m.label}
-                className="flex items-center justify-between"
-                sx={{ py: 0.25 }}
-              >
-                <Typography variant="body2" color="textSecondary">
-                  {m.label}
-                </Typography>
-                <Box className="flex items-center gap-1">
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    {m.value}
-                  </Typography>
-                  <Icon sx={{ fontSize: 14, color: iconColor }} />
-                </Box>
-              </Box>
-            )
-          })}
-        </Box>
-      </CardContent>
-    </Card>
-  )
-}
-
 // ── Facility list table ───────────────────────────────────
 
 const headCellSx = {
@@ -475,10 +395,10 @@ function PageHeader() {
   )
 }
 
-function KpiRow() {
+function KpiRow({ items }) {
   return (
     <Grid container spacing={2}>
-      {kpis.map((kpi) => (
+      {items.map((kpi) => (
         <Grid key={kpi.key} size={{ xs: 12, sm: 6, md: 3 }}>
           <KpiCard
             title={kpi.title}
@@ -598,28 +518,6 @@ function RevenueRow() {
   )
 }
 
-function RankingSection() {
-  return (
-    <Paper sx={{ borderRadius: '8px', p: 2 }}>
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="h6">
-          機構健康度排名
-        </Typography>
-        <Typography variant="caption" color="textSecondary">
-          當月（2026/05）
-        </Typography>
-      </Box>
-      <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-        {facilityRankings.map((item) => (
-          <Grid key={item.rank} size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
-            <RankCard item={item} />
-          </Grid>
-        ))}
-      </Grid>
-    </Paper>
-  )
-}
-
 function FacilityListSection() {
   return (
     <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
@@ -642,11 +540,11 @@ export default function Dashboard() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <PageHeader />
-      <KpiRow />
+      <KpiRow items={revenueKpis} />
+      <RevenueRow />
+      <KpiRow items={peopleKpis} />
       <ServiceRow />
       <StaffRow />
-      <RevenueRow />
-      <RankingSection />
       <FacilityListSection />
     </Box>
   )

@@ -117,7 +117,7 @@ export const branchData = {
       baselineResidents: 141,
       series: [
         { name: '新入住', color: '#0097A7', data: [5, 6, 4, 7, 5, 6, 4, 8, 5, 6, 7, 4, 5] },
-        { name: '退住',   color: '#EF5350', data: [3, 4, 3, 5, 4, 3, 5, 4, 3, 4, 3, 5, 4] },
+        { name: '退住',   color: '#4DB6AC', data: [3, 4, 3, 5, 4, 3, 5, 4, 3, 4, 3, 5, 4] },
         { name: '住院',   color: '#FF9800', data: [8, 7, 9, 6, 8, 7, 10, 8, 7, 9, 6, 8, 7] },
         { name: '請假',   color: '#78909C', data: [12, 10, 13, 11, 9, 12, 10, 14, 11, 10, 12, 9, 11] },
       ],
@@ -197,7 +197,7 @@ export const branchData = {
       baselineResidents: 69,
       series: [
         { name: '新入住', color: '#0097A7', data: [3, 4, 3, 4, 3, 4, 3, 5, 3, 4, 4, 3, 3] },
-        { name: '退住',   color: '#EF5350', data: [2, 2, 2, 3, 2, 2, 3, 2, 2, 3, 2, 3, 2] },
+        { name: '退住',   color: '#4DB6AC', data: [2, 2, 2, 3, 2, 2, 3, 2, 2, 3, 2, 3, 2] },
         { name: '住院',   color: '#FF9800', data: [4, 4, 5, 3, 4, 4, 5, 4, 4, 5, 3, 4, 4] },
         { name: '請假',   color: '#78909C', data: [6, 5, 7, 6, 5, 6, 5, 7, 6, 5, 6, 5, 6] },
       ],
@@ -272,7 +272,7 @@ export const branchData = {
       baselineResidents: 67,
       series: [
         { name: '新入住', color: '#0097A7', data: [2, 3, 2, 3, 2, 3, 2, 4, 2, 3, 3, 2, 2] },
-        { name: '退住',   color: '#EF5350', data: [1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 1, 2, 2] },
+        { name: '退住',   color: '#4DB6AC', data: [1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 1, 2, 2] },
         { name: '住院',   color: '#FF9800', data: [3, 3, 4, 3, 3, 3, 4, 3, 3, 4, 3, 3, 3] },
         { name: '請假',   color: '#78909C', data: [5, 4, 6, 5, 4, 5, 4, 6, 5, 4, 5, 4, 5] },
       ],

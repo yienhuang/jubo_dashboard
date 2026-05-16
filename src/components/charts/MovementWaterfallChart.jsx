@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 
 const INFLOW_COLOR = '#0097A7'
-const OUTFLOW_COLOR = '#EF5350'
+const OUTFLOW_COLOR = '#4DB6AC'
 const TOTAL_COLOR = '#005F64'
 const LEGEND_COLOR = 'rgba(0,0,0,0.6)'
 

@@ -744,7 +744,6 @@ function BranchTab({ branchName }) {
                   value={kpi.value}
                   unit={kpi.unit}
                   delta={kpi.delta}
-                  warningBg={kpi.delta?.isWarning}
                 />
               </Grid>
             ))}

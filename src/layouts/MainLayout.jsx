@@ -11,7 +11,6 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Tooltip,
   Typography,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -24,6 +23,7 @@ import Logo from '@/components/Logo'
 const RAIL_WIDTH = 72
 const DRAWER_WIDTH = 256
 const APPBAR_HEIGHT = 64
+const BOTTOM_NAV_HEIGHT = 64
 
 const navGroups = [
   {
@@ -47,52 +47,104 @@ function isItemSelected(pathname, to) {
   return pathname.startsWith(to)
 }
 
-function RailItem({ item, selected, onClick }) {
+function RailItem({ item, selected }) {
   return (
-    <Tooltip title={item.label} placement="right">
-      <ListItemButton
-        component={RouterLink}
-        to={item.to}
-        onClick={onClick}
+    <ListItemButton
+      component={RouterLink}
+      to={item.to}
+      sx={{
+        width: RAIL_WIDTH,
+        height: 72,
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '4px',
+        px: 0,
+        py: 1,
+        borderRadius: 0,
+        '&:hover': { backgroundColor: 'transparent' },
+        '&:hover .nav-icon-pill': {
+          backgroundColor: selected ? '#C5F0F7' : 'rgba(0,151,167,0.08)',
+        },
+      }}
+    >
+      <Box
+        className="nav-icon-pill"
         sx={{
-          width: RAIL_WIDTH,
-          height: 72,
-          flexDirection: 'column',
+          width: 56,
+          height: 32,
+          borderRadius: '16px',
+          backgroundColor: selected ? '#C5F0F7' : 'transparent',
+          display: 'flex',
           alignItems: 'center',
-          gap: '4px',
-          px: 0,
-          py: 1,
-          borderRadius: 0,
-          '&:hover': { backgroundColor: 'rgba(0,151,167,0.08)' },
+          justifyContent: 'center',
+          color: '#005F64',
+          transition: 'background-color 160ms ease',
         }}
       >
-        <Box
-          sx={{
-            width: 56,
-            height: 32,
-            borderRadius: '16px',
-            backgroundColor: selected ? '#C5F0F7' : 'transparent',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#005F64',
-            transition: 'background-color 160ms ease',
-          }}
-        >
-          {item.icon}
-        </Box>
-        <Typography
-          variant="caption"
-          sx={{
-            color: '#005F64',
-            fontWeight: selected ? 500 : 400,
-            lineHeight: 1.2,
-          }}
-        >
-          {item.label}
-        </Typography>
-      </ListItemButton>
-    </Tooltip>
+        {item.icon}
+      </Box>
+      <Typography
+        variant="caption"
+        sx={{
+          color: '#005F64',
+          fontWeight: selected ? 500 : 400,
+          lineHeight: 1.2,
+        }}
+      >
+        {item.label}
+      </Typography>
+    </ListItemButton>
+  )
+}
+
+function BottomNavItem({ item, selected }) {
+  return (
+    <ListItemButton
+      component={RouterLink}
+      to={item.to}
+      sx={{
+        flex: 1,
+        height: '100%',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '4px',
+        px: 0,
+        py: 1,
+        borderRadius: 0,
+        '&:hover': { backgroundColor: 'transparent' },
+        '&:hover .nav-icon-pill': {
+          backgroundColor: selected ? '#C5F0F7' : 'rgba(0,151,167,0.08)',
+        },
+      }}
+    >
+      <Box
+        className="nav-icon-pill"
+        sx={{
+          width: 56,
+          height: 32,
+          borderRadius: '16px',
+          backgroundColor: selected ? '#C5F0F7' : 'transparent',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#005F64',
+          transition: 'background-color 160ms ease',
+        }}
+      >
+        {item.icon}
+      </Box>
+      <Typography
+        variant="caption"
+        sx={{
+          color: '#005F64',
+          fontWeight: selected ? 500 : 400,
+          lineHeight: 1.2,
+        }}
+      >
+        {item.label}
+      </Typography>
+    </ListItemButton>
   )
 }
 
@@ -105,7 +157,7 @@ function DrawerItem({ item, selected, onClick }) {
       sx={{
         height: 48,
         px: 2,
-        gap: 2,
+        borderRadius: '4px',
         backgroundColor: selected ? '#C5F0F7' : 'transparent',
         '&:hover': {
           backgroundColor: selected ? '#C5F0F7' : 'rgba(0,151,167,0.08)',
@@ -114,7 +166,7 @@ function DrawerItem({ item, selected, onClick }) {
     >
       <ListItemIcon
         sx={{
-          minWidth: 24,
+          minWidth: 40,
           color: '#005F64',
         }}
       >
@@ -128,6 +180,7 @@ function DrawerItem({ item, selected, onClick }) {
             sx: {
               color: '#005F64',
               fontWeight: selected ? 500 : 400,
+              whiteSpace: 'nowrap',
             },
           },
         }}
@@ -140,6 +193,8 @@ export default function MainLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const location = useLocation()
 
+  const navWidth = drawerOpen ? DRAWER_WIDTH : RAIL_WIDTH
+
   return (
     <Box className="flex min-h-screen" sx={{ backgroundColor: '#EAF3F5' }}>
       <AppBar
@@ -148,14 +203,21 @@ export default function MainLayout() {
       >
         <Toolbar sx={{ minHeight: APPBAR_HEIGHT }}>
           <IconButton
-            onClick={() => setDrawerOpen(true)}
-            sx={{ color: '#37474F' }}
-            aria-label="open navigation"
+            onClick={() => setDrawerOpen((open) => !open)}
+            sx={{
+              color: '#37474F',
+              display: { xs: 'none', sm: 'inline-flex' },
+            }}
+            aria-label="toggle navigation"
+            aria-expanded={drawerOpen}
           >
             <MenuIcon />
           </IconButton>
 
-          <Box className="flex items-center gap-3" sx={{ ml: 2 }}>
+          <Box
+            className="flex items-center gap-3"
+            sx={{ ml: { xs: 0, sm: 2 } }}
+          >
             <Logo />
             <Typography
               variant="h6"
@@ -193,91 +255,158 @@ export default function MainLayout() {
 
       <Box
         component="nav"
-        sx={{ width: RAIL_WIDTH, flexShrink: 0 }}
-        aria-label="primary navigation rail"
+        sx={{
+          width: { xs: 0, sm: navWidth },
+          flexShrink: 0,
+          transition: (theme) =>
+            theme.transitions.create('width', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.shorter,
+            }),
+        }}
+        aria-label="primary navigation"
       >
         <Drawer
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            width: RAIL_WIDTH,
+            width: navWidth,
             '& .MuiDrawer-paper': {
-              width: RAIL_WIDTH,
+              width: navWidth,
               boxSizing: 'border-box',
               top: APPBAR_HEIGHT,
               height: `calc(100% - ${APPBAR_HEIGHT}px)`,
+              overflowX: 'hidden',
+              transition: (theme) =>
+                theme.transitions.create('width', {
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.shorter,
+                }),
             },
           }}
           open
         >
-          <List sx={{ p: 0 }}>
-            {allItems.map((item) => (
-              <RailItem
-                key={item.to}
-                item={item}
-                selected={isItemSelected(location.pathname, item.to)}
-              />
-            ))}
-          </List>
-        </Drawer>
-      </Box>
-
-      <Drawer
-        variant="temporary"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        ModalProps={{ keepMounted: true }}
-        sx={{
-          '& .MuiDrawer-paper': {
-            width: DRAWER_WIDTH,
-            boxSizing: 'border-box',
-            top: APPBAR_HEIGHT,
-            height: `calc(100% - ${APPBAR_HEIGHT}px)`,
-          },
-        }}
-      >
-        <Box sx={{ pt: 1 }}>
-          {navGroups.map((group) => (
-            <Box key={group.label} sx={{ mb: 1 }}>
-              <Typography
-                variant="caption"
-                sx={{
-                  display: 'block',
-                  color: '#546E7A',
-                  px: 2,
-                  pt: 2,
-                  pb: 0.5,
-                }}
-              >
-                {group.label}
-              </Typography>
+          <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
+            <Box
+              aria-hidden={drawerOpen}
+              sx={{
+                position: 'absolute',
+                inset: 0,
+                width: RAIL_WIDTH,
+                opacity: drawerOpen ? 0 : 1,
+                pointerEvents: drawerOpen ? 'none' : 'auto',
+                transition: (theme) =>
+                  theme.transitions.create('opacity', {
+                    duration: theme.transitions.duration.shortest,
+                  }),
+              }}
+            >
               <List sx={{ p: 0 }}>
-                {group.items.map((item) => (
-                  <DrawerItem
+                {allItems.map((item) => (
+                  <RailItem
                     key={item.to}
                     item={item}
                     selected={isItemSelected(location.pathname, item.to)}
-                    onClick={() => setDrawerOpen(false)}
                   />
                 ))}
               </List>
             </Box>
-          ))}
-        </Box>
-      </Drawer>
+            <Box
+              aria-hidden={!drawerOpen}
+              sx={{
+                position: 'absolute',
+                inset: 0,
+                width: DRAWER_WIDTH,
+                pt: 1,
+                px: 1,
+                opacity: drawerOpen ? 1 : 0,
+                pointerEvents: drawerOpen ? 'auto' : 'none',
+                transition: (theme) =>
+                  theme.transitions.create('opacity', {
+                    duration: theme.transitions.duration.shortest,
+                  }),
+              }}
+            >
+              {navGroups.map((group) => (
+                <Box key={group.label} sx={{ pb: 1 }}>
+                  <Box
+                    sx={{
+                      height: 48,
+                      px: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 500,
+                        color: '#78909C',
+                        letterSpacing: '0.1px',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {group.label}
+                    </Typography>
+                  </Box>
+                  <List sx={{ p: 0 }}>
+                    {group.items.map((item) => (
+                      <DrawerItem
+                        key={item.to}
+                        item={item}
+                        selected={isItemSelected(location.pathname, item.to)}
+                      />
+                    ))}
+                  </List>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        </Drawer>
+      </Box>
 
       <Box
         component="main"
         className="flex-1"
         sx={{
           pt: `${APPBAR_HEIGHT}px`,
-          pr: 2,
-          pb: 2,
+          px: { xs: 2, sm: 0 },
+          pr: { sm: 2 },
+          pb: { xs: '80px', sm: 2 },
           minHeight: '100vh',
-          width: { xs: '100%', sm: `calc(100% - ${RAIL_WIDTH}px)` },
+          width: { xs: '100%', sm: `calc(100% - ${navWidth}px)` },
+          transition: (theme) =>
+            theme.transitions.create('width', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.shorter,
+            }),
         }}
       >
         <Outlet />
+      </Box>
+
+      <Box
+        component="nav"
+        aria-label="bottom navigation"
+        sx={{
+          display: { xs: 'flex', sm: 'none' },
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: BOTTOM_NAV_HEIGHT,
+          backgroundColor: '#EAF3F5',
+          borderTop: '1px solid rgba(84,110,122,0.12)',
+          zIndex: 1200,
+        }}
+      >
+        {allItems.map((item) => (
+          <BottomNavItem
+            key={item.to}
+            item={item}
+            selected={isItemSelected(location.pathname, item.to)}
+          />
+        ))}
       </Box>
     </Box>
   )

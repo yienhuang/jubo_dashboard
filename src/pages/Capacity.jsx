@@ -44,6 +44,7 @@ import {
   residentialSummary,
   residentialTrend,
 } from '@/features/capacity/mockData'
+import ShareableBlock from '@/components/ShareableBlock'
 
 // ── Color tokens ──────────────────────────────────────────
 const GREEN_500 = '#4CAF50'
@@ -316,37 +317,43 @@ function ResidentialContent() {
 
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SectionCard title="各月份空床率趨勢（%）">
-            <TrendLineChart
-              months={residentialTrend.months}
-              series={residentialTrend.series}
-              yAxisSuffix="%"
-              height={200}
-            />
-          </SectionCard>
+          <ShareableBlock title="住宿長照 - 各月份空床率趨勢">
+            <SectionCard title="各月份空床率趨勢（%）">
+              <TrendLineChart
+                months={residentialTrend.months}
+                series={residentialTrend.series}
+                yAxisSuffix="%"
+                height={200}
+              />
+            </SectionCard>
+          </ShareableBlock>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SectionCard title="各機構空床率比較" fillContent>
-            <ComparisonBars
-              items={residentialComparison}
-              unit="%"
-              colors={residentialTrend.series.map((s) => s.color)}
-              footerItem={residentialAverage}
-              fillHeight
-            />
-          </SectionCard>
+          <ShareableBlock title="住宿長照 - 各機構空床率比較">
+            <SectionCard title="各機構空床率比較" fillContent>
+              <ComparisonBars
+                items={residentialComparison}
+                unit="%"
+                colors={residentialTrend.series.map((s) => s.color)}
+                footerItem={residentialAverage}
+                fillHeight
+              />
+            </SectionCard>
+          </ShareableBlock>
         </Grid>
       </Grid>
 
-      <SectionCard title="各機構詳細資料">
-        <Grid container spacing={2}>
-          {residentialFacilities.map((f) => (
-            <Grid key={f.id} size={{ xs: 12, md: 6 }}>
-              <ResidentialFacilityCard facility={f} />
-            </Grid>
-          ))}
-        </Grid>
-      </SectionCard>
+      <ShareableBlock title="住宿長照 - 各機構詳細資料">
+        <SectionCard title="各機構詳細資料">
+          <Grid container spacing={2}>
+            {residentialFacilities.map((f) => (
+              <Grid key={f.id} size={{ xs: 12, md: 6 }}>
+                <ResidentialFacilityCard facility={f} />
+              </Grid>
+            ))}
+          </Grid>
+        </SectionCard>
+      </ShareableBlock>
     </Box>
   )
 }
@@ -425,37 +432,43 @@ function DaycareContent() {
 
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SectionCard title="各機構出席率月趨勢（%）">
-            <TrendLineChart
-              months={daycareTrend.months}
-              series={daycareTrend.series}
-              yAxisSuffix="%"
-              height={200}
-            />
-          </SectionCard>
+          <ShareableBlock title="日間照顧 - 各機構出席率月趨勢">
+            <SectionCard title="各機構出席率月趨勢（%）">
+              <TrendLineChart
+                months={daycareTrend.months}
+                series={daycareTrend.series}
+                yAxisSuffix="%"
+                height={200}
+              />
+            </SectionCard>
+          </ShareableBlock>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SectionCard title="本月各機構出席率" fillContent>
-            <ComparisonBars
-              items={daycareComparison}
-              unit="%"
-              colors={daycareTrend.series.map((s) => s.color)}
-              footerItem={daycareAverage}
-              fillHeight
-            />
-          </SectionCard>
+          <ShareableBlock title="日間照顧 - 本月各機構出席率">
+            <SectionCard title="本月各機構出席率" fillContent>
+              <ComparisonBars
+                items={daycareComparison}
+                unit="%"
+                colors={daycareTrend.series.map((s) => s.color)}
+                footerItem={daycareAverage}
+                fillHeight
+              />
+            </SectionCard>
+          </ShareableBlock>
         </Grid>
       </Grid>
 
-      <SectionCard title="各機構詳細資料">
-        <Grid container spacing={2}>
-          {daycareFacilities.map((f) => (
-            <Grid key={f.id} size={{ xs: 12, md: 6 }}>
-              <DaycareFacilityCard facility={f} />
-            </Grid>
-          ))}
-        </Grid>
-      </SectionCard>
+      <ShareableBlock title="日間照顧 - 各機構詳細資料">
+        <SectionCard title="各機構詳細資料">
+          <Grid container spacing={2}>
+            {daycareFacilities.map((f) => (
+              <Grid key={f.id} size={{ xs: 12, md: 6 }}>
+                <DaycareFacilityCard facility={f} />
+              </Grid>
+            ))}
+          </Grid>
+        </SectionCard>
+      </ShareableBlock>
     </Box>
   )
 }
@@ -531,37 +544,43 @@ function HomecareContent() {
 
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SectionCard title="各機構服務案件數月趨勢">
-            <TrendLineChart
-              months={homecareTrend.months}
-              series={homecareTrend.series}
-              yAxisSuffix="案"
-              height={200}
-            />
-          </SectionCard>
+          <ShareableBlock title="居家服務 - 各機構服務案件數月趨勢">
+            <SectionCard title="各機構服務案件數月趨勢">
+              <TrendLineChart
+                months={homecareTrend.months}
+                series={homecareTrend.series}
+                yAxisSuffix="案"
+                height={200}
+              />
+            </SectionCard>
+          </ShareableBlock>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SectionCard title="本月各機構服務案件數" fillContent>
-            <ComparisonBars
-              items={homecareComparison}
-              unit="案"
-              colors={homecareTrend.series.map((s) => s.color)}
-              footerItem={homecareTotal}
-              fillHeight
-            />
-          </SectionCard>
+          <ShareableBlock title="居家服務 - 本月各機構服務案件數">
+            <SectionCard title="本月各機構服務案件數" fillContent>
+              <ComparisonBars
+                items={homecareComparison}
+                unit="案"
+                colors={homecareTrend.series.map((s) => s.color)}
+                footerItem={homecareTotal}
+                fillHeight
+              />
+            </SectionCard>
+          </ShareableBlock>
         </Grid>
       </Grid>
 
-      <SectionCard title="各機構詳細資料">
-        <Grid container spacing={2}>
-          {homecareFacilities.map((f) => (
-            <Grid key={f.id} size={{ xs: 12, md: 6 }}>
-              <HomecareFacilityCard facility={f} />
-            </Grid>
-          ))}
-        </Grid>
-      </SectionCard>
+      <ShareableBlock title="居家服務 - 各機構詳細資料">
+        <SectionCard title="各機構詳細資料">
+          <Grid container spacing={2}>
+            {homecareFacilities.map((f) => (
+              <Grid key={f.id} size={{ xs: 12, md: 6 }}>
+                <HomecareFacilityCard facility={f} />
+              </Grid>
+            ))}
+          </Grid>
+        </SectionCard>
+      </ShareableBlock>
     </Box>
   )
 }

@@ -36,6 +36,7 @@ import {
   homecareSummary,
   homecareFacilities,
 } from '@/features/workforce/mockData'
+import ShareableBlock from '@/components/ShareableBlock'
 
 // ── Color tokens ──────────────────────────────────────────────
 const WARNING = '#ED6C02'
@@ -511,17 +512,22 @@ export default function Workforce() {
 
       <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SectionCard title="集團各專業人力佔比">
-            <StaffPieChart data={staffDistribution} />
-          </SectionCard>
+          <ShareableBlock title="集團各專業人力佔比">
+            <SectionCard title="集團各專業人力佔比">
+              <StaffPieChart data={staffDistribution} />
+            </SectionCard>
+          </ShareableBlock>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <RiskAlertsCard />
+          <ShareableBlock title="人力風險提示">
+            <RiskAlertsCard />
+          </ShareableBlock>
         </Grid>
       </Grid>
 
+      <ShareableBlock title="依機構類型人力分析">
       <Paper sx={{ borderRadius: '8px' }}>
-        <Box sx={{ px: 2, pt: 2 }}>
+        <Box sx={{ px: 2, pt: 2, pr: 6 }}>
           <Typography variant="body1" sx={{ fontWeight: 500 }}>依機構類型人力分析</Typography>
         </Box>
         <Tabs
@@ -553,6 +559,7 @@ export default function Workforce() {
           {tab === 2 && <HomecareContent />}
         </Box>
       </Paper>
+      </ShareableBlock>
     </Box>
   )
 }

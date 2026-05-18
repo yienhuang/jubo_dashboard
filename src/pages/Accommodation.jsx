@@ -42,6 +42,7 @@ import RevenueComposedChart from '@/components/charts/RevenueComposedChart'
 import HorizontalBarChart from '@/components/charts/HorizontalBarChart'
 import ServiceShareChart from '@/components/charts/ServiceShareChart'
 import MovementWaterfallChart from '@/components/charts/MovementWaterfallChart'
+import ShareableBlock from '@/components/ShareableBlock'
 
 import {
   reportDate,
@@ -395,7 +396,7 @@ function QualityAlertCard({ alerts }) {
 
 // ── YoY Badge ─────────────────────────────────────────────
 
-function YoyBadge({ value }) {
+function YoyBadge({ value, sx }) {
   return (
     <Box
       sx={{
@@ -408,6 +409,7 @@ function YoyBadge({ value }) {
         py: 0.25,
         borderRadius: '16px',
         flexShrink: 0,
+        ...sx,
       }}
     >
       <ArrowUpwardIcon sx={{ fontSize: 14 }} />
@@ -504,14 +506,15 @@ function BranchRankingTable({ data }) {
   }, [data, sortBy, order])
 
   return (
-    <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
-      <Box sx={{ px: 2, pt: 2, pb: 1 }}>
-        <Typography variant="h6">住宿機構排行</Typography>
-        <Typography variant="caption" color="textSecondary">
-          3 家比較・當月（2026/05）
-        </Typography>
-      </Box>
-      <TableContainer>
+    <ShareableBlock title="住宿機構排行">
+      <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+        <Box sx={{ px: 2, pt: 2, pb: 1, pr: 6 }}>
+          <Typography variant="h6">住宿機構排行</Typography>
+          <Typography variant="caption" color="textSecondary">
+            3 家比較・當月（2026/05）
+          </Typography>
+        </Box>
+        <TableContainer>
         <Table size="small" sx={{ '& th, & td': { whiteSpace: 'nowrap' } }}>
           <TableHead>
             <TableRow>
@@ -635,7 +638,8 @@ function BranchRankingTable({ data }) {
           </TableBody>
         </Table>
       </TableContainer>
-    </Paper>
+      </Paper>
+    </ShareableBlock>
   )
 }
 
@@ -662,54 +666,62 @@ function OverviewTab() {
       {/* 趨勢圖區 */}
       <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Box sx={{ height: '100%' }}>
-            <SectionCard title="營收佔比" subtitle="當月（2026/05，單位：萬元）">
-              <ShareCardContent
-                data={branchRevenueShare}
-                totalLabel="月營收"
-                unit="萬"
-              />
-            </SectionCard>
-          </Box>
+          <ShareableBlock title="營收佔比">
+            <Box sx={{ height: '100%' }}>
+              <SectionCard title="營收佔比" subtitle="當月（2026/05，單位：萬元）">
+                <ShareCardContent
+                  data={branchRevenueShare}
+                  totalLabel="月營收"
+                  unit="萬"
+                />
+              </SectionCard>
+            </Box>
+          </ShareableBlock>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Box sx={{ height: '100%' }}>
-            <SectionCard
-              title="月營收趨勢"
-              subtitle="近 13 個月（單位：萬元）"
-              headerRight={<YoyBadge value={revenueByBranch.yoyCurrent} />}
-            >
-              <RevenueComposedChart
-                months={revenueByBranch.months}
-                series={revenueByBranch.series}
-                yoy={revenueByBranch.yoy}
-                height={280}
-              />
-            </SectionCard>
-          </Box>
+          <ShareableBlock title="月營收趨勢">
+            <Box sx={{ height: '100%' }}>
+              <SectionCard
+                title="月營收趨勢"
+                subtitle="近 13 個月（單位：萬元）"
+                headerRight={<YoyBadge value={revenueByBranch.yoyCurrent} sx={{ mr: 5 }} />}
+              >
+                <RevenueComposedChart
+                  months={revenueByBranch.months}
+                  series={revenueByBranch.series}
+                  yoy={revenueByBranch.yoy}
+                  height={280}
+                />
+              </SectionCard>
+            </Box>
+          </ShareableBlock>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Box sx={{ height: '100%' }}>
-            <SectionCard title="服務人數佔比" subtitle="當月（2026/05）">
-              <ShareCardContent
-                data={branchServiceShare}
-                totalLabel="服務人數"
-                unit="人"
-              />
-            </SectionCard>
-          </Box>
+          <ShareableBlock title="服務人數佔比">
+            <Box sx={{ height: '100%' }}>
+              <SectionCard title="服務人數佔比" subtitle="當月（2026/05）">
+                <ShareCardContent
+                  data={branchServiceShare}
+                  totalLabel="服務人數"
+                  unit="人"
+                />
+              </SectionCard>
+            </Box>
+          </ShareableBlock>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Box sx={{ height: '100%' }}>
-            <SectionCard title="佔床率趨勢" subtitle="近 13 個月（25/05 ～ 26/05）">
-              <TrendLineChart
-                months={occupancyTrend.months}
-                series={occupancyTrend.series}
-                yAxisSuffix="%"
-                height={280}
-              />
-            </SectionCard>
-          </Box>
+          <ShareableBlock title="佔床率趨勢">
+            <Box sx={{ height: '100%' }}>
+              <SectionCard title="佔床率趨勢" subtitle="近 13 個月（25/05 ～ 26/05）">
+                <TrendLineChart
+                  months={occupancyTrend.months}
+                  series={occupancyTrend.series}
+                  yAxisSuffix="%"
+                  height={280}
+                />
+              </SectionCard>
+            </Box>
+          </ShareableBlock>
         </Grid>
       </Grid>
 
@@ -733,6 +745,7 @@ function BranchTab({ branchName }) {
     <Box className="flex flex-col gap-4">
 
       {/* 財務狀況 */}
+      <ShareableBlock title={`${branchName} - 財務狀況`}>
       <CategoryPaper title="財務狀況">
         <Box className="flex flex-col gap-4">
           {/* 本月財務快照 KPI × 5 — 獨立一橫排 */}
@@ -777,8 +790,10 @@ function BranchTab({ branchName }) {
           </Grid>
         </Box>
       </CategoryPaper>
+      </ShareableBlock>
 
       {/* 營運指標 */}
+      <ShareableBlock title={`${branchName} - 營運指標`}>
       <CategoryPaper title="營運指標">
         <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
           {data.operationKpis.map((kpi) => (
@@ -813,8 +828,10 @@ function BranchTab({ branchName }) {
           </Grid>
         </Grid>
       </CategoryPaper>
+      </ShareableBlock>
 
       {/* 住民分析 */}
+      <ShareableBlock title={`${branchName} - 住民分析`}>
       <CategoryPaper title="住民分析">
         <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -851,6 +868,7 @@ function BranchTab({ branchName }) {
           </Grid>
         </Grid>
       </CategoryPaper>
+      </ShareableBlock>
 
     </Box>
   )

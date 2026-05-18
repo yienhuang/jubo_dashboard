@@ -122,15 +122,16 @@ Common values: `4, 8, 12, 16, 20, 24, 32, 48`
 
 ## Border Radius
 
-| Element              | Radius  |
-|----------------------|---------|
-| Card / Block / Paper | `8px`   |
-| Button               | `4px`   |
-| Chip                 | `16px`  |
-| Avatar / Icon btn    | `50%`   |
-| Input (outlined)     | `4px`   |
-| Progress bar         | `4px`   |
-| Nav active pill      | `16px`  |
+| Element                | Radius  |
+|------------------------|---------|
+| Card / Block / Paper   | `8px`   |
+| Button                 | `4px`   |
+| Chip                   | `16px`  |
+| Avatar / Icon btn      | `50%`   |
+| Input (outlined)       | `4px`   |
+| Progress bar           | `4px`   |
+| Rail / Bottom nav icon pill | `16px` |
+| Drawer active row      | `4px`   |
 
 ---
 
@@ -149,14 +150,16 @@ Cards use a **1px border** (`rgba(0,0,0,0.12)`) instead of shadow when a boundar
 
 ## Page Layout Structure
 
+**Desktop (`sm` and up, ≥ 600px):**
+
 ```
 ┌──────────────────────────────────────────────┐
 │  App Bar (height: 64px)                      │
 │  [≡] [Logo] [Product Name]  ... [🔔][👤]     │
 ├────┬─────────────────────────────────────────┤
 │Nav │  White content block (border-radius 8px) │
-│Rail│  ┌───────────────────────────────────┐ │
-│72px│  │ Page Header (64px)                  │ │
+│col │  ┌───────────────────────────────────┐ │
+│    │  │ Page Header (64px)                  │ │
 │    │  │ [Page Title]    [IconBtn] [+ Button]│ │
 │    │  ├───────────────────────────────────┤ │
 │    │  │ Page Content                        │ │
@@ -165,12 +168,15 @@ Cards use a **1px border** (`rgba(0,0,0,0.12)`) instead of shadow when a boundar
 └────┴─────────────────────────────────────────┘
 ```
 
+The nav column width animates between `72px` (rail collapsed) and `256px` (drawer expanded). Main content's width adjusts in sync.
+
 ### App Bar
 - Background: `#EAF3F5` (same as page, no shadow, no border-bottom)
 - Height: `64px`
 - Left: hamburger icon (72px wide zone) → inline Logo SVG → product name text (Medium 20px)
 - Right: notification IconButton → username (Body 1, Secondary color) → Avatar IconButton
 - Use MUI `AppBar` with `position="fixed"` or `"static"`, `color="transparent"`, `elevation={0}`
+- **Mobile (`xs`):** hide the hamburger (`display: { xs: 'none', sm: 'inline-flex' }`) and remove the Logo's left margin compensation (`ml: { xs: 0, sm: 2 }`). Side nav is replaced by Bottom Navigation Bar.
 
 ### Navigation Rail (collapsed)
 - Width: `72px`, full height
@@ -179,26 +185,51 @@ Cards use a **1px border** (`rgba(0,0,0,0.12)`) instead of shadow when a boundar
 - Icon zone: `56×32px`, `border-radius: 16px`
 - Icon color: `#005F64` (Primary Dark) — same in default and active states
 - Active state: icon zone background `#C5F0F7`
-- Label: Body 2, color `#005F64` (Primary Dark)
+- Label: Caption (12px), color `#005F64` (Primary Dark)
 - No shadow, no border
+- **Hover:** the button itself stays transparent — **only the icon pill changes background**. Non-selected → `rgba(0,151,167,0.08)` (Primary @ 8%); selected → keep `#C5F0F7`. Do not apply a hover background to the whole `72×72` button — it makes the hit area feel heavy and clashes with the pill shape.
 
 ### Navigation Drawer (expanded — toggled by hamburger icon)
-- Triggered by clicking the hamburger `≡` icon in the App Bar
+- Triggered by clicking the hamburger `≡` icon in the App Bar (toggles open/close)
 - Width: `256px`, full height
 - Background: `#EAF3F5`
 - No shadow, no border-right
-- **Group labels** (e.g. "Records", "Protocols", "Facility Management"):
-  - Font: Caption 12px, Regular, color Secondary (`#546E7A`)
-  - Padding: `16px 16px 4px`
+- **Behavior:** the drawer **replaces** the rail in place — both share the left column, and the column width animates between `72px` (rail) and `256px` (drawer). Main content shifts right accordingly. Do NOT overlay the drawer on top of the rail.
+- **Implementation:** use a single `<Drawer variant="permanent">` whose `width` (and paper width) toggles by state. Set `overflowX: 'hidden'` on the paper. Apply `theme.transitions.create('width', { duration: theme.transitions.duration.shorter })` to both the nav container and the main content's `width`.
+- **Smooth content swap:** during the width animation, the wider drawer content squeezed into a narrow column will reflow and look broken. Avoid this by:
+  - Stacking rail content and drawer content as siblings with `position: absolute; inset: 0`, each at its own fixed width (`72` / `256`).
+  - Cross-fading via `opacity` (use `theme.transitions.duration.shortest`) and `pointerEvents: none` on the hidden one.
+  - Adding `whiteSpace: 'nowrap'` to drawer item labels as a safety net.
+- **Inner padding:** the list area has `pt: 1` (8px top) and `px: 1` (8px left/right). Groups are separated with `pb: 1`.
+- **Group labels** (e.g. "集團總部", "服務類型"):
+  - Container: `height: 48px`, `px: 2`, flex / `alignItems: center` (text vertically centered)
+  - Font: Medium 14px, color `#78909C` (Secondary Light), letter-spacing `0.1px`
+  - `whiteSpace: 'nowrap'`
   - Not clickable
-- **Nav items:**
-  - Height: `48px`, padding: `0 16px`
-  - Layout: icon (24px) + label (Body 1 16px), gap `16px`
+- **Nav items (`ListItemButton`):**
+  - Height: `48px`, padding: `px: 2`
+  - `borderRadius: 4px`
+  - Layout: `ListItemIcon` with `minWidth: 40` (24px icon + 16px gap) + label (Body 1 16px)
   - Text and icon color: `#005F64` (Primary Dark) — same in default and active states
   - Default: no background
-  - **Active state:** full-row background `#C5F0F7`, border-radius `0` (full width highlight); label weight 500
-  - Hover: `rgba(0,151,167,0.08)` background
-- Use MUI `<Drawer variant="permanent">` or `"temporary"` depending on context
+  - **Active state:** background `#C5F0F7`, `borderRadius: 4px`, label weight 500
+  - Hover: `rgba(0,151,167,0.08)` background (kept as `#C5F0F7` when active so it doesn't flash). Unlike the rail/bottom nav, the drawer item *is* a full-width row, so the whole row gets the hover background.
+
+### Navigation Bar (bottom — mobile only)
+- Shown only on `xs` (`display: { xs: 'flex', sm: 'none' }`); replaces the side rail/drawer entirely on mobile.
+- Position: `fixed`, `bottom: 0`, `left/right: 0`, `zIndex: 1200`
+- Height: `64px`
+- Background: `#EAF3F5` (same as page, no shadow)
+- **Top border:** `1px solid rgba(84,110,122,0.12)` (Secondary @ 12%) — provides the only separator between content and bar. Do not use a black-based divider here.
+- Items: flat list of *all* primary nav items (no group labels — there isn't room). Each item gets `flex: 1` so they share the bar equally.
+- Each item reuses the rail's visual language:
+  - Flex column, gap `4px`, centered
+  - Icon zone: `56×32px` pill, `borderRadius: 16px`
+  - Icon + label color: `#005F64` (Primary Dark) in all states
+  - Active: icon zone background `#C5F0F7`, label weight 500
+  - Label: Caption (12px)
+- **Hover:** identical rule to the rail — button stays transparent, only the icon pill changes (`rgba(0,151,167,0.08)` when not selected; `#C5F0F7` when selected).
+- **Main content offset:** when the bottom nav is present, add `pb: '80px'` (64px bar + 16px breathing room) to the main content area so it doesn't sit underneath the bar.
 
 ### Content Area
 - Background: `#EAF3F5`

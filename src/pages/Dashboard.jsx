@@ -29,6 +29,7 @@ import ServiceShareChart from '@/components/charts/ServiceShareChart'
 import StackedBarChart from '@/components/charts/StackedBarChart'
 import TrendLineChart from '@/components/charts/TrendLineChart'
 import RevenueComposedChart from '@/components/charts/RevenueComposedChart'
+import ShareableBlock from '@/components/ShareableBlock'
 
 import {
   reportDate,
@@ -418,23 +419,27 @@ function ServiceRow() {
   return (
     <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
       <Grid size={{ xs: 12, md: 6 }}>
-        <SectionCard title="服務人數趨勢" subtitle="近 13 個月（住宿 / 日照 / 居服）">
-          <StackedBarChart
-            months={serviceTrend.months}
-            series={serviceTrend.series}
-            yAxisSuffix=" 人"
-            height={280}
-          />
-        </SectionCard>
+        <ShareableBlock title="服務人數趨勢">
+          <SectionCard title="服務人數趨勢" subtitle="近 13 個月（住宿 / 日照 / 居服）">
+            <StackedBarChart
+              months={serviceTrend.months}
+              series={serviceTrend.series}
+              yAxisSuffix=" 人"
+              height={280}
+            />
+          </SectionCard>
+        </ShareableBlock>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <SectionCard title="服務人數佔比" subtitle="當月（2026/05）">
-          <ShareCardContent
-            data={serviceShareCurrent}
-            totalLabel="服務人數"
-            unit="人"
-          />
-        </SectionCard>
+        <ShareableBlock title="服務人數佔比">
+          <SectionCard title="服務人數佔比" subtitle="當月（2026/05）">
+            <ShareCardContent
+              data={serviceShareCurrent}
+              totalLabel="服務人數"
+              unit="人"
+            />
+          </SectionCard>
+        </ShareableBlock>
       </Grid>
     </Grid>
   )
@@ -444,24 +449,28 @@ function StaffRow() {
   return (
     <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
       <Grid size={{ xs: 12, md: 6 }}>
-        <SectionCard title="員工人數趨勢" subtitle="近 13 個月（住宿 / 日照 / 居服）">
-          <StackedBarChart
-            months={staffTrend.months}
-            series={staffTrend.series}
-            yAxisSuffix=" 人"
-            height={280}
-          />
-        </SectionCard>
+        <ShareableBlock title="員工人數趨勢">
+          <SectionCard title="員工人數趨勢" subtitle="近 13 個月（住宿 / 日照 / 居服）">
+            <StackedBarChart
+              months={staffTrend.months}
+              series={staffTrend.series}
+              yAxisSuffix=" 人"
+              height={280}
+            />
+          </SectionCard>
+        </ShareableBlock>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <SectionCard title="流動率趨勢" subtitle="近 13 個月（虛線為整體平均）">
-          <TrendLineChart
-            months={turnoverTrend.months}
-            series={turnoverTrend.series}
-            yAxisSuffix="%"
-            height={280}
-          />
-        </SectionCard>
+        <ShareableBlock title="流動率趨勢">
+          <SectionCard title="流動率趨勢" subtitle="近 13 個月（虛線為整體平均）">
+            <TrendLineChart
+              months={turnoverTrend.months}
+              series={turnoverTrend.series}
+              yAxisSuffix="%"
+              height={280}
+            />
+          </SectionCard>
+        </ShareableBlock>
       </Grid>
     </Grid>
   )
@@ -480,6 +489,7 @@ function RevenueRow() {
         py: 0.25,
         borderRadius: '16px',
         flexShrink: 0,
+        mr: 5,
       }}
     >
       <ArrowUpwardIcon sx={{ fontSize: 14 }} />
@@ -492,27 +502,31 @@ function RevenueRow() {
   return (
     <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
       <Grid size={{ xs: 12, md: 6 }}>
-        <SectionCard title="營收佔比" subtitle="當月（2026/05，單位：萬元）">
-          <ShareCardContent
-            data={revenueShareCurrent}
-            totalLabel="本月營收"
-            unit="萬元"
-          />
-        </SectionCard>
+        <ShareableBlock title="營收佔比">
+          <SectionCard title="營收佔比" subtitle="當月（2026/05，單位：萬元）">
+            <ShareCardContent
+              data={revenueShareCurrent}
+              totalLabel="本月營收"
+              unit="萬元"
+            />
+          </SectionCard>
+        </ShareableBlock>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <SectionCard
-          title="營收月趨勢"
-          subtitle="近 13 個月（柱狀為各服務別、折線為 YoY 成長率）"
-          headerRight={yoyBadge}
-        >
-          <RevenueComposedChart
-            months={revenueTrend.months}
-            series={revenueTrend.series}
-            yoy={revenueTrend.yoy}
-            height={280}
-          />
-        </SectionCard>
+        <ShareableBlock title="營收月趨勢">
+          <SectionCard
+            title="營收月趨勢"
+            subtitle="近 13 個月（柱狀為各服務別、折線為 YoY 成長率）"
+            headerRight={yoyBadge}
+          >
+            <RevenueComposedChart
+              months={revenueTrend.months}
+              series={revenueTrend.series}
+              yoy={revenueTrend.yoy}
+              height={280}
+            />
+          </SectionCard>
+        </ShareableBlock>
       </Grid>
     </Grid>
   )
@@ -520,17 +534,19 @@ function RevenueRow() {
 
 function FacilityListSection() {
   return (
-    <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
-      <Box sx={{ px: 2, pt: 2, pb: 1 }}>
-        <Typography variant="h6">
-          各機構概況
-        </Typography>
-        <Typography variant="caption" color="textSecondary">
-          當月（2026/05）
-        </Typography>
-      </Box>
-      <FacilityTable />
-    </Paper>
+    <ShareableBlock title="各機構概況">
+      <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+        <Box sx={{ px: 2, pt: 2, pb: 1, pr: 6 }}>
+          <Typography variant="h6">
+            各機構概況
+          </Typography>
+          <Typography variant="caption" color="textSecondary">
+            當月（2026/05）
+          </Typography>
+        </Box>
+        <FacilityTable />
+      </Paper>
+    </ShareableBlock>
   )
 }
 

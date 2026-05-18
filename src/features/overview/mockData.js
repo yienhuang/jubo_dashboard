@@ -213,3 +213,56 @@ export const GRADE_CONFIG = {
   良好: { bg: 'rgba(46,125,50,0.12)',  color: '#2E7D32' },
   觀察: { bg: 'rgba(237,108,2,0.12)',  color: '#ED6C02' },
 }
+
+// ── 重點摘要（自動由 facilityList / KPI 衍生） ─────────────
+// tone: 'warning' → 橘色（需關注）；'primary' → 青色（亮點）
+function buildHighlights() {
+  const items = []
+
+  // 流動率超標的機構（由高到低）
+  facilityList
+    .filter((f) => f.turnover > TURNOVER_WARNING_THRESHOLD)
+    .sort((a, b) => b.turnover - a.turnover)
+    .forEach((f) => {
+      items.push({
+        tone: 'warning',
+        headline: `${f.name}：流動率 ${f.turnover}%`,
+        sub: `高於 ${TURNOVER_WARNING_THRESHOLD}% 警戒值`,
+      })
+    })
+
+  // 意外事件最多者
+  const topIncident = [...facilityList].sort((a, b) => b.incidents - a.incidents)[0]
+  if (topIncident && topIncident.incidents >= 20) {
+    items.push({
+      tone: 'warning',
+      headline: `${topIncident.name}：意外事件 ${topIncident.incidents} 件`,
+      sub: '當月全集團最高',
+    })
+  }
+
+  // YoY 成長最快
+  const topYoy = [...facilityList].sort((a, b) => b.yoy - a.yoy)[0]
+  if (topYoy) {
+    items.push({
+      tone: 'primary',
+      headline: `${topYoy.name}：營收 YoY +${topYoy.yoy}%`,
+      sub: '全集團成長最快',
+    })
+  }
+
+  // 整體收款率（取自 revenueKpis）
+  const collected = revenueKpis.find((k) => k.key === 'collected')
+  const monthly = revenueKpis.find((k) => k.key === 'monthlyRevenue')
+  if (collected && monthly) {
+    items.push({
+      tone: 'primary',
+      headline: `整體${collected.hint ?? ''}`.trim(),
+      sub: `本月已收 ${collected.value} 萬元 / 應收 ${monthly.value} 萬元`,
+    })
+  }
+
+  return items.slice(0, 5)
+}
+
+export const highlights = buildHighlights()

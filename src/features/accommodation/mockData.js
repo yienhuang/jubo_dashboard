@@ -349,13 +349,6 @@ export const branchData = {
         unit: '萬',
         delta: { dir: 'up', text: '較上個月 +3.2%', isWarning: false },
       },
-      {
-        key: 'costRatio',
-        title: '人月費用比',
-        value: '1.52',
-        unit: '倍',
-        delta: { dir: 'up', text: '較上個月 +0.04', isWarning: false },
-      },
     ],
     revenueTrend: {
       months: trendMonths,
@@ -517,13 +510,6 @@ export const branchData = {
         unit: '萬',
         delta: { dir: 'up', text: '較上個月 +2.1%', isWarning: false },
       },
-      {
-        key: 'costRatio',
-        title: '人月費用比',
-        value: '1.45',
-        unit: '倍',
-        delta: { dir: 'up', text: '較上個月 +0.02', isWarning: false },
-      },
     ],
     revenueTrend: {
       months: trendMonths,
@@ -684,13 +670,6 @@ export const branchData = {
         value: '$88',
         unit: '萬',
         delta: { dir: 'up', text: '較上個月 +1.8%', isWarning: false },
-      },
-      {
-        key: 'costRatio',
-        title: '人月費用比',
-        value: '1.38',
-        unit: '倍',
-        delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
       },
     ],
     revenueTrend: {

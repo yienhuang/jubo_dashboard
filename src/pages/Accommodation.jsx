@@ -26,6 +26,12 @@ import BedIcon from '@mui/icons-material/Bed'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import PaidIcon from '@mui/icons-material/Paid'
+import PaymentsIcon from '@mui/icons-material/Payments'
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
+import Inventory2Icon from '@mui/icons-material/Inventory2'
+import CategoryIcon from '@mui/icons-material/Category'
 import {
   Bar,
   BarChart,
@@ -42,6 +48,7 @@ import HorizontalBarChart from '@/components/charts/HorizontalBarChart'
 import ServiceShareChart from '@/components/charts/ServiceShareChart'
 import MovementWaterfallChart from '@/components/charts/MovementWaterfallChart'
 import ShareableBlock from '@/components/ShareableBlock'
+import SectionHeaderBar from '@/components/SectionHeaderBar'
 
 import {
   reportDate,
@@ -65,6 +72,17 @@ const KPI_ICONS_OVERVIEW = {
   staffTotal: <BadgeIcon />,
   occupancy: <BedIcon />,
   revenue: <AttachMoneyIcon />,
+}
+
+const KPI_ICONS_BRANCH = {
+  revenue: <AttachMoneyIcon />,
+  collected: <PaidIcon />,
+  overdue: <WarningAmberIcon />,
+  staffCost: <PaymentsIcon />,
+  service: <PeopleIcon />,
+  newIn: <PersonAddAlt1Icon />,
+  newOut: <PersonRemoveIcon />,
+  occupancy: <BedIcon />,
 }
 
 // ── Shared atoms ──────────────────────────────────────────
@@ -164,7 +182,7 @@ function SectionCard({ title, subtitle, headerRight, children, fullHeight = true
       >
         <Box className="flex items-start justify-between" sx={{ mb: 2 }}>
           <Box>
-            <Typography variant="h6">{title}</Typography>
+            <Typography variant="subtitle3">{title}</Typography>
             {subtitle && (
               <Typography
                 variant="caption"
@@ -180,87 +198,6 @@ function SectionCard({ title, subtitle, headerRight, children, fullHeight = true
         <Box sx={{ flex: 1 }}>{children}</Box>
       </CardContent>
     </Card>
-  )
-}
-
-// ── BranchTab building blocks ─────────────────────────────
-
-function CategoryPaper({ title, children }) {
-  return (
-    <Paper sx={{ borderRadius: '8px', p: 2, boxShadow: 'none' }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        {title}
-      </Typography>
-      {children}
-    </Paper>
-  )
-}
-
-function OutlinedBlock({ title, subtitle, headerRight, children, fullHeight = true }) {
-  return (
-    <Box
-      sx={{
-        height: fullHeight ? '100%' : 'auto',
-        bgcolor: 'rgba(84,110,122,0.06)',
-        borderRadius: '8px',
-        p: 2,
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <Box className="flex items-start justify-between" sx={{ mb: 2 }}>
-        <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-            {title}
-          </Typography>
-          {subtitle && (
-            <Typography
-              variant="caption"
-              color="textSecondary"
-              sx={{ display: 'block', mt: 0.25 }}
-            >
-              {subtitle}
-            </Typography>
-          )}
-        </Box>
-        {headerRight}
-      </Box>
-      <Box sx={{ flex: 1 }}>{children}</Box>
-    </Box>
-  )
-}
-
-function KpiTile({ title, value, unit, delta, warningBg }) {
-  return (
-    <Box
-      sx={{
-        height: '100%',
-        bgcolor: warningBg ? 'rgba(237,108,2,0.06)' : 'rgba(84,110,122,0.06)',
-        borderRadius: '8px',
-        p: 2,
-      }}
-    >
-      <Typography variant="body1">{title}</Typography>
-      <Box className="mt-3 flex items-baseline gap-1">
-        <Typography
-          sx={{
-            fontSize: 28,
-            fontWeight: 500,
-            lineHeight: 1.2,
-            color: 'text.primary',
-            letterSpacing: 0,
-          }}
-        >
-          {value}
-        </Typography>
-        {unit && (
-          <Typography variant="body2" color="textSecondary" sx={{ pb: '2px' }}>
-            {unit}
-          </Typography>
-        )}
-      </Box>
-      <DeltaRow delta={delta} />
-    </Box>
   )
 }
 
@@ -591,7 +528,7 @@ function BranchRankingTable({ data }) {
     <ShareableBlock title="住宿機構排行">
       <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
         <Box sx={{ px: 2, pt: 2, pb: 1, pr: 6 }}>
-          <Typography variant="h6">住宿機構排行</Typography>
+          <Typography variant="subtitle3">住宿機構排行</Typography>
           <Typography variant="caption" color="textSecondary">
             3 家比較・當月（2026/05）
           </Typography>
@@ -841,225 +778,246 @@ function BranchTab({ branchName }) {
   }, [branchName])
 
   return (
-    <Box className="flex flex-col gap-4">
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {/* 財務狀況 */}
-      <ShareableBlock title={`${branchName} - 財務狀況`}>
-        <CategoryPaper title="財務狀況">
-          <Box className="flex flex-col gap-4">
-            {/* 本月財務快照 KPI × 5 — 獨立一橫排 */}
-            <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-              {data.financeKpis.map((kpi) => (
-                <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
-                  <KpiTile
-                    title={kpi.title}
-                    value={kpi.value}
-                    unit={kpi.unit}
-                    delta={kpi.delta}
-                  />
-                </Grid>
-              ))}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <SectionHeaderBar title="財務狀況" />
+        <Grid container spacing={2}>
+          {data.financeKpis.map((kpi) => (
+            <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
+              <KpiCard
+                title={kpi.title}
+                value={kpi.value}
+                unit={kpi.unit}
+                delta={kpi.delta}
+                icon={KPI_ICONS_BRANCH[kpi.key]}
+              />
             </Grid>
-
-            {/* 營收趨勢 + 人事成本趨勢 — 左右排 */}
-            <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <OutlinedBlock
-                  title="營收趨勢"
-                  subtitle="近 13 個月（25/05 ～ 26/05，單位：萬元）"
-                  headerRight={<YoyBadge value={data.revenueTrend.yoyCurrent} />}
-                >
-                  <RevenueComposedChart
-                    months={data.revenueTrend.months}
-                    series={[
-                      { name: '營收', color: PRIMARY, data: data.revenueTrend.data },
-                    ]}
-                    yoy={data.revenueTrend.yoy}
-                    height={280}
-                  />
-                </OutlinedBlock>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <OutlinedBlock
-                  title="人事成本趨勢"
-                  subtitle="近 13 個月（25/05 ～ 26/05，單位：萬元）"
-                >
-                  <StaffCostBarChart
-                    months={data.staffCostTrend.months}
-                    data={data.staffCostTrend.data}
-                    height={280}
-                  />
-                </OutlinedBlock>
-              </Grid>
-            </Grid>
-          </Box>
-        </CategoryPaper>
-      </ShareableBlock>
+          ))}
+        </Grid>
+        <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 營收趨勢`}>
+              <SectionCard
+                title="營收趨勢"
+                subtitle="近 13 個月（25/05 ～ 26/05，單位：萬元）"
+                headerRight={
+                  <YoyBadge value={data.revenueTrend.yoyCurrent} sx={{ mr: 5 }} />
+                }
+              >
+                <RevenueComposedChart
+                  months={data.revenueTrend.months}
+                  series={[
+                    { name: '營收', color: PRIMARY, data: data.revenueTrend.data },
+                  ]}
+                  yoy={data.revenueTrend.yoy}
+                  height={280}
+                />
+              </SectionCard>
+            </ShareableBlock>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 人事成本趨勢`}>
+              <SectionCard
+                title="人事成本趨勢"
+                subtitle="近 13 個月（25/05 ～ 26/05，單位：萬元）"
+              >
+                <StaffCostBarChart
+                  months={data.staffCostTrend.months}
+                  data={data.staffCostTrend.data}
+                  height={280}
+                />
+              </SectionCard>
+            </ShareableBlock>
+          </Grid>
+        </Grid>
+      </Box>
 
       {/* 營運指標 */}
-      <ShareableBlock title={`${branchName} - 營運指標`}>
-        <CategoryPaper title="營運指標">
-          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-            {data.operationKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
-                <KpiTile
-                  title={kpi.title}
-                  value={kpi.value}
-                  unit={kpi.unit}
-                  delta={kpi.delta}
-                />
-              </Grid>
-            ))}
-            <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="占床率趨勢" subtitle="近 13 個月（25/05 ～ 26/05）">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <SectionHeaderBar title="營運指標" />
+        <Grid container spacing={2}>
+          {data.operationKpis.map((kpi) => (
+            <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
+              <KpiCard
+                title={kpi.title}
+                value={kpi.value}
+                unit={kpi.unit}
+                delta={kpi.delta}
+                icon={KPI_ICONS_BRANCH[kpi.key]}
+              />
+            </Grid>
+          ))}
+        </Grid>
+        <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 占床率趨勢`}>
+              <SectionCard title="占床率趨勢" subtitle="近 13 個月（25/05 ～ 26/05）">
                 <TrendLineChart
                   months={occupancyTrend.months}
                   series={branchOccupancySeries}
                   yAxisSuffix="%"
                   height={260}
                 />
-              </OutlinedBlock>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="住民異動分析" subtitle="近 13 個月（25/05 ～ 26/05）">
+              </SectionCard>
+            </ShareableBlock>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 住民異動分析`}>
+              <SectionCard title="住民異動分析" subtitle="近 13 個月（25/05 ～ 26/05）">
                 <MovementWaterfallChart
                   months={data.residentMovement.months}
                   series={data.residentMovement.series}
                   baseline={data.residentMovement.baselineResidents}
                   height={260}
                 />
-              </OutlinedBlock>
-            </Grid>
+              </SectionCard>
+            </ShareableBlock>
           </Grid>
-        </CategoryPaper>
-      </ShareableBlock>
+        </Grid>
+      </Box>
 
       {/* 照護品質 */}
-      <ShareableBlock title={`${branchName} - 照護品質`}>
-        <CategoryPaper title="照護品質">
-          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="品質監測" subtitle="當月（2026/05）">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <SectionHeaderBar title="照護品質" />
+        <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 品質監測`}>
+              <SectionCard title="品質監測" subtitle="當月（2026/05）">
                 <QualityMonitoringTable data={data.qualityMonitoring} />
-              </OutlinedBlock>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="意外事件" subtitle="當月（2026/05）">
-                <IncidentsPie incidents={data.incidents} />
-              </OutlinedBlock>
-            </Grid>
+              </SectionCard>
+            </ShareableBlock>
           </Grid>
-        </CategoryPaper>
-      </ShareableBlock>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 意外事件`}>
+              <SectionCard title="意外事件" subtitle="當月（2026/05）">
+                <IncidentsPie incidents={data.incidents} />
+              </SectionCard>
+            </ShareableBlock>
+          </Grid>
+        </Grid>
+      </Box>
 
       {/* 住民分析 */}
-      <ShareableBlock title={`${branchName} - 住民分析`}>
-        <CategoryPaper title="住民分析">
-          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="服務類型分佈" subtitle="當月（2026/05）">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <SectionHeaderBar title="住民分析" />
+        <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 服務類型分佈`}>
+              <SectionCard title="服務類型分佈" subtitle="當月（2026/05）">
                 <HorizontalBarChart data={data.serviceTypes} height={260} />
-              </OutlinedBlock>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="居住年期分佈" subtitle="當月（2026/05）">
+              </SectionCard>
+            </ShareableBlock>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 居住年期分佈`}>
+              <SectionCard title="居住年期分佈" subtitle="當月（2026/05）">
                 <HorizontalBarChart
                   data={data.residencyYears}
                   color={PRIMARY}
                   height={260}
                 />
-              </OutlinedBlock>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="身障比例" subtitle="當月（2026/05）">
+              </SectionCard>
+            </ShareableBlock>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 身障比例`}>
+              <SectionCard title="身障比例" subtitle="當月（2026/05）">
                 <ShareCardContent
                   data={data.disabilityRatio}
                   totalLabel="住民總數"
                   unit="人"
                 />
-              </OutlinedBlock>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="退住原因" subtitle="當月（2026/05）">
+              </SectionCard>
+            </ShareableBlock>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 退住原因`}>
+              <SectionCard title="退住原因" subtitle="當月（2026/05）">
                 <HorizontalBarChart
                   data={data.dischargeReasons}
                   color={PRIMARY}
                   height={260}
                 />
-              </OutlinedBlock>
-            </Grid>
+              </SectionCard>
+            </ShareableBlock>
           </Grid>
-        </CategoryPaper>
-      </ShareableBlock>
+        </Grid>
+      </Box>
 
       {/* 倉儲管理 */}
-      <ShareableBlock title={`${branchName} - 倉儲管理`}>
-        <CategoryPaper title="倉儲管理">
-          <Box className="flex flex-col gap-4">
-            <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-              <Grid size={{ xs: 6, md: 3 }}>
-                <KpiTile
-                  title="庫存總金額"
-                  value={data.warehouse.totalValue.value}
-                  unit={data.warehouse.totalValue.unit}
-                  delta={data.warehouse.totalValue.delta}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <SectionHeaderBar title="倉儲管理" />
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 6, md: 3 }}>
+            <KpiCard
+              title="庫存總金額"
+              value={data.warehouse.totalValue.value}
+              unit={data.warehouse.totalValue.unit}
+              delta={data.warehouse.totalValue.delta}
+              icon={<Inventory2Icon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 6, md: 3 }}>
+            <KpiCard
+              title="總成本"
+              value={data.warehouse.totalCost.value}
+              unit={data.warehouse.totalCost.unit}
+              delta={data.warehouse.totalCost.delta}
+              icon={<PaymentsIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 6, md: 3 }}>
+            <KpiCard
+              title="品項總數"
+              value={data.warehouse.itemCount.value}
+              unit={data.warehouse.itemCount.unit}
+              delta={data.warehouse.itemCount.delta}
+              icon={<CategoryIcon />}
+            />
+          </Grid>
+          <Grid size={{ xs: 6, md: 3 }}>
+            <KpiCard
+              title="低庫存警報"
+              value={data.warehouse.lowStockAlert.value}
+              unit={data.warehouse.lowStockAlert.unit}
+              delta={data.warehouse.lowStockAlert.delta}
+              icon={<WarningAmberIcon />}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 庫存金額分類佔比`}>
+              <SectionCard
+                title="庫存金額分類佔比"
+                subtitle="當月（2026/05，單位：萬元）"
+              >
+                <ShareCardContent
+                  data={data.warehouse.categoryBreakdown}
+                  totalLabel="庫存總金額"
+                  unit="萬"
                 />
-              </Grid>
-              <Grid size={{ xs: 6, md: 3 }}>
-                <KpiTile
-                  title="總成本"
-                  value={data.warehouse.totalCost.value}
-                  unit={data.warehouse.totalCost.unit}
-                  delta={data.warehouse.totalCost.delta}
+              </SectionCard>
+            </ShareableBlock>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ShareableBlock title={`${branchName} - 月度倉儲成本趨勢`}>
+              <SectionCard
+                title="月度倉儲成本趨勢"
+                subtitle="近 13 個月（25/05 ～ 26/05，單位：萬元）"
+              >
+                <StaffCostBarChart
+                  months={data.warehouse.costTrend.months}
+                  data={data.warehouse.costTrend.data}
+                  height={280}
+                  label="倉儲成本"
                 />
-              </Grid>
-              <Grid size={{ xs: 6, md: 3 }}>
-                <KpiTile
-                  title="品項總數"
-                  value={data.warehouse.itemCount.value}
-                  unit={data.warehouse.itemCount.unit}
-                  delta={data.warehouse.itemCount.delta}
-                />
-              </Grid>
-              <Grid size={{ xs: 6, md: 3 }}>
-                <KpiTile
-                  title="低庫存警報"
-                  value={data.warehouse.lowStockAlert.value}
-                  unit={data.warehouse.lowStockAlert.unit}
-                  delta={data.warehouse.lowStockAlert.delta}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <OutlinedBlock
-                  title="庫存金額分類佔比"
-                  subtitle="當月（2026/05，單位：萬元）"
-                >
-                  <ShareCardContent
-                    data={data.warehouse.categoryBreakdown}
-                    totalLabel="庫存總金額"
-                    unit="萬"
-                  />
-                </OutlinedBlock>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <OutlinedBlock
-                  title="月度倉儲成本趨勢"
-                  subtitle="近 13 個月（25/05 ～ 26/05，單位：萬元）"
-                >
-                  <StaffCostBarChart
-                    months={data.warehouse.costTrend.months}
-                    data={data.warehouse.costTrend.data}
-                    height={280}
-                    label="倉儲成本"
-                  />
-                </OutlinedBlock>
-              </Grid>
-            </Grid>
-          </Box>
-        </CategoryPaper>
-      </ShareableBlock>
+              </SectionCard>
+            </ShareableBlock>
+          </Grid>
+        </Grid>
+      </Box>
     </Box>
   )
 }

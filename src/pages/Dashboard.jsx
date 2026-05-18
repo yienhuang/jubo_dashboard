@@ -2,6 +2,7 @@ import {
   Box,
   Card,
   CardContent,
+  Divider,
   Grid,
   Paper,
   Table,
@@ -30,6 +31,7 @@ import StackedBarChart from '@/components/charts/StackedBarChart'
 import TrendLineChart from '@/components/charts/TrendLineChart'
 import RevenueComposedChart from '@/components/charts/RevenueComposedChart'
 import ShareableBlock from '@/components/ShareableBlock'
+import SectionHeaderBar from '@/components/SectionHeaderBar'
 
 import {
   reportDate,
@@ -42,8 +44,7 @@ import {
   revenueShareCurrent,
   revenueTrend,
   facilityList,
-  GRADE_CONFIG,
-  TURNOVER_WARNING_THRESHOLD,
+  highlights,
 } from '@/features/overview/mockData'
 
 // ── Color tokens ──────────────────────────────────────────
@@ -80,30 +81,6 @@ function DeltaRow({ delta }) {
       <Typography variant="caption" sx={{ color, fontWeight: 500 }}>
         {delta.text}
       </Typography>
-    </Box>
-  )
-}
-
-function GradeChip({ grade }) {
-  const cfg = GRADE_CONFIG[grade] ?? { bg: 'rgba(0,0,0,0.08)', color: 'rgba(0,0,0,0.6)' }
-  return (
-    <Box
-      component="span"
-      sx={{
-        display: 'inline-block',
-        px: 1,
-        py: 0.25,
-        borderRadius: '16px',
-        bgcolor: cfg.bg,
-        color: cfg.color,
-        fontSize: 12,
-        lineHeight: '18px',
-        fontWeight: 500,
-        whiteSpace: 'nowrap',
-        flexShrink: 0,
-      }}
-    >
-      {grade}
     </Box>
   )
 }
@@ -180,7 +157,7 @@ function SectionCard({ title, subtitle, headerRight, children }) {
       >
         <Box className="flex items-start justify-between" sx={{ mb: 2 }}>
           <Box>
-            <Typography variant="h6">
+            <Typography variant="subtitle3">
               {title}
             </Typography>
             {subtitle && (
@@ -297,74 +274,127 @@ function FacilityTable() {
             <TableCell sx={headCellSx}>機構名稱 / 類型</TableCell>
             <TableCell sx={headCellSx} align="right">服務人數</TableCell>
             <TableCell sx={headCellSx} align="right">員工數（新入）</TableCell>
-            <TableCell sx={headCellSx} align="right">流動率</TableCell>
-            <TableCell sx={headCellSx} align="center">照護比</TableCell>
-            <TableCell sx={headCellSx} align="right">意外事件</TableCell>
             <TableCell sx={headCellSx} align="right">當月營收</TableCell>
             <TableCell sx={headCellSx} align="right">YOY</TableCell>
-            <TableCell sx={headCellSx} align="center">健康度</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {facilityList.map((row) => {
-            const warnTurnover = row.turnover > TURNOVER_WARNING_THRESHOLD
-            return (
-              <TableRow key={row.name} hover>
-                <TableCell sx={bodyCellSx}>
-                  <Typography variant="body1" sx={{ fontWeight: 500, lineHeight: 1.3 }}>
-                    {row.name}
-                  </Typography>
-                  <Typography variant="caption" color="textSecondary">
-                    {row.type}
-                  </Typography>
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  <Typography component="span" variant="body2" sx={{ fontWeight: 500 }}>
-                    {row.service}
-                  </Typography>
-                  <Typography component="span" variant="caption" color="textSecondary" sx={{ ml: 0.5 }}>
-                    （+{row.serviceNew}）
-                  </Typography>
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  <Typography component="span" variant="body2" sx={{ fontWeight: 500 }}>
-                    {row.staff}
-                  </Typography>
-                  <Typography component="span" variant="caption" color="textSecondary" sx={{ ml: 0.5 }}>
-                    （+{row.staffNew}）
-                  </Typography>
-                </TableCell>
-                <TableCell
-                  sx={{
-                    ...bodyCellSx,
-                    color: warnTurnover ? WARNING : 'text.primary',
-                    fontWeight: warnTurnover ? 700 : 400,
-                  }}
-                  align="right"
-                >
-                  {row.turnover}%
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="center">{row.careRatio}</TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  {row.incidents > 0 ? row.incidents : ''}
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  ${row.revenue.toLocaleString()} 萬
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  <Box sx={{ display: 'inline-flex', justifyContent: 'flex-end' }}>
-                    <YoyCell value={row.yoy} />
-                  </Box>
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="center">
-                  <GradeChip grade={row.grade} />
-                </TableCell>
-              </TableRow>
-            )
-          })}
+          {facilityList.map((row) => (
+            <TableRow key={row.name} hover>
+              <TableCell sx={bodyCellSx}>
+                <Typography variant="body1" sx={{ fontWeight: 500, lineHeight: 1.3 }}>
+                  {row.name}
+                </Typography>
+                <Typography variant="caption" color="textSecondary">
+                  {row.type}
+                </Typography>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Typography component="span" variant="body2" sx={{ fontWeight: 500 }}>
+                  {row.service}
+                </Typography>
+                <Typography component="span" variant="caption" color="textSecondary" sx={{ ml: 0.5 }}>
+                  （+{row.serviceNew}）
+                </Typography>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Typography component="span" variant="body2" sx={{ fontWeight: 500 }}>
+                  {row.staff}
+                </Typography>
+                <Typography component="span" variant="caption" color="textSecondary" sx={{ ml: 0.5 }}>
+                  （+{row.staffNew}）
+                </Typography>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                ${row.revenue.toLocaleString()} 萬
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Box sx={{ display: 'inline-flex', justifyContent: 'flex-end' }}>
+                  <YoyCell value={row.yoy} />
+                </Box>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
+  )
+}
+
+// ── Highlight summary（重點摘要） ──────────────────────────
+
+const HIGHLIGHT_TONES = {
+  warning: WARNING,
+  primary: '#0097A7',
+}
+
+function HighlightSummaryCard() {
+  return (
+    <Card sx={{ height: '100%' }}>
+      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+        <Typography variant="subtitle3">重點摘要</Typography>
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          sx={{ display: 'block', mt: 0.25 }}
+        >
+          當月（2026/05）
+        </Typography>
+        <Box sx={{ mt: 1.5 }}>
+          {highlights.map((item, idx) => (
+            <Box key={`${item.headline}-${idx}`}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  py: 1.25,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 4,
+                    height: 40,
+                    borderRadius: '4px',
+                    bgcolor: HIGHLIGHT_TONES[item.tone] ?? '#0097A7',
+                    flexShrink: 0,
+                  }}
+                />
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography variant="body1" sx={{ lineHeight: 1.4 }}>
+                    {item.headline}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ mt: 0.25 }}
+                  >
+                    {item.sub}
+                  </Typography>
+                </Box>
+              </Box>
+              {idx < highlights.length - 1 && (
+                <Divider sx={{ borderColor: 'rgba(0,0,0,0.08)' }} />
+              )}
+            </Box>
+          ))}
+        </Box>
+      </CardContent>
+    </Card>
+  )
+}
+
+function FacilityOverviewCard() {
+  return (
+    <Paper sx={{ borderRadius: '8px', overflow: 'hidden', height: '100%' }}>
+      <Box sx={{ px: 2, pt: 2, pb: 1 }}>
+        <Typography variant="subtitle3">各機構概況</Typography>
+        <Typography variant="caption" color="textSecondary">
+          當月（2026/05）
+        </Typography>
+      </Box>
+      <FacilityTable />
+    </Paper>
   )
 }
 
@@ -532,21 +562,20 @@ function RevenueRow() {
   )
 }
 
-function FacilityListSection() {
+function TopSummaryRow() {
   return (
-    <ShareableBlock title="各機構概況">
-      <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
-        <Box sx={{ px: 2, pt: 2, pb: 1, pr: 6 }}>
-          <Typography variant="h6">
-            各機構概況
-          </Typography>
-          <Typography variant="caption" color="textSecondary">
-            當月（2026/05）
-          </Typography>
-        </Box>
-        <FacilityTable />
-      </Paper>
-    </ShareableBlock>
+    <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <ShareableBlock title="重點摘要">
+          <HighlightSummaryCard />
+        </ShareableBlock>
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <ShareableBlock title="各機構概況">
+          <FacilityOverviewCard />
+        </ShareableBlock>
+      </Grid>
+    </Grid>
   )
 }
 
@@ -554,14 +583,22 @@ function FacilityListSection() {
 
 export default function Dashboard() {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <PageHeader />
-      <KpiRow items={revenueKpis} />
-      <RevenueRow />
-      <KpiRow items={peopleKpis} />
-      <ServiceRow />
-      <StaffRow />
-      <FacilityListSection />
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <PageHeader />
+        <TopSummaryRow />
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <SectionHeaderBar title="財務總覽" />
+        <KpiRow items={revenueKpis} />
+        <RevenueRow />
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <SectionHeaderBar title="個案與人力" />
+        <KpiRow items={peopleKpis} />
+        <ServiceRow />
+        <StaffRow />
+      </Box>
     </Box>
   )
 }

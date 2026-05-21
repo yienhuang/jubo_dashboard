@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import {
   Box,
   Card,
   CardContent,
   Grid,
   Paper,
-  Tab,
   Table,
   TableBody,
   TableCell,
@@ -13,7 +13,6 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  Tabs,
   Typography,
 } from '@mui/material'
 import { green } from '@mui/material/colors'
@@ -26,6 +25,9 @@ import BedIcon from '@mui/icons-material/Bed'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import AssessmentIcon from '@mui/icons-material/Assessment'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import InventoryIcon from '@mui/icons-material/Inventory'
 import {
   Bar,
   BarChart,
@@ -185,12 +187,43 @@ function SectionCard({ title, subtitle, headerRight, children, fullHeight = true
 
 // ── BranchTab building blocks ─────────────────────────────
 
-function CategoryPaper({ title, children }) {
+function SectionTitle({ icon, title, subtitle }) {
+  return (
+    <Box className="flex items-center gap-3" sx={{ mb: 2 }}>
+      <Box
+        sx={{
+          width: 44,
+          height: 44,
+          borderRadius: '8px',
+          bgcolor: 'rgba(0,151,167,0.12)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+          color: PRIMARY_DARK,
+          '& svg': { fontSize: 28 },
+        }}
+      >
+        {icon}
+      </Box>
+      <Box>
+        <Typography variant="h6" sx={{ color: '#37474F', lineHeight: 1.6, letterSpacing: '0.15px' }}>
+          {title}
+        </Typography>
+        {subtitle && (
+          <Typography variant="caption" color="textSecondary">
+            {subtitle}
+          </Typography>
+        )}
+      </Box>
+    </Box>
+  )
+}
+
+function CategoryPaper({ icon, title, subtitle, children }) {
   return (
     <Paper sx={{ borderRadius: '8px', p: 2, boxShadow: 'none' }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        {title}
-      </Typography>
+      <SectionTitle icon={icon} title={title} subtitle={subtitle} />
       {children}
     </Paper>
   )
@@ -201,7 +234,8 @@ function OutlinedBlock({ title, subtitle, headerRight, children, fullHeight = tr
     <Box
       sx={{
         height: fullHeight ? '100%' : 'auto',
-        bgcolor: 'rgba(84,110,122,0.06)',
+        bgcolor: '#FFFFFF',
+        border: '1px solid rgba(0,0,0,0.12)',
         borderRadius: '8px',
         p: 2,
         display: 'flex',
@@ -235,7 +269,7 @@ function KpiTile({ title, value, unit, delta, warningBg }) {
     <Box
       sx={{
         height: '100%',
-        bgcolor: warningBg ? 'rgba(237,108,2,0.06)' : 'rgba(84,110,122,0.06)',
+        bgcolor: warningBg ? 'rgba(237,108,2,0.06)' : 'rgba(120,144,156,0.08)',
         borderRadius: '8px',
         p: 2,
       }}
@@ -244,7 +278,7 @@ function KpiTile({ title, value, unit, delta, warningBg }) {
       <Box className="mt-3 flex items-baseline gap-1">
         <Typography
           sx={{
-            fontSize: 28,
+            fontSize: 32,
             fontWeight: 500,
             lineHeight: 1.2,
             color: 'text.primary',
@@ -844,7 +878,11 @@ function BranchTab({ branchName }) {
     <Box className="flex flex-col gap-4">
       {/* 財務狀況 */}
       <ShareableBlock title={`${branchName} - 財務狀況`}>
-        <CategoryPaper title="財務狀況">
+        <CategoryPaper
+          icon={<AttachMoneyIcon />}
+          title="財務狀況"
+          subtitle="本月財務快照與近 13 個月趨勢"
+        >
           <Box className="flex flex-col gap-4">
             {/* 本月財務快照 KPI × 5 — 獨立一橫排 */}
             <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
@@ -897,7 +935,11 @@ function BranchTab({ branchName }) {
 
       {/* 營運指標 */}
       <ShareableBlock title={`${branchName} - 營運指標`}>
-        <CategoryPaper title="營運指標">
+        <CategoryPaper
+          icon={<AssessmentIcon />}
+          title="營運指標"
+          subtitle="佔床率・住民異動"
+        >
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {data.operationKpis.map((kpi) => (
               <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
@@ -935,7 +977,11 @@ function BranchTab({ branchName }) {
 
       {/* 照護品質 */}
       <ShareableBlock title={`${branchName} - 照護品質`}>
-        <CategoryPaper title="照護品質">
+        <CategoryPaper
+          icon={<FavoriteIcon />}
+          title="照護品質"
+          subtitle="品質監測與意外事件管理"
+        >
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             <Grid size={{ xs: 12, md: 6 }}>
               <OutlinedBlock title="品質監測" subtitle="當月（2026/05）">
@@ -953,7 +999,11 @@ function BranchTab({ branchName }) {
 
       {/* 住民分析 */}
       <ShareableBlock title={`${branchName} - 住民分析`}>
-        <CategoryPaper title="住民分析">
+        <CategoryPaper
+          icon={<PeopleIcon />}
+          title="住民分析"
+          subtitle="服務類型・居住年期・退住分析"
+        >
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             <Grid size={{ xs: 12, md: 6 }}>
               <OutlinedBlock title="服務類型分佈" subtitle="當月（2026/05）">
@@ -993,7 +1043,11 @@ function BranchTab({ branchName }) {
 
       {/* 倉儲管理 */}
       <ShareableBlock title={`${branchName} - 倉儲管理`}>
-        <CategoryPaper title="倉儲管理">
+        <CategoryPaper
+          icon={<InventoryIcon />}
+          title="倉儲管理"
+          subtitle="庫存總覽與成本趨勢"
+        >
           <Box className="flex flex-col gap-4">
             <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
               <Grid size={{ xs: 6, md: 3 }}>
@@ -1067,50 +1121,24 @@ function BranchTab({ branchName }) {
 // ── Page ──────────────────────────────────────────────────
 
 export default function Accommodation() {
-  const [tabIndex, setTabIndex] = useState(0)
-
-  const handleTabChange = (_, newValue) => {
-    setTabIndex(newValue)
-  }
+  const { branch } = useParams()
 
   return (
     <Box className="flex flex-col gap-4">
       {/* Page header */}
       <Paper sx={{ borderRadius: '8px' }}>
-        <Box sx={{ px: 2, pt: 2, pb: 1 }}>
-          <Typography variant="h6">住宿機構</Typography>
+        <Box sx={{ px: 2, py: 2 }}>
+          <Typography variant="h6">{branch ?? '住宿機構'}</Typography>
           <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
             {reportDate}
           </Typography>
         </Box>
-
-        {/* Tabs */}
-        <Tabs
-          value={tabIndex}
-          onChange={handleTabChange}
-          sx={{
-            px: 1,
-            '& .MuiTab-root': {
-              fontSize: 14,
-              minHeight: 44,
-              textTransform: 'none',
-              color: 'text.secondary',
-            },
-            '& .Mui-selected': { color: `${PRIMARY} !important`, fontWeight: 500 },
-            '& .MuiTabs-indicator': { backgroundColor: PRIMARY },
-          }}
-        >
-          <Tab label="總覽" />
-          {BRANCHES.map((name) => (
-            <Tab key={name} label={name} />
-          ))}
-        </Tabs>
       </Paper>
 
-      {/* Tab content */}
-      {tabIndex === 0 && <OverviewTab />}
-      {tabIndex > 0 && (
-        <BranchTab key={BRANCHES[tabIndex - 1]} branchName={BRANCHES[tabIndex - 1]} />
+      {/* Content */}
+      {!branch && <OverviewTab />}
+      {branch && BRANCHES.includes(branch) && (
+        <BranchTab key={branch} branchName={branch} />
       )}
     </Box>
   )

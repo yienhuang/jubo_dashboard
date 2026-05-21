@@ -4,6 +4,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  Collapse,
   Drawer,
   IconButton,
   List,
@@ -14,6 +15,8 @@ import {
   Typography,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import HotelIcon from '@mui/icons-material/Hotel'
 import WbSunnyIcon from '@mui/icons-material/WbSunny'
@@ -33,9 +36,37 @@ const navGroups = [
   {
     label: '服務類型',
     items: [
-      { label: '住宿', to: '/accommodation', icon: <HotelIcon /> },
-      { label: '日照', to: '/day-care', icon: <WbSunnyIcon /> },
-      { label: '居服', to: '/home-care', icon: <HomeRepairServiceIcon /> },
+      {
+        label: '住宿',
+        to: '/accommodation',
+        icon: <HotelIcon />,
+        children: [
+          { label: '總覽', to: '/accommodation', exact: true },
+          { label: '台北信義長照分院', to: '/accommodation/台北信義長照分院' },
+          { label: '台中南屯長照分院', to: '/accommodation/台中南屯長照分院' },
+          { label: '高雄左營長照分院', to: '/accommodation/高雄左營長照分院' },
+        ],
+      },
+      {
+        label: '日照',
+        to: '/day-care',
+        icon: <WbSunnyIcon />,
+        children: [
+          { label: '總覽', to: '/day-care', exact: true },
+          { label: '高雄幸福', to: '/day-care/高雄幸福' },
+          { label: '台中建德', to: '/day-care/台中建德' },
+        ],
+      },
+      {
+        label: '居服',
+        to: '/home-care',
+        icon: <HomeRepairServiceIcon />,
+        children: [
+          { label: '總覽', to: '/home-care', exact: true },
+          { label: '新北板橋', to: '/home-care/新北板橋' },
+          { label: '台南安康', to: '/home-care/台南安康' },
+        ],
+      },
     ],
   },
 ]
@@ -148,12 +179,11 @@ function BottomNavItem({ item, selected }) {
   )
 }
 
-function DrawerItem({ item, selected, onClick }) {
+function DrawerItem({ item, selected }) {
   return (
     <ListItemButton
       component={RouterLink}
       to={item.to}
-      onClick={onClick}
       sx={{
         height: 48,
         px: 2,
@@ -164,12 +194,7 @@ function DrawerItem({ item, selected, onClick }) {
         },
       }}
     >
-      <ListItemIcon
-        sx={{
-          minWidth: 40,
-          color: '#005F64',
-        }}
-      >
+      <ListItemIcon sx={{ minWidth: 40, color: '#005F64' }}>
         {item.icon}
       </ListItemIcon>
       <ListItemText
@@ -189,9 +214,94 @@ function DrawerItem({ item, selected, onClick }) {
   )
 }
 
+function ChildDrawerItem({ item, selected }) {
+  return (
+    <ListItemButton
+      component={RouterLink}
+      to={item.to}
+      sx={{
+        height: 48,
+        pl: 7,
+        pr: 2,
+        borderRadius: '4px',
+        backgroundColor: selected ? '#C5F0F7' : 'transparent',
+        '&:hover': {
+          backgroundColor: selected ? '#C5F0F7' : 'rgba(0,151,167,0.08)',
+        },
+      }}
+    >
+      <ListItemText
+        primary={item.label}
+        slotProps={{
+          primary: {
+            variant: 'body1',
+            sx: {
+              color: '#005F64',
+              fontWeight: selected ? 500 : 400,
+              whiteSpace: 'nowrap',
+            },
+          },
+        }}
+      />
+    </ListItemButton>
+  )
+}
+
+function ExpandableDrawerItem({ item, pathname }) {
+  const isActive = pathname === item.to || pathname.startsWith(item.to + '/')
+  const [expanded, setExpanded] = useState(true)
+
+  return (
+    <>
+      <ListItemButton
+        onClick={() => setExpanded((v) => !v)}
+        sx={{
+          height: 48,
+          px: 2,
+          borderRadius: '4px',
+          '&:hover': { backgroundColor: 'rgba(0,151,167,0.08)' },
+        }}
+      >
+        <ListItemIcon sx={{ minWidth: 40, color: '#005F64' }}>
+          {item.icon}
+        </ListItemIcon>
+        <ListItemText
+          primary={item.label}
+          slotProps={{
+            primary: {
+              variant: 'body1',
+              sx: {
+                color: '#005F64',
+                fontWeight: isActive ? 500 : 400,
+                whiteSpace: 'nowrap',
+              },
+            },
+          }}
+        />
+        {expanded ? (
+          <ExpandLessIcon sx={{ color: '#78909C', fontSize: 20 }} />
+        ) : (
+          <ExpandMoreIcon sx={{ color: '#78909C', fontSize: 20 }} />
+        )}
+      </ListItemButton>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <List disablePadding sx={{ pb: 0.5 }}>
+          {item.children.map((child) => {
+            const selected = child.exact
+              ? pathname === child.to
+              : pathname === child.to || pathname.startsWith(child.to + '/')
+            return <ChildDrawerItem key={child.to} item={child} selected={selected} />
+          })}
+        </List>
+      </Collapse>
+    </>
+  )
+}
+
 export default function MainLayout() {
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(true)
   const location = useLocation()
+  const pathname = decodeURIComponent(location.pathname)
 
   const navWidth = drawerOpen ? DRAWER_WIDTH : RAIL_WIDTH
 
@@ -287,6 +397,7 @@ export default function MainLayout() {
           open
         >
           <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
+            {/* Rail (collapsed) */}
             <Box
               aria-hidden={drawerOpen}
               sx={{
@@ -306,11 +417,13 @@ export default function MainLayout() {
                   <RailItem
                     key={item.to}
                     item={item}
-                    selected={isItemSelected(location.pathname, item.to)}
+                    selected={isItemSelected(pathname, item.to)}
                   />
                 ))}
               </List>
             </Box>
+
+            {/* Drawer (expanded) */}
             <Box
               aria-hidden={!drawerOpen}
               sx={{
@@ -319,6 +432,8 @@ export default function MainLayout() {
                 width: DRAWER_WIDTH,
                 pt: 1,
                 px: 1,
+                overflowY: 'auto',
+                overflowX: 'hidden',
                 opacity: drawerOpen ? 1 : 0,
                 pointerEvents: drawerOpen ? 'auto' : 'none',
                 transition: (theme) =>
@@ -329,34 +444,22 @@ export default function MainLayout() {
             >
               {navGroups.map((group) => (
                 <Box key={group.label} sx={{ pb: 1 }}>
-                  <Box
-                    sx={{
-                      height: 48,
-                      px: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        fontWeight: 500,
-                        color: '#78909C',
-                        letterSpacing: '0.1px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {group.label}
-                    </Typography>
-                  </Box>
                   <List sx={{ p: 0 }}>
-                    {group.items.map((item) => (
-                      <DrawerItem
-                        key={item.to}
-                        item={item}
-                        selected={isItemSelected(location.pathname, item.to)}
-                      />
-                    ))}
+                    {group.items.map((item) =>
+                      item.children ? (
+                        <ExpandableDrawerItem
+                          key={item.to}
+                          item={item}
+                          pathname={pathname}
+                        />
+                      ) : (
+                        <DrawerItem
+                          key={item.to}
+                          item={item}
+                          selected={isItemSelected(pathname, item.to)}
+                        />
+                      )
+                    )}
                   </List>
                 </Box>
               ))}
@@ -404,7 +507,7 @@ export default function MainLayout() {
           <BottomNavItem
             key={item.to}
             item={item}
-            selected={isItemSelected(location.pathname, item.to)}
+            selected={isItemSelected(pathname, item.to)}
           />
         ))}
       </Box>

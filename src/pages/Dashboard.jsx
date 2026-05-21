@@ -30,9 +30,9 @@ import StackedBarChart from '@/components/charts/StackedBarChart'
 import TrendLineChart from '@/components/charts/TrendLineChart'
 import RevenueComposedChart from '@/components/charts/RevenueComposedChart'
 import ShareableBlock from '@/components/ShareableBlock'
+import PageHeader from '@/components/PageHeader'
 
 import {
-  reportDate,
   revenueKpis,
   peopleKpis,
   serviceTrend,
@@ -370,31 +370,6 @@ function FacilityTable() {
 
 // ── Page sections ─────────────────────────────────────────
 
-function PageHeader() {
-  return (
-    <Paper sx={{ borderRadius: '8px' }}>
-      <Box
-        sx={{
-          px: 2,
-          pt: 2,
-          pb: 2,
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Box>
-          <Typography variant="h6" sx={{ lineHeight: 1.2 }}>
-            集團總覽
-          </Typography>
-          <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-            {reportDate}
-          </Typography>
-        </Box>
-      </Box>
-    </Paper>
-  )
-}
 
 function KpiRow({ items }) {
   return (
@@ -555,7 +530,7 @@ function FacilityListSection() {
 export default function Dashboard() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <PageHeader />
+      <PageHeader title="集團總覽" />
       <KpiRow items={revenueKpis} />
       <RevenueRow />
       <KpiRow items={peopleKpis} />

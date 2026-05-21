@@ -15,8 +15,8 @@ import {
   Typography,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import HotelIcon from '@mui/icons-material/Hotel'
 import WbSunnyIcon from '@mui/icons-material/WbSunny'
@@ -279,9 +279,9 @@ function ExpandableDrawerItem({ item, pathname }) {
           }}
         />
         {expanded ? (
-          <ExpandLessIcon sx={{ color: '#78909C', fontSize: 20 }} />
+          <ArrowDropUpIcon sx={{ color: '#78909C', fontSize: 20 }} />
         ) : (
-          <ExpandMoreIcon sx={{ color: '#78909C', fontSize: 20 }} />
+          <ArrowDropDownIcon sx={{ color: '#78909C', fontSize: 20 }} />
         )}
       </ListItemButton>
       <Collapse in={expanded} timeout="auto" unmountOnExit>

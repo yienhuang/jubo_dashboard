@@ -44,9 +44,9 @@ import HorizontalBarChart from '@/components/charts/HorizontalBarChart'
 import ServiceShareChart from '@/components/charts/ServiceShareChart'
 import MovementWaterfallChart from '@/components/charts/MovementWaterfallChart'
 import ShareableBlock from '@/components/ShareableBlock'
+import PageHeader from '@/components/PageHeader'
 
 import {
-  reportDate,
   overviewKpis,
   occupancyTrend,
   revenueByBranch,
@@ -1125,15 +1125,7 @@ export default function Accommodation() {
 
   return (
     <Box className="flex flex-col gap-4">
-      {/* Page header */}
-      <Paper sx={{ borderRadius: '8px' }}>
-        <Box sx={{ px: 2, py: 2 }}>
-          <Typography variant="h6">{branch ?? '住宿機構'}</Typography>
-          <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-            {reportDate}
-          </Typography>
-        </Box>
-      </Paper>
+      <PageHeader title={branch ?? '住宿機構'} />
 
       {/* Content */}
       {!branch && <OverviewTab />}

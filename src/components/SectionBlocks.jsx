@@ -12,6 +12,32 @@ const WARNING = '#ED6C02'
 // ── Delta indicator (↑ +5% / ↓ -2% / flat) ─────────────────
 export function DeltaRow({ delta }) {
   if (!delta) return null
+  if (delta.threshold) {
+    return (
+      <Box
+        className="flex items-center justify-between"
+        sx={{ mt: 0.5, gap: 1 }}
+      >
+        <Typography variant="caption" color="textSecondary">
+          {delta.text}
+        </Typography>
+        <Typography variant="caption" sx={{ color: 'rgba(0,0,0,0.38)' }}>
+          {delta.threshold}
+        </Typography>
+      </Box>
+    )
+  }
+  if (delta.noIcon) {
+    return (
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        sx={{ display: 'block', mt: 0.5 }}
+      >
+        {delta.text}
+      </Typography>
+    )
+  }
   const color = delta.isWarning
     ? WARNING
     : delta.dir === 'flat'
@@ -56,7 +82,7 @@ export function SectionTitle({ icon, title, subtitle }) {
       <Box>
         <Typography
           variant="h6"
-          sx={{ color: '#37474F', lineHeight: 1.6, letterSpacing: '0.15px' }}
+          sx={{ color: '#37474F', lineHeight: 1.3, letterSpacing: '0.15px' }}
         >
           {title}
         </Typography>
@@ -75,6 +101,41 @@ export function CategoryPaper({ icon, title, subtitle, children }) {
   return (
     <Paper sx={{ borderRadius: '8px', p: 2, boxShadow: 'none' }}>
       <SectionTitle icon={icon} title={title} subtitle={subtitle} />
+      {children}
+    </Paper>
+  )
+}
+
+// ── Summary card (white paper with title/subtitle header) ──
+// Used as wrapper for HighlightsCard / RankingCard
+export function SummaryCard({ title, subtitle, children }) {
+  return (
+    <Paper
+      elevation={0}
+      sx={{
+        height: '100%',
+        bgcolor: '#FFFFFF',
+        borderRadius: '8px',
+        p: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
+      <Box>
+        <Typography variant="subtitle4" sx={{ color: '#37474F' }}>
+          {title}
+        </Typography>
+        {subtitle && (
+          <Typography
+            variant="caption"
+            color="textSecondary"
+            sx={{ display: 'block', mt: 0.25 }}
+          >
+            {subtitle}
+          </Typography>
+        )}
+      </Box>
       {children}
     </Paper>
   )
@@ -241,11 +302,21 @@ export function ShareCardContent({
                 />
                 <Typography variant="body1">{item.name}</Typography>
               </Box>
-              <Box className="flex items-baseline gap-4">
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              <Box
+                className="flex items-baseline"
+                sx={{ gap: 2, flexShrink: 0 }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{ fontWeight: 500, textAlign: 'right', minWidth: 80 }}
+                >
                   {fmt(item.value)} {unit}
                 </Typography>
-                <Typography variant="body1" color="textSecondary">
+                <Typography
+                  variant="body1"
+                  color="textSecondary"
+                  sx={{ textAlign: 'right', minWidth: 48 }}
+                >
                   {pct}%
                 </Typography>
               </Box>

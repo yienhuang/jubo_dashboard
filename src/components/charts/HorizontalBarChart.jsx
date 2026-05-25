@@ -20,7 +20,7 @@ const COLORS = [
   '#B2DFDB',
 ]
 
-export default function HorizontalBarChart({ data, color, height = 240 }) {
+export default function HorizontalBarChart({ data, color, height = 240, unit = '人' }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart
@@ -55,7 +55,7 @@ export default function HorizontalBarChart({ data, color, height = 240 }) {
             fontSize: 12,
           }}
           itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
-          formatter={(value) => [`${value} 人`, '人數']}
+          formatter={(value) => [`${value} ${unit}`, '數量']}
         />
         <Bar dataKey="value" radius={[0, 4, 4, 0]} maxBarSize={20}>
           {data.map((_, index) => (
@@ -65,7 +65,7 @@ export default function HorizontalBarChart({ data, color, height = 240 }) {
             dataKey="value"
             position="right"
             style={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
-            formatter={(v) => `${v} 人`}
+            formatter={(v) => `${v} ${unit}`}
           />
         </Bar>
       </BarChart>

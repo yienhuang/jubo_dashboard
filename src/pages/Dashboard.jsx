@@ -1,9 +1,6 @@
-import { Fragment } from 'react'
 import {
   Box,
-  Divider,
   Grid,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -24,6 +21,8 @@ import StackedBarChart from '@/components/charts/StackedBarChart'
 import ShareableBlock from '@/components/ShareableBlock'
 import PageHeader from '@/components/PageHeader'
 import CollectionRateBar from '@/components/CollectionRateBar'
+import HighlightsCard from '@/components/HighlightsCard'
+import RankingCard from '@/components/RankingCard'
 import {
   CategoryPaper,
   OutlinedBlock,
@@ -47,7 +46,6 @@ import {
 } from '@/features/overview/mockData'
 
 const PRIMARY = '#0097A7'
-const PRIMARY_DARK = '#005F64'
 const WARNING = '#ED6C02'
 
 // ── Table cell sx ─────────────────────────────────────────
@@ -119,166 +117,30 @@ function TypePill({ label }) {
 
 // ── Section 1: 重點摘要 + 月營收排行榜 ───────────────────────
 
-function HighlightItem({ item }) {
-  const accent = item.tone === 'warning' ? '#FF9800' : PRIMARY
-
-  return (
-    <Box sx={{ display: 'flex', gap: 1, alignItems: 'stretch' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, alignSelf: 'stretch' }}>
-        <Box
-          sx={{
-            width: 4,
-            alignSelf: 'stretch',
-            borderRadius: '18px',
-            bgcolor: accent,
-          }}
-        />
-      </Box>
-      <Box
-        sx={{
-          flex: 1,
-          minWidth: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          gap: 0.5,
-        }}
-      >
-        <Typography variant="body1" sx={{ color: 'text.primary' }}>
-          {item.facility}：{item.metric}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          {item.hint}
-        </Typography>
-      </Box>
-    </Box>
-  )
-}
-
-function SummaryCard({ title, subtitle, children }) {
-  return (
-    <Paper
-      elevation={0}
-      sx={{
-        height: '100%',
-        bgcolor: '#FFFFFF',
-        borderRadius: '8px',
-        p: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 1,
-      }}
-    >
-      <Box>
-        <Typography variant="h6" sx={{ color: 'text.primary', lineHeight: 1.2 }}>
-          {title}
-        </Typography>
-        <Typography
-          variant="caption"
-          color="textSecondary"
-          sx={{ display: 'block', mt: 0.25 }}
-        >
-          {subtitle}
-        </Typography>
-      </Box>
-      {children}
-    </Paper>
-  )
-}
-
-function HighlightsCard() {
-  return (
-    <SummaryCard title="重點摘要" subtitle="當月（2026/05）">
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        {highlights.map((item, idx) => (
-          <Fragment key={`${item.facility}-${item.metric}`}>
-            {idx > 0 && <Divider />}
-            <HighlightItem item={item} />
-          </Fragment>
-        ))}
-      </Box>
-    </SummaryCard>
-  )
-}
-
-function RevenueRankBadge({ rank }) {
-  return (
-    <Box
-      sx={{
-        width: 28,
-        height: 28,
-        borderRadius: '50%',
-        bgcolor: 'rgba(0,151,167,0.12)',
-        color: PRIMARY_DARK,
-        fontWeight: 500,
-        fontSize: 16,
-        letterSpacing: '0.15px',
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-      }}
-    >
-      {rank}
-    </Box>
-  )
-}
-
-function RevenueRankRow({ row }) {
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: 1 }}>
-      <RevenueRankBadge rank={row.rank} />
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography
-          variant="body1"
-          sx={{ color: 'text.primary', lineHeight: 1.3 }}
-          noWrap
-        >
-          {row.name}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ lineHeight: 1.4 }}>
-          {row.typeLabel}
-        </Typography>
-      </Box>
-      <Typography
-        variant="body1"
-        sx={{ fontWeight: 500, color: 'text.primary', whiteSpace: 'nowrap' }}
-      >
-        ${row.monthRevenue.toLocaleString()}{' '}
-        <Typography component="span" variant="caption" color="textSecondary">
-          萬
-        </Typography>
-      </Typography>
-    </Box>
-  )
-}
-
-function RevenueRankingCard() {
-  return (
-    <SummaryCard title="月營收排行榜" subtitle="當月（2026/05）・Top 5 機構">
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, flex: 1 }}>
-        {revenueRankingTop5.map((row, idx) => (
-          <Fragment key={row.id}>
-            {idx > 0 && <Divider />}
-            <RevenueRankRow row={row} />
-          </Fragment>
-        ))}
-      </Box>
-    </SummaryCard>
-  )
-}
+const revenueRankingItems = revenueRankingTop5.map((r) => ({
+  rank: r.rank,
+  id: r.id,
+  name: r.name,
+  typeLabel: r.typeLabel,
+  value: r.monthRevenue,
+  unit: '萬',
+}))
 
 function HighlightsSection() {
   return (
     <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
       <Grid size={{ xs: 12, md: 6 }}>
         <ShareableBlock title="重點摘要">
-          <HighlightsCard />
+          <HighlightsCard title="重點摘要" items={highlights} />
         </ShareableBlock>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <ShareableBlock title="月營收排行榜">
-          <RevenueRankingCard />
+          <RankingCard
+            title="月營收排行榜"
+            items={revenueRankingItems}
+            showTypeLabel
+          />
         </ShareableBlock>
       </Grid>
     </Grid>
@@ -300,16 +162,10 @@ function FinancialRankingTable() {
             >
               本月營收
             </TableCell>
-            <TableCell
-              sx={{ ...headCellSx, width: { xs: 96, lg: 140 } }}
-              align="right"
-            >
+            <TableCell sx={{ ...headCellSx, width: { xs: 96, lg: 140 } }} align="right">
               YoY
             </TableCell>
-            <TableCell
-              sx={{ ...headCellSx, width: { xs: 96, lg: 140 } }}
-              align="right"
-            >
+            <TableCell sx={{ ...headCellSx, width: { xs: 96, lg: 140 } }} align="right">
               MoM
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 200, lg: 300 } }}>
@@ -329,11 +185,7 @@ function FinancialRankingTable() {
                   }}
                 >
                   <TypePill label={row.typeLabel} />
-                  <Typography
-                    component="span"
-                    variant="body1"
-                    sx={{ lineHeight: 1.3 }}
-                  >
+                  <Typography component="span" variant="body1" sx={{ lineHeight: 1.3 }}>
                     {row.name}
                   </Typography>
                 </Box>
@@ -438,16 +290,10 @@ function OperationsRankingTable() {
         <TableHead>
           <TableRow>
             <TableCell sx={headCellSx}>機構</TableCell>
-            <TableCell
-              sx={{ ...headCellSx, width: { xs: 120, lg: 160 } }}
-              align="right"
-            >
+            <TableCell sx={{ ...headCellSx, width: { xs: 120, lg: 160 } }} align="right">
               立案人數
             </TableCell>
-            <TableCell
-              sx={{ ...headCellSx, width: { xs: 100, lg: 140 } }}
-              align="right"
-            >
+            <TableCell sx={{ ...headCellSx, width: { xs: 100, lg: 140 } }} align="right">
               個案數
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 200, lg: 300 } }}>
@@ -467,11 +313,7 @@ function OperationsRankingTable() {
                   }}
                 >
                   <TypePill label={row.typeLabel} />
-                  <Typography
-                    component="span"
-                    variant="body1"
-                    sx={{ lineHeight: 1.3 }}
-                  >
+                  <Typography component="span" variant="body1" sx={{ lineHeight: 1.3 }}>
                     {row.name}
                   </Typography>
                 </Box>
@@ -483,10 +325,7 @@ function OperationsRankingTable() {
                 <Typography variant="body1">{row.cases}</Typography>
               </TableCell>
               <TableCell sx={bodyCellSx}>
-                <CollectionRateBar
-                  value={row.intakeRate}
-                  width={{ xs: 180, lg: 280 }}
-                />
+                <CollectionRateBar value={row.intakeRate} width={{ xs: 180, lg: 280 }} />
               </TableCell>
             </TableRow>
           ))}
@@ -564,28 +403,16 @@ function HrComparisonTable() {
         <TableHead>
           <TableRow>
             <TableCell sx={headCellSx}>機構</TableCell>
-            <TableCell
-              sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }}
-              align="right"
-            >
+            <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
               總員工數
             </TableCell>
-            <TableCell
-              sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }}
-              align="right"
-            >
+            <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
               全職員工
             </TableCell>
-            <TableCell
-              sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }}
-              align="right"
-            >
+            <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
               兼職員工
             </TableCell>
-            <TableCell
-              sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }}
-              align="right"
-            >
+            <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
               離職率
             </TableCell>
           </TableRow>
@@ -602,11 +429,7 @@ function HrComparisonTable() {
                   }}
                 >
                   <TypePill label={row.typeLabel} />
-                  <Typography
-                    component="span"
-                    variant="body1"
-                    sx={{ lineHeight: 1.3 }}
-                  >
+                  <Typography component="span" variant="body1" sx={{ lineHeight: 1.3 }}>
                     {row.name}
                   </Typography>
                 </Box>
@@ -621,9 +444,7 @@ function HrComparisonTable() {
                 <Typography variant="body1">{row.partTime} 人</Typography>
               </TableCell>
               <TableCell sx={bodyCellSx} align="right">
-                <Typography variant="body1">
-                  {row.turnoverRate.toFixed(1)}%
-                </Typography>
+                <Typography variant="body1">{row.turnoverRate.toFixed(1)}%</Typography>
               </TableCell>
             </TableRow>
           ))}

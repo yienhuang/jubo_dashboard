@@ -38,6 +38,12 @@ const theme = createTheme({
       lineHeight: 1.5,
       letterSpacing: '0.1px',
     },
+    subtitle4: {
+      fontSize: '18px',
+      fontWeight: 500,
+      lineHeight: 1.5,
+      letterSpacing: '0.1px',
+    },
     captionMedium: {
       fontSize: '12px',
       fontWeight: 500,
@@ -52,6 +58,7 @@ const theme = createTheme({
       defaultProps: {
         variantMapping: {
           subtitle3: 'p',
+          subtitle4: 'p',
           captionMedium: 'span',
         },
       },

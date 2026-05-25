@@ -42,9 +42,9 @@ const navGroups = [
         icon: <HotelIcon />,
         children: [
           { label: '總覽', to: '/accommodation', exact: true },
-          { label: '台北信義長照分院', to: '/accommodation/台北信義長照分院' },
-          { label: '台中南屯長照分院', to: '/accommodation/台中南屯長照分院' },
-          { label: '高雄左營長照分院', to: '/accommodation/高雄左營長照分院' },
+          { label: '台北信義老人長照分院', to: '/accommodation/台北信義' },
+          { label: '高雄左營長照分院', to: '/accommodation/高雄左營' },
+          { label: '新北板橋長照分院', to: '/accommodation/新北板橋' },
         ],
       },
       {

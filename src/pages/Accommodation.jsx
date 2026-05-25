@@ -1,32 +1,24 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   Box,
-  Card,
-  CardContent,
   Grid,
-  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TableSortLabel,
   Typography,
 } from '@mui/material'
 import { green } from '@mui/material/colors'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
-import TrendingFlatIcon from '@mui/icons-material/TrendingFlat'
 import PeopleIcon from '@mui/icons-material/People'
 import BadgeIcon from '@mui/icons-material/Badge'
-import BedIcon from '@mui/icons-material/Bed'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import WarningAmberIcon from '@mui/icons-material/WarningAmber'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import AssessmentIcon from '@mui/icons-material/Assessment'
-import FavoriteIcon from '@mui/icons-material/Favorite'
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
 import InventoryIcon from '@mui/icons-material/Inventory'
 import {
   Bar,
@@ -45,23 +37,44 @@ import ServiceShareChart from '@/components/charts/ServiceShareChart'
 import MovementWaterfallChart from '@/components/charts/MovementWaterfallChart'
 import ShareableBlock from '@/components/ShareableBlock'
 import PageHeader from '@/components/PageHeader'
+import HighlightsCard from '@/components/HighlightsCard'
+import RankingCard from '@/components/RankingCard'
+import CollectionRateBar from '@/components/CollectionRateBar'
 import {
   CategoryPaper,
   OutlinedBlock,
   KpiTile,
-  YoyBadge,
   ShareCardContent,
 } from '@/components/SectionBlocks'
 
 import {
-  overviewKpis,
+  // BranchTab uses these
   occupancyTrend,
-  revenueByBranch,
-  branchServiceShare,
-  branchRevenueShare,
-  branchRanking,
   BRANCHES,
+  BRANCH_INFO,
   branchData,
+  // OverviewTab uses these
+  overviewHighlights,
+  monthRevenueRanking,
+  occupancyRanking,
+  overviewFinanceKpis,
+  overviewCollectionDonut,
+  aggregateRevenueTrend,
+  financeComparison,
+  overviewOperationKpis,
+  overviewResidentMovement,
+  operationComparison,
+  overviewResidentKpis,
+  overviewServiceTypes,
+  overviewDischargeReasons,
+  residentComparison,
+  overviewQualityKpis,
+  overviewQualityMonitoring,
+  overviewIncidentTypes,
+  qualityComparison,
+  overviewHrKpis,
+  overviewPositionStats,
+  hrComparison,
 } from '@/features/accommodation/mockData'
 
 // ── Constants ─────────────────────────────────────────────
@@ -69,130 +82,9 @@ const PRIMARY = '#0097A7'
 const PRIMARY_DARK = '#005F64'
 const WARNING = '#ED6C02'
 
-const KPI_ICONS_OVERVIEW = {
-  serviceTotal: <PeopleIcon />,
-  staffTotal: <BadgeIcon />,
-  occupancy: <BedIcon />,
-  revenue: <AttachMoneyIcon />,
-}
+const BRANCH_FULL_NAME = Object.fromEntries(BRANCH_INFO.map((b) => [b.short, b.full]))
 
-// ── Shared atoms ──────────────────────────────────────────
-
-function DeltaRow({ delta }) {
-  if (!delta) return null
-  const color = delta.isWarning
-    ? WARNING
-    : delta.dir === 'flat'
-      ? 'rgba(0,0,0,0.6)'
-      : green[600]
-  const Icon =
-    delta.dir === 'up'
-      ? ArrowUpwardIcon
-      : delta.dir === 'down'
-        ? ArrowDownwardIcon
-        : TrendingFlatIcon
-  return (
-    <Box className="flex items-center gap-0.5" sx={{ mt: 0.5 }}>
-      <Icon sx={{ fontSize: 12, color }} />
-      <Typography variant="caption" sx={{ color, fontWeight: 500 }}>
-        {delta.text}
-      </Typography>
-    </Box>
-  )
-}
-
-function KpiCard({ title, value, unit, delta, icon, warningBg }) {
-  return (
-    <Card
-      sx={{
-        height: '100%',
-        ...(warningBg && { border: `1px solid rgba(237,108,2,0.3)` }),
-      }}
-    >
-      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-        <Box className="flex items-start justify-between">
-          <Typography variant="body1">{title}</Typography>
-          <Box
-            sx={{
-              width: 32,
-              height: 32,
-              borderRadius: '8px',
-              bgcolor: warningBg ? 'rgba(237,108,2,0.12)' : '#C5F0F7',
-              color: warningBg ? WARNING : PRIMARY_DARK,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              '& svg': { fontSize: 20 },
-            }}
-          >
-            {icon}
-          </Box>
-        </Box>
-        <Box className="mt-3 flex items-baseline gap-1">
-          <Typography
-            sx={{
-              fontSize: 28,
-              fontWeight: 500,
-              lineHeight: 1.2,
-              color: 'text.primary',
-              letterSpacing: 0,
-            }}
-          >
-            {value}
-          </Typography>
-          {unit && (
-            <Typography variant="body2" color="textSecondary" sx={{ pb: '2px' }}>
-              {unit}
-            </Typography>
-          )}
-        </Box>
-        <DeltaRow delta={delta} />
-      </CardContent>
-    </Card>
-  )
-}
-
-function SectionCard({ title, subtitle, headerRight, children, fullHeight = true }) {
-  return (
-    <Card
-      sx={{
-        height: fullHeight ? '100%' : 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <CardContent
-        sx={{
-          p: 2,
-          '&:last-child': { pb: 2 },
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Box className="flex items-start justify-between" sx={{ mb: 2 }}>
-          <Box>
-            <Typography variant="h6">{title}</Typography>
-            {subtitle && (
-              <Typography
-                variant="caption"
-                color="textSecondary"
-                sx={{ display: 'block', mt: 0.25 }}
-              >
-                {subtitle}
-              </Typography>
-            )}
-          </Box>
-          {headerRight}
-        </Box>
-        <Box sx={{ flex: 1 }}>{children}</Box>
-      </CardContent>
-    </Card>
-  )
-}
-
-// ── Staff Cost Bar Chart ──────────────────────────────────
+// ── Staff Cost / 倉儲 Bar Chart ───────────────────────────
 
 function StaffCostBarChart({ months, data, height = 280, label = '人事成本' }) {
   const chartData = months.map((month, i) => ({ month, value: data[i] }))
@@ -219,6 +111,7 @@ function StaffCostBarChart({ months, data, height = 280, label = '人事成本' 
             boxShadow: 'none',
             fontSize: 12,
           }}
+          itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
           formatter={(v) => [`${v} 萬`, label]}
         />
         <Bar dataKey="value" fill={PRIMARY} maxBarSize={26} radius={[4, 4, 0, 0]} />
@@ -227,7 +120,149 @@ function StaffCostBarChart({ months, data, height = 280, label = '人事成本' 
   )
 }
 
-// ── Quality Monitoring Table ──────────────────────────────
+// 在職人員職位統計 (vertical bar chart)
+function PositionStatsBarChart({ data, height = 260 }) {
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <BarChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: -8 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.08)" vertical={false} />
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tickLine={false}
+          axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
+        />
+        <YAxis
+          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tickLine={false}
+          axisLine={false}
+          tickFormatter={(v) => `${v} 人`}
+        />
+        <Tooltip
+          contentStyle={{
+            borderRadius: 8,
+            border: '1px solid rgba(0,0,0,0.12)',
+            boxShadow: 'none',
+            fontSize: 12,
+          }}
+          itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
+          formatter={(v) => [`${v} 人`, '人數']}
+        />
+        <Bar dataKey="value" fill={PRIMARY} maxBarSize={36} radius={[4, 4, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  )
+}
+
+// ── Section Comparison Table ──────────────────────────────
+
+const headCellSx = {
+  bgcolor: '#ECEFF1',
+  color: '#546E7A',
+  fontWeight: 700,
+  fontSize: 14,
+  letterSpacing: '0.17px',
+  py: 1,
+  px: 2,
+  borderBottom: 'none',
+  whiteSpace: 'nowrap',
+}
+
+const bodyCellSx = {
+  py: 1.25,
+  px: 2,
+  fontSize: 14,
+  borderBottom: '1px solid rgba(0,0,0,0.08)',
+  verticalAlign: 'middle',
+}
+
+function DeltaText({ value }) {
+  if (value == null) {
+    return (
+      <Typography variant="body1" color="textSecondary">
+        —
+      </Typography>
+    )
+  }
+  const isUp = value >= 0
+  const Icon = isUp ? ArrowUpwardIcon : ArrowDownwardIcon
+  const color = isUp ? green[600] : WARNING
+  return (
+    <Box className="flex items-center gap-0.5" sx={{ justifyContent: 'flex-end' }}>
+      <Icon sx={{ fontSize: 14, color }} />
+      <Typography variant="body1" sx={{ color }}>
+        {isUp ? `+${value}` : value}%
+      </Typography>
+    </Box>
+  )
+}
+
+function ProgressCell({ value, warningBelow = 90 }) {
+  return (
+    <CollectionRateBar
+      value={value}
+      warningBelow={warningBelow}
+      width={{ xs: 140, lg: 200 }}
+    />
+  )
+}
+
+const COLUMN_RENDERERS = {
+  text: (v) => <Typography variant="body1">{v}</Typography>,
+  number: (v) => (
+    <Typography variant="body1">
+      {typeof v === 'number' ? v.toLocaleString() : v}
+    </Typography>
+  ),
+  percent: (v) => <Typography variant="body1">{v}%</Typography>,
+  currency: (v) => (
+    <Typography variant="body1">
+      ${typeof v === 'number' ? v.toLocaleString() : v} 萬
+    </Typography>
+  ),
+  delta: (v) => <DeltaText value={v} />,
+  progress: (v, col) => <ProgressCell value={v} warningBelow={col.warningBelow} />,
+}
+
+function SectionComparisonTable({ title, subtitle, columns, rows }) {
+  return (
+    <OutlinedBlock title={title} subtitle={subtitle}>
+      <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+        <Table size="small" sx={{ '& th, & td': { whiteSpace: 'nowrap' } }}>
+          <TableHead>
+            <TableRow>
+              {columns.map((col) => (
+                <TableCell
+                  key={col.key}
+                  align={col.align ?? 'left'}
+                  sx={{ ...headCellSx, width: col.width }}
+                >
+                  {col.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow key={row.id} hover>
+                {columns.map((col) => {
+                  const render = COLUMN_RENDERERS[col.type] ?? COLUMN_RENDERERS.text
+                  return (
+                    <TableCell key={col.key} align={col.align ?? 'left'} sx={bodyCellSx}>
+                      {render(row[col.key], col)}
+                    </TableCell>
+                  )
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </OutlinedBlock>
+  )
+}
+
+// ── Quality Monitoring Table (used by BranchTab) ──────────
 
 const qualityHeadCellSx = {
   bgcolor: '#ECEFF1',
@@ -287,7 +322,7 @@ function QualityMonitoringTable({ data }) {
   )
 }
 
-// ── Incidents Pie ─────────────────────────────────────────
+// ── Incidents Pie (BranchTab) ─────────────────────────────
 
 function IncidentsPie({ incidents }) {
   const data = [
@@ -334,353 +369,371 @@ function IncidentsPie({ incidents }) {
   )
 }
 
-// ── Branch Ranking Table ──────────────────────────────────
+// ── Comparison table column configs ───────────────────────
 
-const STATUS_CFG = {
-  good: {
-    label: '良好',
-    Icon: CheckCircleIcon,
-    bg: 'rgba(46,125,50,0.12)',
-    color: '#2E7D32',
-    priority: 0,
+const NUMBER_COL_WIDTH = { xs: 110, lg: 140 }
+const CURRENCY_COL_WIDTH = { xs: 120, lg: 160 }
+
+const FINANCE_COMPARISON_COLUMNS = [
+  { key: 'name', label: '機構', type: 'text', align: 'left' },
+  { key: 'monthRevenue', label: '月營收', type: 'currency', align: 'right', width: CURRENCY_COL_WIDTH },
+  { key: 'yoyPct', label: 'YoY', type: 'delta', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'momPct', label: 'MoM', type: 'delta', align: 'right', width: NUMBER_COL_WIDTH },
+  {
+    key: 'collectionRate',
+    label: '收款率',
+    type: 'progress',
+    align: 'left',
+    width: 260,
+    warningBelow: 90,
   },
-  warning: {
-    label: '需注意',
-    Icon: WarningAmberIcon,
-    bg: 'rgba(237,108,2,0.12)',
-    color: WARNING,
-    priority: 1,
+]
+
+const OPERATION_COMPARISON_COLUMNS = [
+  { key: 'name', label: '機構', type: 'text', align: 'left' },
+  { key: 'staffTotal', label: '立案人數', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'cases', label: '住民總數', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'vacantBeds', label: '空床數', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  {
+    key: 'occupancyRate',
+    label: '佔床率',
+    type: 'progress',
+    align: 'left',
+    width: 260,
+    warningBelow: 90,
   },
-}
+]
 
-const rankingHeadCellSx = {
-  bgcolor: '#ECEFF1',
-  color: '#546E7A',
-  fontWeight: 700,
-  fontSize: 14,
-  letterSpacing: '0.17px',
-  py: 1,
-  px: 2,
-  borderBottom: 'none',
-  whiteSpace: 'nowrap',
-}
+const RESIDENT_COMPARISON_COLUMNS = [
+  { key: 'name', label: '機構', type: 'text', align: 'left' },
+  { key: 'disability', label: '身障人數', type: 'number', align: 'right' },
+  { key: 'over65', label: '65 歲以上人數', type: 'number', align: 'right' },
+  { key: 'below65', label: '65 歲以下人數', type: 'number', align: 'right' },
+]
 
-const rankingBodyCellSx = {
-  py: 1.25,
-  px: 2,
-  fontSize: 14,
-  borderBottom: '1px solid rgba(0,0,0,0.08)',
-  verticalAlign: 'middle',
-}
+const QUALITY_COMPARISON_COLUMNS = [
+  { key: 'name', label: '機構', type: 'text', align: 'left' },
+  { key: 'falls', label: '跌倒', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'restraints', label: '約束', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'wounds', label: '傷口', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'hospitalizations', label: '住院', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'incidents', label: '意外事件', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+]
 
-const rankingSortLabelSx = {
-  color: 'inherit !important',
-  '& .MuiTableSortLabel-icon': { color: 'inherit !important', opacity: 0.5 },
-  '&.Mui-active .MuiTableSortLabel-icon': { opacity: 1 },
-}
+const HR_COMPARISON_COLUMNS = [
+  { key: 'name', label: '機構', type: 'text', align: 'left' },
+  { key: 'fullTime', label: '全職員工', type: 'number', align: 'right' },
+  { key: 'partTime', label: '兼職員工', type: 'number', align: 'right' },
+  { key: 'resignations', label: '離職人數', type: 'number', align: 'right' },
+  {
+    key: 'turnoverRate',
+    label: '離職率',
+    type: 'progress',
+    align: 'left',
+    width: 200,
+    warningBelow: null,
+  },
+]
 
-function RankingDelta({ value }) {
-  if (value == null) {
-    return (
-      <Typography variant="body2" color="textSecondary">
-        —
-      </Typography>
-    )
-  }
-  const isUp = value >= 0
-  const Icon = isUp ? ArrowUpwardIcon : ArrowDownwardIcon
-  const color = isUp ? green[500] : WARNING
+// ── Tab 0: 總覽 ───────────────────────────────────────────
+
+function OverviewSummarySection() {
   return (
-    <Box className="flex items-center gap-0.5">
-      <Icon sx={{ fontSize: 14, color }} />
-      <Typography variant="body2" sx={{ color, fontWeight: 500 }}>
-        {isUp ? `+${value}` : value}%
-      </Typography>
-    </Box>
+    <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+      <Grid size={{ xs: 12, md: 4 }}>
+        <ShareableBlock title="重點摘要">
+          <HighlightsCard title="重點摘要" items={overviewHighlights} />
+        </ShareableBlock>
+      </Grid>
+      <Grid size={{ xs: 12, md: 4 }}>
+        <ShareableBlock title="月營收排行榜">
+          <RankingCard title="月營收排行榜" items={monthRevenueRanking} />
+        </ShareableBlock>
+      </Grid>
+      <Grid size={{ xs: 12, md: 4 }}>
+        <ShareableBlock title="佔床率排行榜">
+          <RankingCard
+            title="佔床率排行榜"
+            items={occupancyRanking}
+            valueFormatter={(r) => `${r.value}%`}
+          />
+        </ShareableBlock>
+      </Grid>
+    </Grid>
   )
 }
 
-const RANKING_COLUMNS = [
-  { key: 'rank', label: '排名', align: 'center', width: 72 },
-  { key: 'name', label: '機構名稱', align: 'left' },
-  { key: 'status', label: '營運狀態', align: 'center', width: 110 },
-  { key: 'ytdRevenue', label: '本年營收 (YTD)', align: 'right' },
-  { key: 'monthRevenue', label: '本月營收', align: 'right' },
-  { key: 'vacancyRate', label: '空床率', align: 'right', width: 96 },
-  { key: 'staffCost', label: '人事成本', align: 'right' },
-  { key: 'collectionRate', label: '收款率', align: 'right', width: 96 },
-  { key: 'alert', label: '關鍵警示', align: 'left', sortable: false },
-]
-
-function BranchRankingTable({ data }) {
-  const [sortBy, setSortBy] = useState('rank')
-  const [order, setOrder] = useState('asc')
-
-  const handleSort = (key) => {
-    if (sortBy === key) {
-      setOrder(order === 'asc' ? 'desc' : 'asc')
-    } else {
-      setSortBy(key)
-      setOrder('asc')
-    }
-  }
-
-  const sorted = useMemo(() => {
-    const getVal = (row) =>
-      sortBy === 'status' ? STATUS_CFG[row.status].priority : row[sortBy]
-    return [...data].sort((a, b) => {
-      const v1 = getVal(a)
-      const v2 = getVal(b)
-      const cmp =
-        typeof v1 === 'number' ? v1 - v2 : String(v1).localeCompare(String(v2), 'zh-Hant')
-      return order === 'asc' ? cmp : -cmp
-    })
-  }, [data, sortBy, order])
-
+function OverviewFinanceSection() {
   return (
-    <ShareableBlock title="住宿機構排行">
-      <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
-        <Box sx={{ px: 2, pt: 2, pb: 1, pr: 6 }}>
-          <Typography variant="h6">住宿機構排行</Typography>
-          <Typography variant="caption" color="textSecondary">
-            3 家比較・當月（2026/05）
-          </Typography>
+    <ShareableBlock title="財務概況">
+      <CategoryPaper
+        icon={<AttachMoneyIcon />}
+        title="財務概況"
+        subtitle="本月概況與近 13 個月趨勢"
+      >
+        <Box className="flex flex-col gap-4">
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            {overviewFinanceKpis.map((kpi) => (
+              <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
+                <KpiTile
+                  title={kpi.title}
+                  value={kpi.value}
+                  unit={kpi.unit}
+                  delta={kpi.delta}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock
+                title="營收趨勢"
+                subtitle="近 13 個月（25/05 ～ 26/05，單位：萬元）"
+              >
+                <RevenueComposedChart
+                  months={aggregateRevenueTrend.months}
+                  series={aggregateRevenueTrend.series}
+                  yoy={aggregateRevenueTrend.yoy}
+                  height={280}
+                />
+              </OutlinedBlock>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock title="收款率" subtitle="當月（2026/05，單位：萬元）">
+                <ShareCardContent
+                  data={overviewCollectionDonut.data}
+                  totalLabel="本月應收"
+                  unit="萬"
+                  centerOverride={{
+                    label: '收款率',
+                    value: `${overviewCollectionDonut.ratePct}%`,
+                    unit: '',
+                  }}
+                />
+              </OutlinedBlock>
+            </Grid>
+          </Grid>
+          <SectionComparisonTable
+            title="各機構營收比較"
+            subtitle="本月（2026/05）"
+            columns={FINANCE_COMPARISON_COLUMNS}
+            rows={financeComparison}
+          />
         </Box>
-        <TableContainer>
-          <Table size="small" sx={{ '& th, & td': { whiteSpace: 'nowrap' } }}>
-            <TableHead>
-              <TableRow>
-                {RANKING_COLUMNS.map((col) => (
-                  <TableCell
-                    key={col.key}
-                    align={col.align}
-                    sx={{ ...rankingHeadCellSx, width: col.width }}
-                  >
-                    {col.sortable === false ? (
-                      col.label
-                    ) : (
-                      <TableSortLabel
-                        active={sortBy === col.key}
-                        direction={sortBy === col.key ? order : 'asc'}
-                        onClick={() => handleSort(col.key)}
-                        sx={rankingSortLabelSx}
-                      >
-                        {col.label}
-                      </TableSortLabel>
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sorted.map((row) => {
-                const st = STATUS_CFG[row.status]
-                return (
-                  <TableRow key={row.name} hover>
-                    <TableCell sx={rankingBodyCellSx} align="center">
-                      <Box
-                        sx={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: '50%',
-                          bgcolor: PRIMARY,
-                          color: '#fff',
-                          fontWeight: 500,
-                          fontSize: 13,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        {row.rank}
-                      </Box>
-                    </TableCell>
-                    <TableCell sx={rankingBodyCellSx}>
-                      <Typography
-                        variant="body1"
-                        sx={{ fontWeight: 500, lineHeight: 1.3 }}
-                      >
-                        {row.name}
-                      </Typography>
-                    </TableCell>
-                    <TableCell sx={rankingBodyCellSx} align="center">
-                      <Box
-                        component="span"
-                        sx={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 0.5,
-                          px: 1,
-                          py: 0.25,
-                          borderRadius: '16px',
-                          bgcolor: st.bg,
-                          color: st.color,
-                          fontSize: 12,
-                          lineHeight: '18px',
-                          fontWeight: 500,
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        <st.Icon sx={{ fontSize: 14 }} />
-                        {st.label}
-                      </Box>
-                    </TableCell>
-                    <TableCell sx={rankingBodyCellSx} align="right">
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        ${row.ytdRevenue.toLocaleString()} 萬
-                      </Typography>
-                      <Box
-                        sx={{
-                          display: 'inline-flex',
-                          justifyContent: 'flex-end',
-                          mt: 0.25,
-                        }}
-                      >
-                        <RankingDelta value={row.ytdYoy} />
-                      </Box>
-                    </TableCell>
-                    <TableCell sx={rankingBodyCellSx} align="right">
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        ${row.monthRevenue.toLocaleString()} 萬
-                      </Typography>
-                      <Box
-                        sx={{
-                          display: 'inline-flex',
-                          justifyContent: 'flex-end',
-                          mt: 0.25,
-                        }}
-                      >
-                        <RankingDelta value={row.monthYoy} />
-                      </Box>
-                    </TableCell>
-                    <TableCell sx={rankingBodyCellSx} align="right">
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {row.vacancyRate}%
-                      </Typography>
-                    </TableCell>
-                    <TableCell sx={rankingBodyCellSx} align="right">
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        ${row.staffCost} 萬/月
-                      </Typography>
-                    </TableCell>
-                    <TableCell sx={rankingBodyCellSx} align="right">
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {row.collectionRate}%
-                      </Typography>
-                    </TableCell>
-                    <TableCell sx={rankingBodyCellSx}>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: row.alertTone === 'warning' ? WARNING : 'text.primary',
-                          fontWeight: 500,
-                        }}
-                      >
-                        {row.alert}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+      </CategoryPaper>
     </ShareableBlock>
   )
 }
 
-// ── Tab 0: 總覽 ───────────────────────────────────────────
-
-function OverviewTab() {
+function OverviewOperationsSection() {
   return (
-    <Box className="flex flex-col gap-4">
-      {/* KPI */}
-      <Grid container spacing={2}>
-        {overviewKpis.map((kpi) => (
-          <Grid key={kpi.key} size={{ xs: 12, sm: 6, md: 3 }}>
-            <KpiCard
-              title={kpi.title}
-              value={kpi.value}
-              unit={kpi.unit}
-              delta={kpi.delta}
-              icon={KPI_ICONS_OVERVIEW[kpi.key]}
-            />
+    <ShareableBlock title="營運概況">
+      <CategoryPaper
+        icon={<AssessmentIcon />}
+        title="營運概況"
+        subtitle="佔床率與住民異動"
+      >
+        <Box className="flex flex-col gap-4">
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            {overviewOperationKpis.map((kpi) => (
+              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 2 }}>
+                <KpiTile
+                  title={kpi.title}
+                  value={kpi.value}
+                  unit={kpi.unit}
+                  delta={kpi.delta}
+                />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-
-      {/* 趨勢圖區 */}
-      <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ShareableBlock title="營收佔比">
-            <Box sx={{ height: '100%' }}>
-              <SectionCard title="營收佔比" subtitle="當月（2026/05，單位：萬元）">
-                <ShareCardContent
-                  data={branchRevenueShare}
-                  totalLabel="月營收"
-                  unit="萬"
-                />
-              </SectionCard>
-            </Box>
-          </ShareableBlock>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ShareableBlock title="月營收趨勢">
-            <Box sx={{ height: '100%' }}>
-              <SectionCard
-                title="月營收趨勢"
-                subtitle="近 13 個月（單位：萬元）"
-                headerRight={
-                  <YoyBadge value={revenueByBranch.yoyCurrent} sx={{ mr: 5 }} />
-                }
-              >
-                <RevenueComposedChart
-                  months={revenueByBranch.months}
-                  series={revenueByBranch.series}
-                  yoy={revenueByBranch.yoy}
-                  height={280}
-                />
-              </SectionCard>
-            </Box>
-          </ShareableBlock>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ShareableBlock title="服務人數佔比">
-            <Box sx={{ height: '100%' }}>
-              <SectionCard title="服務人數佔比" subtitle="當月（2026/05）">
-                <ShareCardContent
-                  data={branchServiceShare}
-                  totalLabel="服務人數"
-                  unit="人"
-                />
-              </SectionCard>
-            </Box>
-          </ShareableBlock>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ShareableBlock title="佔床率趨勢">
-            <Box sx={{ height: '100%' }}>
-              <SectionCard title="佔床率趨勢" subtitle="近 13 個月（25/05 ～ 26/05）">
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock title="佔床率趨勢" subtitle="近 13 個月（25/05 ～ 26/05）">
                 <TrendLineChart
                   months={occupancyTrend.months}
                   series={occupancyTrend.series}
                   yAxisSuffix="%"
-                  height={280}
+                  height={260}
                 />
-              </SectionCard>
-            </Box>
-          </ShareableBlock>
-        </Grid>
-      </Grid>
+              </OutlinedBlock>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock title="住民異動分析" subtitle="近 13 個月（25/05 ～ 26/05）">
+                <MovementWaterfallChart
+                  months={overviewResidentMovement.months}
+                  series={overviewResidentMovement.series}
+                  baseline={overviewResidentMovement.baselineResidents}
+                  height={260}
+                />
+              </OutlinedBlock>
+            </Grid>
+          </Grid>
+          <SectionComparisonTable
+            title="各機構營運比較"
+            subtitle="本月（2026/05）"
+            columns={OPERATION_COMPARISON_COLUMNS}
+            rows={operationComparison}
+          />
+        </Box>
+      </CategoryPaper>
+    </ShareableBlock>
+  )
+}
 
-      {/* 機構排行表 */}
-      <BranchRankingTable data={branchRanking} />
+function OverviewResidentSection() {
+  return (
+    <ShareableBlock title="住民分析">
+      <CategoryPaper
+        icon={<PeopleIcon />}
+        title="住民分析"
+        subtitle="服務類型・退住原因・年齡分布"
+      >
+        <Box className="flex flex-col gap-4">
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            {overviewResidentKpis.map((kpi) => (
+              <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
+                <KpiTile
+                  title={kpi.title}
+                  value={kpi.value}
+                  unit={kpi.unit}
+                  delta={kpi.delta}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock title="服務類型分佈" subtitle="當月（2026/05）">
+                <HorizontalBarChart
+                  data={overviewServiceTypes}
+                  color={PRIMARY}
+                  height={260}
+                />
+              </OutlinedBlock>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock title="退住原因" subtitle="當月（2026/05）">
+                <HorizontalBarChart
+                  data={overviewDischargeReasons}
+                  color={PRIMARY}
+                  height={260}
+                />
+              </OutlinedBlock>
+            </Grid>
+          </Grid>
+          <SectionComparisonTable
+            title="各機構住民比較"
+            subtitle="本月（2026/05）"
+            columns={RESIDENT_COMPARISON_COLUMNS}
+            rows={residentComparison}
+          />
+        </Box>
+      </CategoryPaper>
+    </ShareableBlock>
+  )
+}
+
+function OverviewQualitySection() {
+  return (
+    <ShareableBlock title="照護品質">
+      <CategoryPaper
+        icon={<HealthAndSafetyIcon />}
+        title="照護品質"
+        subtitle="品質監測與意外事件管理"
+      >
+        <Box className="flex flex-col gap-4">
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            {overviewQualityKpis.map((kpi) => (
+              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
+                <KpiTile
+                  title={kpi.title}
+                  value={kpi.value}
+                  unit={kpi.unit}
+                  delta={kpi.delta}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock title="品質監測" subtitle="當月（2026/05）">
+                <HorizontalBarChart
+                  data={overviewQualityMonitoring}
+                  color={PRIMARY}
+                  unit="件"
+                  height={300}
+                />
+              </OutlinedBlock>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock title="意外事件類型" subtitle="當月（2026/05）">
+                <HorizontalBarChart
+                  data={overviewIncidentTypes}
+                  color={PRIMARY}
+                  unit="件"
+                  height={300}
+                />
+              </OutlinedBlock>
+            </Grid>
+          </Grid>
+          <SectionComparisonTable
+            title="各機構照護品質比較"
+            subtitle="本月（2026/05）"
+            columns={QUALITY_COMPARISON_COLUMNS}
+            rows={qualityComparison}
+          />
+        </Box>
+      </CategoryPaper>
+    </ShareableBlock>
+  )
+}
+
+function OverviewHrSection() {
+  return (
+    <ShareableBlock title="人力狀況">
+      <CategoryPaper icon={<BadgeIcon />} title="人力狀況" subtitle="人力結構與職位統計">
+        <Box className="flex flex-col gap-4">
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            {overviewHrKpis.map((kpi) => (
+              <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
+                <KpiTile
+                  title={kpi.title}
+                  value={kpi.value}
+                  unit={kpi.unit}
+                  delta={kpi.delta}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <OutlinedBlock title="在職人員職位統計" subtitle="當月（2026/05）">
+            <PositionStatsBarChart data={overviewPositionStats} height={260} />
+          </OutlinedBlock>
+          <SectionComparisonTable
+            title="各機構人力比較"
+            subtitle="本月（2026/05）"
+            columns={HR_COMPARISON_COLUMNS}
+            rows={hrComparison}
+          />
+        </Box>
+      </CategoryPaper>
+    </ShareableBlock>
+  )
+}
+
+function OverviewTab() {
+  return (
+    <Box className="flex flex-col gap-4">
+      <OverviewSummarySection />
+      <OverviewFinanceSection />
+      <OverviewOperationsSection />
+      <OverviewResidentSection />
+      <OverviewQualitySection />
+      <OverviewHrSection />
     </Box>
   )
 }
 
-// ── Tab 1–3: 各機構 ───────────────────────────────────────
+// ── Tab 1–3: 各機構 (unchanged) ───────────────────────────
 
 function BranchTab({ branchName }) {
   const data = branchData[branchName]
@@ -700,7 +753,6 @@ function BranchTab({ branchName }) {
           subtitle="本月財務快照與近 13 個月趨勢"
         >
           <Box className="flex flex-col gap-4">
-            {/* 本月財務快照 KPI × 5 — 獨立一橫排 */}
             <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
               {data.financeKpis.map((kpi) => (
                 <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
@@ -714,13 +766,11 @@ function BranchTab({ branchName }) {
               ))}
             </Grid>
 
-            {/* 營收趨勢 + 人事成本趨勢 — 左右排 */}
             <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <OutlinedBlock
                   title="營收趨勢"
                   subtitle="近 13 個月（25/05 ～ 26/05，單位：萬元）"
-                  headerRight={<YoyBadge value={data.revenueTrend.yoyCurrent} />}
                 >
                   <RevenueComposedChart
                     months={data.revenueTrend.months}
@@ -794,7 +844,7 @@ function BranchTab({ branchName }) {
       {/* 照護品質 */}
       <ShareableBlock title={`${branchName} - 照護品質`}>
         <CategoryPaper
-          icon={<FavoriteIcon />}
+          icon={<HealthAndSafetyIcon />}
           title="照護品質"
           subtitle="品質監測與意外事件管理"
         >
@@ -823,7 +873,11 @@ function BranchTab({ branchName }) {
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             <Grid size={{ xs: 12, md: 6 }}>
               <OutlinedBlock title="服務類型分佈" subtitle="當月（2026/05）">
-                <HorizontalBarChart data={data.serviceTypes} height={260} />
+                <HorizontalBarChart
+                  data={data.serviceTypes}
+                  color={PRIMARY}
+                  height={260}
+                />
               </OutlinedBlock>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -938,16 +992,17 @@ function BranchTab({ branchName }) {
 
 export default function Accommodation() {
   const { branch } = useParams()
+  const isValidBranch = branch && BRANCHES.includes(branch)
+  const pageTitle = isValidBranch
+    ? (BRANCH_FULL_NAME[branch] ?? branch)
+    : '住宿機構總覽'
 
   return (
     <Box className="flex flex-col gap-4">
-      <PageHeader title={branch ?? '住宿機構'} />
+      <PageHeader title={pageTitle} />
 
-      {/* Content */}
       {!branch && <OverviewTab />}
-      {branch && BRANCHES.includes(branch) && (
-        <BranchTab key={branch} branchName={branch} />
-      )}
+      {isValidBranch && <BranchTab key={branch} branchName={branch} />}
     </Box>
   )
 }

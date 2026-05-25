@@ -190,7 +190,7 @@ export const overviewKpis = [
     title: '占床率',
     value: String(weightedOccupancy),
     unit: '%',
-    delta: { dir: 'up', text: '較上個月 +0.5pp', isWarning: false },
+    delta: { dir: 'up', text: '較上個月 +0.5%', isWarning: false },
   },
 ]
 
@@ -411,7 +411,7 @@ export const overviewFinanceKpis = [
     title: '收款率',
     value: String(weightedCollectionRate),
     unit: '%',
-    delta: { dir: 'up', text: '較上個月 +1.4pp', isWarning: false },
+    delta: { dir: 'up', text: '較上個月 +1.4%', isWarning: false },
   },
   {
     key: 'uncollected',
@@ -621,14 +621,14 @@ export const overviewQualityKpis = [
     title: '跌倒',
     value: String(qualityAggregate.falls),
     unit: '件',
-    delta: { text: '發生率 7.0%', threshold: '閥值 10%' },
+    delta: { text: '發生率 7.0%', threshold: '閥值 10%', isWarning: false },
   },
   {
     key: 'restraints',
     title: '約束',
     value: String(qualityAggregate.restraints),
     unit: '件',
-    delta: { text: '發生率 1.7%', threshold: '閥值 5%' },
+    delta: { text: '發生率 1.7%', threshold: '閥值 5%', isWarning: false },
   },
   {
     key: 'wounds',
@@ -735,7 +735,7 @@ export const overviewHrKpis = [
     title: '離職率',
     value: String(weightedTurnover),
     unit: '%',
-    delta: { dir: 'down', text: '較上個月 -0.3pp', isWarning: false },
+    delta: { dir: 'down', text: '較上個月 -0.3%', isWarning: false },
   },
 ]
 
@@ -762,40 +762,17 @@ export const hrComparison = BRANCH_INFO.map((b) => ({
 }))
 
 // ── 三機構詳細資料（BranchTab 使用） ──────────────────────
-export const branchData = {
+// 各機構的分布類資料（圖表 / 表格用）；無法從 BRANCH_INFO 推導
+const branchOverrides = {
   台北信義: {
-    operationKpis: [
-      {
-        key: 'service',
-        title: '當月服務人數',
-        value: '222',
-        unit: '人',
-        delta: { dir: 'up', text: '較上個月 +3 人', isWarning: false },
-      },
-      {
-        key: 'newIn',
-        title: '本月新入住',
-        value: '5',
-        unit: '人',
-        delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
-      },
-      {
-        key: 'newOut',
-        title: '本月退住',
-        value: '4',
-        unit: '人',
-        delta: { dir: 'down', text: '較上個月 -1 人', isWarning: false },
-      },
-      {
-        key: 'occupancy',
-        title: '占床率',
-        value: '92.5',
-        unit: '%',
-        delta: { dir: 'up', text: '較上個月 +0.3pp', isWarning: false },
-      },
-    ],
+    over65: 169,
+    disability: 46,
+    revenueTrend: {
+      data: [725, 738, 720, 745, 738, 760, 752, 778, 760, 790, 780, 815, 838],
+      yoy: [5.8, 6.4, 6.8, 7.2, 6.9, 7.6, 7.3, 8.0, 7.5, 8.2, 7.9, 8.6, 8.4],
+      yoyCurrent: 8.4,
+    },
     residentMovement: {
-      months: trendMonths,
       baselineResidents: 198,
       series: [
         {
@@ -825,66 +802,6 @@ export const branchData = {
       { name: '身障托育養護', value: 11 },
       { name: '其他', value: 4 },
     ],
-    residencyYears: [
-      { name: '未滿 1 年', value: 30 },
-      { name: '1 ～ 2 年', value: 42 },
-      { name: '2 ～ 3 年', value: 38 },
-      { name: '3 ～ 5 年', value: 61 },
-      { name: '5 年以上', value: 51 },
-    ],
-    disabilityRatio: [
-      { name: '65歲以上非身障', value: 139, color: COLOR_TAIPEI },
-      { name: '65歲以下非身障', value: 37, color: COLOR_KAOHSIUNG },
-      { name: '65歲以上身障', value: 30, color: COLOR_NEWTAIPEI },
-      { name: '65歲以下身障', value: 16, color: '#80CBC4' },
-    ],
-    qualityMonitoring: [
-      { name: '跌倒', cases: 67, rate: 7.2 },
-      { name: '約束', cases: 16, rate: 1.8 },
-      { name: '感染', cases: 99, rate: 10.5 },
-      { name: '非計畫性住院', cases: 68, rate: 7.4 },
-      { name: '壓瘡', cases: 13, rate: 1.4 },
-      { name: '非計畫性體重改變', cases: 52, rate: 5.6 },
-      { name: '疼痛', cases: 172, rate: 18.4 },
-      { name: '鼻胃管移除', cases: 10, rate: 1.1 },
-      { name: '導尿管移除', cases: 9, rate: 1.0 },
-    ],
-    incidents: { total: 86, closed: 72, open: 14 },
-    warehouse: {
-      totalValue: {
-        value: '$328',
-        unit: '萬',
-        delta: { dir: 'up', text: '較上個月 +$12 萬', isWarning: true },
-      },
-      totalCost: {
-        value: '$156',
-        unit: '萬',
-        delta: { dir: 'up', text: '較上個月 +2.8%', isWarning: true },
-      },
-      itemCount: {
-        value: '482',
-        unit: '項',
-        delta: { dir: 'up', text: '較上個月 +5 項', isWarning: false },
-      },
-      lowStockAlert: {
-        value: '12',
-        unit: '項',
-        delta: { dir: 'up', text: '較上個月 +3 項', isWarning: true },
-      },
-      categoryBreakdown: [
-        { name: '藥品', value: 108, color: COLOR_TAIPEI },
-        { name: '耗材', value: 82, color: COLOR_KAOHSIUNG },
-        { name: '營養品', value: 58, color: COLOR_NEWTAIPEI },
-        { name: '醫材', value: 48, color: '#4DB6AC' },
-        { name: '紙尿褲及衛材', value: 32, color: '#80CBC4' },
-      ],
-      costTrend: {
-        months: trendMonths,
-        data: [
-          12.8, 13.5, 13.1, 14.2, 13.8, 14.6, 14.1, 15.2, 13.9, 14.8, 14.3, 15.6, 15.6,
-        ],
-      },
-    },
     dischargeReasons: [
       { name: '轉院', value: 3 },
       { name: '死亡', value: 2 },
@@ -893,88 +810,82 @@ export const branchData = {
       { name: '其他', value: 2 },
       { name: '特殊', value: 1 },
     ],
-    financeKpis: [
-      {
-        key: 'revenue',
-        title: '營收',
-        value: '$838',
-        unit: '萬',
-        delta: { dir: 'up', text: 'YoY +8.4%', isWarning: false },
-      },
-      {
-        key: 'collected',
-        title: '已收款',
-        value: '$770',
-        unit: '萬',
-        delta: { dir: 'flat', text: '回收率 91.9%', isWarning: false },
-      },
-      {
-        key: 'overdue',
-        title: '逾期應收',
-        value: '$68',
-        unit: '萬',
-        delta: { dir: 'up', text: '逾期率 8.1%', isWarning: true },
-      },
-      {
-        key: 'staffCost',
-        title: '人事費用',
-        value: '$318',
-        unit: '萬',
-        delta: { dir: 'up', text: '較上個月 +2.4%', isWarning: false },
-      },
-      {
-        key: 'costRatio',
-        title: '人月費用比',
-        value: '1.43',
-        unit: '倍',
-        delta: { dir: 'up', text: '較上個月 +0.03', isWarning: false },
-      },
+    qualityMonitoringBars: [
+      { name: '疼痛', value: 172 },
+      { name: '感染', value: 99 },
+      { name: '非計畫性住院', value: 68 },
+      { name: '跌倒', value: 67 },
+      { name: '非計畫性體重改變', value: 52 },
+      { name: '約束', value: 16 },
+      { name: '壓瘡', value: 13 },
+      { name: '鼻胃管移除', value: 10 },
+      { name: '導尿管移除', value: 9 },
     ],
-    revenueTrend: {
-      months: trendMonths,
-      data: [725, 738, 720, 745, 738, 760, 752, 778, 760, 790, 780, 815, 838],
-      yoy: [5.8, 6.4, 6.8, 7.2, 6.9, 7.6, 7.3, 8.0, 7.5, 8.2, 7.9, 8.6, 8.4],
-      yoyCurrent: 8.4,
+    incidentTypes: [
+      { name: '跌倒', value: 39 },
+      { name: '誤吸', value: 16 },
+      { name: '走失', value: 9 },
+      { name: '自傷', value: 7 },
+      { name: '藥物異常', value: 6 },
+      { name: '其他', value: 9 },
+    ],
+    quality: {
+      falls: 67,
+      restraints: 16,
+      wounds: 13,
+      hospitalizations: 68,
+      incidents: 86,
     },
-    staffCostTrend: {
-      months: trendMonths,
-      data: [298, 300, 302, 304, 306, 308, 310, 311, 312, 314, 315, 317, 318],
-    },
+    positionStats: [
+      { name: '照服員', value: 42 },
+      { name: '護理師', value: 16 },
+      { name: '社工', value: 7 },
+      { name: '營養師', value: 3 },
+      { name: '物理治療師', value: 5 },
+      { name: '職能治療師', value: 3 },
+      { name: '行政', value: 6 },
+      { name: '主管', value: 4 },
+    ],
+    inventory: [
+      { name: '復健褲 L', inbound: 210, outbound: 188, totalUsage: 188, endingStock: 64 },
+      {
+        name: '成人紙尿片 L',
+        inbound: 150,
+        outbound: 122,
+        totalUsage: 122,
+        endingStock: 48,
+      },
+      { name: '濕紙巾', inbound: 120, outbound: 105, totalUsage: 105, endingStock: 35 },
+      { name: '包大人尿布', inbound: 108, outbound: 92, totalUsage: 92, endingStock: 28 },
+      { name: '復健褲 M', inbound: 92, outbound: 78, totalUsage: 78, endingStock: 22 },
+      {
+        name: '抽取式衛生紙',
+        inbound: 84,
+        outbound: 75,
+        totalUsage: 75,
+        endingStock: 18,
+      },
+      { name: '毛巾', inbound: 40, outbound: 18, totalUsage: 18, endingStock: 26 },
+      {
+        name: '成人紙尿片 M',
+        inbound: 35,
+        outbound: 22,
+        totalUsage: 22,
+        endingStock: 15,
+      },
+      { name: '復健褲 XL', inbound: 24, outbound: 12, totalUsage: 12, endingStock: 14 },
+    ],
   },
 
   高雄左營: {
-    operationKpis: [
-      {
-        key: 'service',
-        title: '當月服務人數',
-        value: '168',
-        unit: '人',
-        delta: { dir: 'up', text: '較上個月 +2 人', isWarning: false },
-      },
-      {
-        key: 'newIn',
-        title: '本月新入住',
-        value: '3',
-        unit: '人',
-        delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
-      },
-      {
-        key: 'newOut',
-        title: '本月退住',
-        value: '2',
-        unit: '人',
-        delta: { dir: 'down', text: '較上個月 -1 人', isWarning: false },
-      },
-      {
-        key: 'occupancy',
-        title: '占床率',
-        value: '93.3',
-        unit: '%',
-        delta: { dir: 'up', text: '較上個月 +0.4pp', isWarning: false },
-      },
-    ],
+    over65: 125,
+    disability: 38,
+    revenueTrend: {
+      data: [510, 522, 515, 530, 528, 548, 545, 565, 555, 580, 572, 595, 612],
+      yoy: [7.2, 7.8, 8.2, 8.6, 8.3, 9.1, 8.8, 9.6, 9.2, 10.0, 9.7, 10.6, 11.2],
+      yoyCurrent: 11.2,
+    },
     residentMovement: {
-      months: trendMonths,
       baselineResidents: 151,
       series: [
         {
@@ -999,64 +910,6 @@ export const branchData = {
       { name: '喘息服務', value: 13 },
       { name: '其他', value: 6 },
     ],
-    residencyYears: [
-      { name: '未滿 1 年', value: 21 },
-      { name: '1 ～ 2 年', value: 30 },
-      { name: '2 ～ 3 年', value: 28 },
-      { name: '3 ～ 5 年', value: 47 },
-      { name: '5 年以上', value: 42 },
-    ],
-    disabilityRatio: [
-      { name: '65歲以上非身障', value: 102, color: COLOR_TAIPEI },
-      { name: '65歲以下非身障', value: 28, color: COLOR_KAOHSIUNG },
-      { name: '65歲以上身障', value: 23, color: COLOR_NEWTAIPEI },
-      { name: '65歲以下身障', value: 15, color: '#80CBC4' },
-    ],
-    qualityMonitoring: [
-      { name: '跌倒', cases: 32, rate: 6.5 },
-      { name: '約束', cases: 8, rate: 1.6 },
-      { name: '感染', cases: 48, rate: 9.7 },
-      { name: '非計畫性住院', cases: 33, rate: 6.7 },
-      { name: '壓瘡', cases: 6, rate: 1.2 },
-      { name: '非計畫性體重改變', cases: 25, rate: 5.1 },
-      { name: '疼痛', cases: 83, rate: 16.8 },
-      { name: '鼻胃管移除', cases: 5, rate: 1.0 },
-      { name: '導尿管移除', cases: 4, rate: 0.8 },
-    ],
-    incidents: { total: 41, closed: 32, open: 9 },
-    warehouse: {
-      totalValue: {
-        value: '$172',
-        unit: '萬',
-        delta: { dir: 'down', text: '較上個月 -$4 萬', isWarning: false },
-      },
-      totalCost: {
-        value: '$82',
-        unit: '萬',
-        delta: { dir: 'up', text: '較上個月 +0.8%', isWarning: true },
-      },
-      itemCount: {
-        value: '342',
-        unit: '項',
-        delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
-      },
-      lowStockAlert: {
-        value: '8',
-        unit: '項',
-        delta: { dir: 'up', text: '較上個月 +2 項', isWarning: true },
-      },
-      categoryBreakdown: [
-        { name: '藥品', value: 58, color: COLOR_TAIPEI },
-        { name: '耗材', value: 42, color: COLOR_KAOHSIUNG },
-        { name: '營養品', value: 30, color: COLOR_NEWTAIPEI },
-        { name: '醫材', value: 26, color: '#4DB6AC' },
-        { name: '紙尿褲及衛材', value: 16, color: '#80CBC4' },
-      ],
-      costTrend: {
-        months: trendMonths,
-        data: [6.5, 6.9, 6.7, 7.2, 7.0, 7.5, 7.2, 7.8, 7.1, 7.6, 7.3, 8.0, 8.2],
-      },
-    },
     dischargeReasons: [
       { name: '轉院', value: 2 },
       { name: '死亡', value: 1 },
@@ -1065,88 +918,76 @@ export const branchData = {
       { name: '其他', value: 1 },
       { name: '特殊', value: 1 },
     ],
-    financeKpis: [
-      {
-        key: 'revenue',
-        title: '營收',
-        value: '$612',
-        unit: '萬',
-        delta: { dir: 'up', text: 'YoY +11.2%', isWarning: false },
-      },
-      {
-        key: 'collected',
-        title: '已收款',
-        value: '$580',
-        unit: '萬',
-        delta: { dir: 'flat', text: '回收率 94.8%', isWarning: false },
-      },
-      {
-        key: 'overdue',
-        title: '逾期應收',
-        value: '$32',
-        unit: '萬',
-        delta: { dir: 'down', text: '逾期率 5.2%', isWarning: false },
-      },
-      {
-        key: 'staffCost',
-        title: '人事費用',
-        value: '$234',
-        unit: '萬',
-        delta: { dir: 'up', text: '較上個月 +1.6%', isWarning: false },
-      },
-      {
-        key: 'costRatio',
-        title: '人月費用比',
-        value: '1.39',
-        unit: '倍',
-        delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
-      },
+    qualityMonitoringBars: [
+      { name: '疼痛', value: 83 },
+      { name: '感染', value: 48 },
+      { name: '非計畫性住院', value: 33 },
+      { name: '跌倒', value: 32 },
+      { name: '非計畫性體重改變', value: 25 },
+      { name: '約束', value: 8 },
+      { name: '壓瘡', value: 6 },
+      { name: '鼻胃管移除', value: 5 },
+      { name: '導尿管移除', value: 4 },
     ],
-    revenueTrend: {
-      months: trendMonths,
-      data: [510, 522, 515, 530, 528, 548, 545, 565, 555, 580, 572, 595, 612],
-      yoy: [7.2, 7.8, 8.2, 8.6, 8.3, 9.1, 8.8, 9.6, 9.2, 10.0, 9.7, 10.6, 11.2],
-      yoyCurrent: 11.2,
-    },
-    staffCostTrend: {
-      months: trendMonths,
-      data: [218, 220, 221, 223, 224, 226, 227, 228, 230, 231, 232, 233, 234],
-    },
+    incidentTypes: [
+      { name: '跌倒', value: 19 },
+      { name: '誤吸', value: 8 },
+      { name: '走失', value: 4 },
+      { name: '自傷', value: 3 },
+      { name: '藥物異常', value: 3 },
+      { name: '其他', value: 4 },
+    ],
+    quality: { falls: 32, restraints: 8, wounds: 6, hospitalizations: 33, incidents: 41 },
+    positionStats: [
+      { name: '照服員', value: 30 },
+      { name: '護理師', value: 13 },
+      { name: '社工', value: 6 },
+      { name: '營養師', value: 3 },
+      { name: '物理治療師', value: 4 },
+      { name: '職能治療師', value: 3 },
+      { name: '行政', value: 3 },
+      { name: '主管', value: 2 },
+    ],
+    inventory: [
+      { name: '復健褲 L', inbound: 160, outbound: 142, totalUsage: 142, endingStock: 48 },
+      {
+        name: '成人紙尿片 L',
+        inbound: 112,
+        outbound: 95,
+        totalUsage: 95,
+        endingStock: 34,
+      },
+      { name: '濕紙巾', inbound: 92, outbound: 80, totalUsage: 80, endingStock: 26 },
+      { name: '包大人尿布', inbound: 84, outbound: 70, totalUsage: 70, endingStock: 22 },
+      { name: '復健褲 M', inbound: 72, outbound: 60, totalUsage: 60, endingStock: 18 },
+      {
+        name: '抽取式衛生紙',
+        inbound: 64,
+        outbound: 56,
+        totalUsage: 56,
+        endingStock: 14,
+      },
+      { name: '毛巾', inbound: 30, outbound: 14, totalUsage: 14, endingStock: 20 },
+      {
+        name: '成人紙尿片 M',
+        inbound: 28,
+        outbound: 18,
+        totalUsage: 18,
+        endingStock: 12,
+      },
+      { name: '復健褲 XL', inbound: 18, outbound: 10, totalUsage: 10, endingStock: 11 },
+    ],
   },
 
   新北板橋: {
-    operationKpis: [
-      {
-        key: 'service',
-        title: '當月服務人數',
-        value: '142',
-        unit: '人',
-        delta: { dir: 'up', text: '較上個月 +4 人', isWarning: false },
-      },
-      {
-        key: 'newIn',
-        title: '本月新入住',
-        value: '4',
-        unit: '人',
-        delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
-      },
-      {
-        key: 'newOut',
-        title: '本月退住',
-        value: '3',
-        unit: '人',
-        delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
-      },
-      {
-        key: 'occupancy',
-        title: '占床率',
-        value: '88.8',
-        unit: '%',
-        delta: { dir: 'up', text: '較上個月 +0.5pp', isWarning: false },
-      },
-    ],
+    over65: 107,
+    disability: 30,
+    revenueTrend: {
+      data: [462, 470, 458, 478, 472, 490, 485, 502, 495, 515, 510, 537, 526],
+      yoy: [3.2, 3.5, 3.4, 3.8, 3.6, 4.0, 3.9, 4.2, 4.0, 4.5, 4.3, 4.8, 4.6],
+      yoyCurrent: 4.6,
+    },
     residentMovement: {
-      months: trendMonths,
       baselineResidents: 122,
       series: [
         {
@@ -1172,64 +1013,6 @@ export const branchData = {
       { name: '身障托育養護', value: 8 },
       { name: '其他', value: 39 },
     ],
-    residencyYears: [
-      { name: '未滿 1 年', value: 20 },
-      { name: '1 ～ 2 年', value: 28 },
-      { name: '2 ～ 3 年', value: 24 },
-      { name: '3 ～ 5 年', value: 38 },
-      { name: '5 年以上', value: 32 },
-    ],
-    disabilityRatio: [
-      { name: '65歲以上非身障', value: 88, color: COLOR_TAIPEI },
-      { name: '65歲以下非身障', value: 24, color: COLOR_KAOHSIUNG },
-      { name: '65歲以上身障', value: 19, color: COLOR_NEWTAIPEI },
-      { name: '65歲以下身障', value: 11, color: '#80CBC4' },
-    ],
-    qualityMonitoring: [
-      { name: '跌倒', cases: 35, rate: 6.8 },
-      { name: '約束', cases: 8, rate: 1.5 },
-      { name: '感染', cases: 52, rate: 10.1 },
-      { name: '非計畫性住院', cases: 35, rate: 6.8 },
-      { name: '壓瘡', cases: 7, rate: 1.4 },
-      { name: '非計畫性體重改變', cases: 27, rate: 5.3 },
-      { name: '疼痛', cases: 90, rate: 17.5 },
-      { name: '鼻胃管移除', cases: 5, rate: 1.0 },
-      { name: '導尿管移除', cases: 5, rate: 1.0 },
-    ],
-    incidents: { total: 45, closed: 39, open: 6 },
-    warehouse: {
-      totalValue: {
-        value: '$186',
-        unit: '萬',
-        delta: { dir: 'up', text: '較上個月 +$6 萬', isWarning: true },
-      },
-      totalCost: {
-        value: '$89',
-        unit: '萬',
-        delta: { dir: 'up', text: '較上個月 +1.5%', isWarning: true },
-      },
-      itemCount: {
-        value: '358',
-        unit: '項',
-        delta: { dir: 'up', text: '較上個月 +3 項', isWarning: false },
-      },
-      lowStockAlert: {
-        value: '6',
-        unit: '項',
-        delta: { dir: 'down', text: '較上個月 -1 項', isWarning: false },
-      },
-      categoryBreakdown: [
-        { name: '藥品', value: 62, color: COLOR_TAIPEI },
-        { name: '耗材', value: 46, color: COLOR_KAOHSIUNG },
-        { name: '營養品', value: 32, color: COLOR_NEWTAIPEI },
-        { name: '醫材', value: 28, color: '#4DB6AC' },
-        { name: '紙尿褲及衛材', value: 18, color: '#80CBC4' },
-      ],
-      costTrend: {
-        months: trendMonths,
-        data: [7.2, 7.6, 7.4, 7.9, 7.7, 8.2, 7.9, 8.5, 7.8, 8.3, 8.0, 8.7, 8.9],
-      },
-    },
     dischargeReasons: [
       { name: '轉院', value: 2 },
       { name: '死亡', value: 1 },
@@ -1238,52 +1021,323 @@ export const branchData = {
       { name: '其他', value: 1 },
       { name: '特殊', value: 0 },
     ],
-    financeKpis: [
-      {
-        key: 'revenue',
-        title: '營收',
-        value: '$526',
-        unit: '萬',
-        delta: { dir: 'up', text: 'YoY +4.6%', isWarning: false },
-      },
-      {
-        key: 'collected',
-        title: '已收款',
-        value: '$462',
-        unit: '萬',
-        delta: { dir: 'flat', text: '回收率 87.8%', isWarning: false },
-      },
-      {
-        key: 'overdue',
-        title: '逾期應收',
-        value: '$64',
-        unit: '萬',
-        delta: { dir: 'up', text: '逾期率 12.2%', isWarning: true },
-      },
-      {
-        key: 'staffCost',
-        title: '人事費用',
-        value: '$206',
-        unit: '萬',
-        delta: { dir: 'up', text: '較上個月 +1.4%', isWarning: false },
-      },
-      {
-        key: 'costRatio',
-        title: '人月費用比',
-        value: '1.45',
-        unit: '倍',
-        delta: { dir: 'up', text: '較上個月 +0.02', isWarning: false },
-      },
+    qualityMonitoringBars: [
+      { name: '疼痛', value: 90 },
+      { name: '感染', value: 52 },
+      { name: '非計畫性住院', value: 35 },
+      { name: '跌倒', value: 35 },
+      { name: '非計畫性體重改變', value: 27 },
+      { name: '約束', value: 8 },
+      { name: '壓瘡', value: 7 },
+      { name: '鼻胃管移除', value: 5 },
+      { name: '導尿管移除', value: 5 },
     ],
-    revenueTrend: {
-      months: trendMonths,
-      data: [462, 470, 458, 478, 472, 490, 485, 502, 495, 515, 510, 537, 526],
-      yoy: [3.2, 3.5, 3.4, 3.8, 3.6, 4.0, 3.9, 4.2, 4.0, 4.5, 4.3, 4.8, 4.6],
-      yoyCurrent: 4.6,
-    },
-    staffCostTrend: {
-      months: trendMonths,
-      data: [195, 196, 197, 198, 199, 201, 202, 203, 204, 204, 205, 206, 206],
-    },
+    incidentTypes: [
+      { name: '跌倒', value: 20 },
+      { name: '誤吸', value: 8 },
+      { name: '走失', value: 5 },
+      { name: '自傷', value: 4 },
+      { name: '藥物異常', value: 3 },
+      { name: '其他', value: 5 },
+    ],
+    quality: { falls: 35, restraints: 8, wounds: 7, hospitalizations: 35, incidents: 45 },
+    positionStats: [
+      { name: '照服員', value: 26 },
+      { name: '護理師', value: 11 },
+      { name: '社工', value: 5 },
+      { name: '營養師', value: 2 },
+      { name: '物理治療師', value: 3 },
+      { name: '職能治療師', value: 2 },
+      { name: '行政', value: 4 },
+      { name: '主管', value: 3 },
+    ],
+    inventory: [
+      { name: '復健褲 L', inbound: 140, outbound: 118, totalUsage: 118, endingStock: 42 },
+      {
+        name: '成人紙尿片 L',
+        inbound: 96,
+        outbound: 78,
+        totalUsage: 78,
+        endingStock: 30,
+      },
+      { name: '濕紙巾', inbound: 78, outbound: 66, totalUsage: 66, endingStock: 22 },
+      { name: '包大人尿布', inbound: 72, outbound: 58, totalUsage: 58, endingStock: 18 },
+      { name: '復健褲 M', inbound: 60, outbound: 50, totalUsage: 50, endingStock: 14 },
+      {
+        name: '抽取式衛生紙',
+        inbound: 54,
+        outbound: 46,
+        totalUsage: 46,
+        endingStock: 12,
+      },
+      { name: '毛巾', inbound: 24, outbound: 12, totalUsage: 12, endingStock: 16 },
+      {
+        name: '成人紙尿片 M',
+        inbound: 22,
+        outbound: 14,
+        totalUsage: 14,
+        endingStock: 10,
+      },
+      { name: '復健褲 XL', inbound: 14, outbound: 8, totalUsage: 8, endingStock: 9 },
+    ],
   },
 }
+
+// 各 KPI 區塊比照 OverviewTab 結構，數值來自 BRANCH_INFO + branchOverrides
+function makeFinanceKpis(b) {
+  const monthDelta = Math.max(1, Math.round(b.uncollected * 0.05))
+  return [
+    {
+      key: 'ytdRevenue',
+      title: '年度累計營收',
+      value: `$${b.ytdRevenue.toLocaleString()}`,
+      unit: '萬',
+      delta: { noIcon: true, text: '2026 年 1 至 5 月' },
+    },
+    {
+      key: 'monthRevenue',
+      title: '本月營收',
+      value: `$${b.monthRevenue.toLocaleString()}`,
+      unit: '萬',
+      delta: {
+        dir: b.yoyPct >= 0 ? 'up' : 'down',
+        text: `YoY ${b.yoyPct >= 0 ? '+' : ''}${b.yoyPct}%`,
+        isWarning: false,
+      },
+    },
+    {
+      key: 'collectionRate',
+      title: '收款率',
+      value: String(b.collectionRate),
+      unit: '%',
+      delta: {
+        dir: 'up',
+        text: '較上個月 +0.8%',
+        isWarning: b.collectionRate < 90,
+      },
+    },
+    {
+      key: 'uncollected',
+      title: '未收款',
+      value: `$${b.uncollected}`,
+      unit: '萬',
+      delta: {
+        dir: 'up',
+        text: `較上個月 +$${monthDelta} 萬`,
+        isWarning: b.collectionRate < 90,
+      },
+    },
+  ]
+}
+
+function makeOperationKpis(b) {
+  const occupied = Math.round(b.beds * (b.occupancyRate / 100))
+  const vacant = b.beds - occupied
+  return [
+    {
+      key: 'staffTotal',
+      title: '立案人數',
+      value: String(b.beds),
+      unit: '人',
+      delta: null,
+    },
+    {
+      key: 'cases',
+      title: '住民人數',
+      value: String(b.cases),
+      unit: '人',
+      delta: { dir: 'up', text: '較上個月 +2 人', isWarning: false },
+    },
+    {
+      key: 'occupiedBeds',
+      title: '佔床數',
+      value: String(occupied),
+      unit: '床',
+      delta: { dir: 'up', text: '較上個月 +1 床', isWarning: false },
+    },
+    {
+      key: 'vacantBeds',
+      title: '空床數',
+      value: String(vacant),
+      unit: '床',
+      delta: {
+        dir: 'up',
+        text: '較上個月 +1 床',
+        isWarning: b.occupancyRate < 90,
+      },
+    },
+    {
+      key: 'reservations',
+      title: '本月預約入住',
+      value: String(b.reservations),
+      unit: '人',
+      delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
+    },
+    {
+      key: 'newAdmissions',
+      title: '本月新入住',
+      value: String(b.newAdmissions),
+      unit: '人',
+      delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
+    },
+  ]
+}
+
+function makeResidentKpis(b, ov) {
+  const disabilityPct = ((ov.disability / b.cases) * 100).toFixed(1)
+  return [
+    {
+      key: 'residents',
+      title: '住民人數',
+      value: String(b.cases),
+      unit: '人',
+      delta: { dir: 'up', text: '較上個月 +2 人', isWarning: false },
+    },
+    {
+      key: 'disability',
+      title: '身障人數',
+      value: String(ov.disability),
+      unit: '人',
+      delta: {
+        dir: 'flat',
+        text: `身障比例 ${disabilityPct}%`,
+        isWarning: false,
+      },
+    },
+    {
+      key: 'over65',
+      title: '65 歲以上人數',
+      value: String(ov.over65),
+      unit: '人',
+      delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
+    },
+    {
+      key: 'below65',
+      title: '65 歲以下人數',
+      value: String(b.cases - ov.over65),
+      unit: '人',
+      delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
+    },
+  ]
+}
+
+function makeQualityKpis(b, ov) {
+  const q = ov.quality
+  const fallRate = +((q.falls / b.cases) * 100).toFixed(1)
+  const restraintRate = +((q.restraints / b.cases) * 100).toFixed(1)
+  const FALL_THRESHOLD = 10
+  const RESTRAINT_THRESHOLD = 5
+  return [
+    {
+      key: 'falls',
+      title: '跌倒',
+      value: String(q.falls),
+      unit: '件',
+      delta: {
+        text: `發生率 ${fallRate}%`,
+        threshold: `閥值 ${FALL_THRESHOLD}%`,
+        isWarning: fallRate > FALL_THRESHOLD,
+      },
+    },
+    {
+      key: 'restraints',
+      title: '約束',
+      value: String(q.restraints),
+      unit: '件',
+      delta: {
+        text: `發生率 ${restraintRate}%`,
+        threshold: `閥值 ${RESTRAINT_THRESHOLD}%`,
+        isWarning: restraintRate > RESTRAINT_THRESHOLD,
+      },
+    },
+    {
+      key: 'wounds',
+      title: '傷口',
+      value: String(q.wounds),
+      unit: '件',
+      delta: { dir: 'down', text: '較上個月 -1 件', isWarning: false },
+    },
+    {
+      key: 'hospitalizations',
+      title: '住院',
+      value: String(q.hospitalizations),
+      unit: '件',
+      delta: { dir: 'up', text: '較上個月 +2 件', isWarning: true },
+    },
+    {
+      key: 'incidents',
+      title: '意外事件',
+      value: String(q.incidents),
+      unit: '件',
+      delta: { dir: 'up', text: '較上個月 +3 件', isWarning: true },
+    },
+  ]
+}
+
+function makeHrKpis(b) {
+  return [
+    {
+      key: 'fullTime',
+      title: '全職員工',
+      value: String(b.fullTime),
+      unit: '人',
+      delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
+    },
+    {
+      key: 'partTime',
+      title: '兼職員工',
+      value: String(b.partTime),
+      unit: '人',
+      delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
+    },
+    {
+      key: 'resignations',
+      title: '離職人數',
+      value: String(b.resignations),
+      unit: '人',
+      delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
+    },
+    {
+      key: 'turnoverRate',
+      title: '離職率',
+      value: String(b.turnoverRate),
+      unit: '%',
+      delta: { dir: 'down', text: '較上個月 -0.2%', isWarning: false },
+    },
+  ]
+}
+
+function makeCollectionDonut(b) {
+  return {
+    ratePct: b.collectionRate,
+    data: [
+      { name: '已收款', value: b.collected, color: COLOR_TAIPEI },
+      { name: '未收款', value: b.uncollected, color: '#CFD8DC' },
+    ],
+  }
+}
+
+export const branchData = Object.fromEntries(
+  BRANCH_INFO.map((b) => {
+    const ov = branchOverrides[b.short]
+    return [
+      b.short,
+      {
+        financeKpis: makeFinanceKpis(b),
+        operationKpis: makeOperationKpis(b),
+        residentKpis: makeResidentKpis(b, ov),
+        qualityKpis: makeQualityKpis(b, ov),
+        hrKpis: makeHrKpis(b),
+        collectionDonut: makeCollectionDonut(b),
+        revenueTrend: { months: trendMonths, ...ov.revenueTrend },
+        residentMovement: { months: trendMonths, ...ov.residentMovement },
+        serviceTypes: ov.serviceTypes,
+        dischargeReasons: ov.dischargeReasons,
+        qualityMonitoringBars: ov.qualityMonitoringBars,
+        incidentTypes: ov.incidentTypes,
+        positionStats: ov.positionStats,
+        inventory: ov.inventory,
+      },
+    ]
+  }),
+)

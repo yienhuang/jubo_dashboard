@@ -14,6 +14,7 @@ export default function TrendLineChart({
   series,
   yAxisSuffix = '',
   height = 200,
+  yDomain,
 }) {
   const data = months.map((month, i) => ({
     month,
@@ -35,6 +36,7 @@ export default function TrendLineChart({
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `${v}${yAxisSuffix}`}
+          domain={yDomain}
         />
         <Tooltip
           contentStyle={{

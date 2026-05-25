@@ -18,7 +18,13 @@ export function DeltaRow({ delta }) {
         className="flex items-center justify-between"
         sx={{ mt: 0.5, gap: 1 }}
       >
-        <Typography variant="caption" color="textSecondary">
+        <Typography
+          variant="caption"
+          sx={{
+            color: delta.isWarning ? WARNING : 'rgba(0,0,0,0.6)',
+            fontWeight: delta.isWarning ? 500 : 400,
+          }}
+        >
           {delta.text}
         </Typography>
         <Typography variant="caption" sx={{ color: 'rgba(0,0,0,0.38)' }}>

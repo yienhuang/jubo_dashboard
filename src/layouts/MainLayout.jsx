@@ -13,6 +13,7 @@ import {
   ListItemText,
   Toolbar,
   Typography,
+  useMediaQuery,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
@@ -26,7 +27,6 @@ import Logo from '@/components/Logo'
 const RAIL_WIDTH = 72
 const DRAWER_WIDTH = 256
 const APPBAR_HEIGHT = 64
-const BOTTOM_NAV_HEIGHT = 64
 
 const navGroups = [
   {
@@ -128,62 +128,12 @@ function RailItem({ item, selected }) {
   )
 }
 
-function BottomNavItem({ item, selected }) {
+function DrawerItem({ item, selected, onNavigate }) {
   return (
     <ListItemButton
       component={RouterLink}
       to={item.to}
-      sx={{
-        flex: 1,
-        height: '100%',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '4px',
-        px: 0,
-        py: 1,
-        borderRadius: 0,
-        '&:hover': { backgroundColor: 'transparent' },
-        '&:hover .nav-icon-pill': {
-          backgroundColor: selected ? '#C5F0F7' : 'rgba(0,151,167,0.08)',
-        },
-      }}
-    >
-      <Box
-        className="nav-icon-pill"
-        sx={{
-          width: 56,
-          height: 32,
-          borderRadius: '16px',
-          backgroundColor: selected ? '#C5F0F7' : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#005F64',
-          transition: 'background-color 160ms ease',
-        }}
-      >
-        {item.icon}
-      </Box>
-      <Typography
-        variant="caption"
-        sx={{
-          color: '#005F64',
-          fontWeight: selected ? 500 : 400,
-          lineHeight: 1.2,
-        }}
-      >
-        {item.label}
-      </Typography>
-    </ListItemButton>
-  )
-}
-
-function DrawerItem({ item, selected }) {
-  return (
-    <ListItemButton
-      component={RouterLink}
-      to={item.to}
+      onClick={onNavigate}
       sx={{
         height: 48,
         px: 2,
@@ -212,11 +162,12 @@ function DrawerItem({ item, selected }) {
   )
 }
 
-function ChildDrawerItem({ item, selected }) {
+function ChildDrawerItem({ item, selected, onNavigate }) {
   return (
     <ListItemButton
       component={RouterLink}
       to={item.to}
+      onClick={onNavigate}
       sx={{
         height: 48,
         pl: 7,
@@ -245,7 +196,7 @@ function ChildDrawerItem({ item, selected }) {
   )
 }
 
-function ExpandableDrawerItem({ item, pathname }) {
+function ExpandableDrawerItem({ item, pathname, onNavigate }) {
   const isActive = pathname === item.to || pathname.startsWith(item.to + '/')
   const [expanded, setExpanded] = useState(true)
 
@@ -286,7 +237,14 @@ function ExpandableDrawerItem({ item, pathname }) {
             const selected = child.exact
               ? pathname === child.to
               : pathname === child.to || pathname.startsWith(child.to + '/')
-            return <ChildDrawerItem key={child.to} item={child} selected={selected} />
+            return (
+              <ChildDrawerItem
+                key={child.to}
+                item={child}
+                selected={selected}
+                onNavigate={onNavigate}
+              />
+            )
           })}
         </List>
       </Collapse>
@@ -295,11 +253,50 @@ function ExpandableDrawerItem({ item, pathname }) {
 }
 
 export default function MainLayout() {
-  const [drawerOpen, setDrawerOpen] = useState(true)
+  const [desktopOpen, setDesktopOpen] = useState(true)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
   const pathname = decodeURIComponent(location.pathname)
+  const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('lg'))
 
-  const navWidth = drawerOpen ? DRAWER_WIDTH : RAIL_WIDTH
+  const navWidth = desktopOpen ? DRAWER_WIDTH : RAIL_WIDTH
+  const drawerOpen = isDesktop ? desktopOpen : mobileOpen
+
+  const handleMenuClick = () => {
+    if (isDesktop) {
+      setDesktopOpen((open) => !open)
+    } else {
+      setMobileOpen((open) => !open)
+    }
+  }
+
+  const closeMobileDrawer = () => setMobileOpen(false)
+
+  const expandedNavList = (
+    <>
+      {navGroups.map((group) => (
+        <List key={group.label} sx={{ p: 0 }}>
+          {group.items.map((item) =>
+            item.children ? (
+              <ExpandableDrawerItem
+                key={item.to}
+                item={item}
+                pathname={pathname}
+                onNavigate={closeMobileDrawer}
+              />
+            ) : (
+              <DrawerItem
+                key={item.to}
+                item={item}
+                selected={isItemSelected(pathname, item.to)}
+                onNavigate={closeMobileDrawer}
+              />
+            ),
+          )}
+        </List>
+      ))}
+    </>
+  )
 
   return (
     <Box className="flex min-h-screen" sx={{ backgroundColor: '#EAF3F5' }}>
@@ -309,18 +306,15 @@ export default function MainLayout() {
       >
         <Toolbar sx={{ minHeight: APPBAR_HEIGHT }}>
           <IconButton
-            onClick={() => setDrawerOpen((open) => !open)}
-            sx={{
-              color: '#37474F',
-              display: { xs: 'none', sm: 'inline-flex' },
-            }}
+            onClick={handleMenuClick}
+            sx={{ color: '#37474F' }}
             aria-label="toggle navigation"
             aria-expanded={drawerOpen}
           >
             <MenuIcon />
           </IconButton>
 
-          <Box className="flex items-center gap-3" sx={{ ml: { xs: 0, sm: 2 } }}>
+          <Box className="flex items-center gap-3" sx={{ ml: 2 }}>
             <Logo />
             <Typography
               variant="h6"
@@ -359,7 +353,7 @@ export default function MainLayout() {
       <Box
         component="nav"
         sx={{
-          width: { xs: 0, sm: navWidth },
+          width: { xs: 0, lg: navWidth },
           flexShrink: 0,
           transition: (theme) =>
             theme.transitions.create('width', {
@@ -372,7 +366,7 @@ export default function MainLayout() {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', sm: 'block' },
+            display: { xs: 'none', lg: 'block' },
             width: navWidth,
             '& .MuiDrawer-paper': {
               width: navWidth,
@@ -392,13 +386,13 @@ export default function MainLayout() {
           <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
             {/* Rail (collapsed) */}
             <Box
-              aria-hidden={drawerOpen}
+              aria-hidden={desktopOpen}
               sx={{
                 position: 'absolute',
                 inset: 0,
                 width: RAIL_WIDTH,
-                opacity: drawerOpen ? 0 : 1,
-                pointerEvents: drawerOpen ? 'none' : 'auto',
+                opacity: desktopOpen ? 0 : 1,
+                pointerEvents: desktopOpen ? 'none' : 'auto',
                 transition: (theme) =>
                   theme.transitions.create('opacity', {
                     duration: theme.transitions.duration.shortest,
@@ -418,7 +412,7 @@ export default function MainLayout() {
 
             {/* Drawer (expanded) */}
             <Box
-              aria-hidden={!drawerOpen}
+              aria-hidden={!desktopOpen}
               sx={{
                 position: 'absolute',
                 inset: 0,
@@ -427,37 +421,54 @@ export default function MainLayout() {
                 px: 1,
                 overflowY: 'auto',
                 overflowX: 'hidden',
-                opacity: drawerOpen ? 1 : 0,
-                pointerEvents: drawerOpen ? 'auto' : 'none',
+                opacity: desktopOpen ? 1 : 0,
+                pointerEvents: desktopOpen ? 'auto' : 'none',
                 transition: (theme) =>
                   theme.transitions.create('opacity', {
                     duration: theme.transitions.duration.shortest,
                   }),
               }}
             >
-              {navGroups.map((group) => (
-                <Box key={group.label} sx={{ pb: 1 }}>
-                  <List sx={{ p: 0 }}>
-                    {group.items.map((item) =>
-                      item.children ? (
-                        <ExpandableDrawerItem
-                          key={item.to}
-                          item={item}
-                          pathname={pathname}
-                        />
-                      ) : (
-                        <DrawerItem
-                          key={item.to}
-                          item={item}
-                          selected={isItemSelected(pathname, item.to)}
-                        />
-                      ),
-                    )}
-                  </List>
-                </Box>
-              ))}
+              {expandedNavList}
             </Box>
           </Box>
+        </Drawer>
+
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={closeMobileDrawer}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            display: { xs: 'block', lg: 'none' },
+            '& .MuiDrawer-paper': {
+              width: DRAWER_WIDTH,
+              boxSizing: 'border-box',
+              overflowX: 'hidden',
+            },
+          }}
+        >
+          <Box
+            sx={{
+              height: APPBAR_HEIGHT,
+              display: 'flex',
+              alignItems: 'center',
+              px: 2,
+              flexShrink: 0,
+            }}
+          >
+            <IconButton
+              onClick={closeMobileDrawer}
+              sx={{ color: '#37474F' }}
+              aria-label="close navigation"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
+              <Logo />
+            </Box>
+          </Box>
+          <Box sx={{ pt: 1, px: 1, overflowY: 'auto', flex: 1 }}>{expandedNavList}</Box>
         </Drawer>
       </Box>
 
@@ -466,11 +477,11 @@ export default function MainLayout() {
         className="flex-1"
         sx={{
           pt: `${APPBAR_HEIGHT}px`,
-          px: { xs: 2, sm: 0 },
-          pr: { sm: 2 },
-          pb: { xs: '80px', sm: 2 },
+          px: { xs: 2, lg: 0 },
+          pr: { lg: 2 },
+          pb: 2,
           minHeight: '100vh',
-          width: { xs: '100%', sm: `calc(100% - ${navWidth}px)` },
+          width: { xs: '100%', lg: `calc(100% - ${navWidth}px)` },
           transition: (theme) =>
             theme.transitions.create('width', {
               easing: theme.transitions.easing.sharp,
@@ -479,30 +490,6 @@ export default function MainLayout() {
         }}
       >
         <Outlet />
-      </Box>
-
-      <Box
-        component="nav"
-        aria-label="bottom navigation"
-        sx={{
-          display: { xs: 'flex', sm: 'none' },
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: BOTTOM_NAV_HEIGHT,
-          backgroundColor: '#EAF3F5',
-          borderTop: '1px solid rgba(84,110,122,0.12)',
-          zIndex: 1200,
-        }}
-      >
-        {allItems.map((item) => (
-          <BottomNavItem
-            key={item.to}
-            item={item}
-            selected={isItemSelected(pathname, item.to)}
-          />
-        ))}
       </Box>
     </Box>
   )

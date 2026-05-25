@@ -1,7 +1,7 @@
+import { Fragment } from 'react'
 import {
   Box,
-  Card,
-  CardContent,
+  Divider,
   Grid,
   Paper,
   Table,
@@ -15,242 +15,42 @@ import {
 import { green } from '@mui/material/colors'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
-import TrendingFlatIcon from '@mui/icons-material/TrendingFlat'
-import GroupIcon from '@mui/icons-material/Group'
-import BadgeIcon from '@mui/icons-material/Badge'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
-import PaidIcon from '@mui/icons-material/Paid'
-import PaymentsIcon from '@mui/icons-material/Payments'
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
+import AssessmentIcon from '@mui/icons-material/Assessment'
+import BadgeIcon from '@mui/icons-material/Badge'
 
-import ServiceShareChart from '@/components/charts/ServiceShareChart'
-import StackedBarChart from '@/components/charts/StackedBarChart'
-import TrendLineChart from '@/components/charts/TrendLineChart'
 import RevenueComposedChart from '@/components/charts/RevenueComposedChart'
+import StackedBarChart from '@/components/charts/StackedBarChart'
 import ShareableBlock from '@/components/ShareableBlock'
 import PageHeader from '@/components/PageHeader'
+import CollectionRateBar from '@/components/CollectionRateBar'
+import {
+  CategoryPaper,
+  OutlinedBlock,
+  KpiTile,
+  ShareCardContent,
+} from '@/components/SectionBlocks'
 
 import {
-  revenueKpis,
-  peopleKpis,
-  serviceTrend,
-  serviceShareCurrent,
-  staffTrend,
-  turnoverTrend,
-  revenueShareCurrent,
+  highlights,
+  revenueRankingTop5,
+  financialKpis,
+  collectionDonut,
   revenueTrend,
-  facilityList,
-  GRADE_CONFIG,
-  TURNOVER_WARNING_THRESHOLD,
+  financialRanking,
+  operationsKpis,
+  caseTrend,
+  caseShareCurrent,
+  operationsRanking,
+  hrKpis,
+  hrComparison,
 } from '@/features/overview/mockData'
 
-// ── Color tokens ──────────────────────────────────────────
-const WARNING = '#ED6C02'
+const PRIMARY = '#0097A7'
 const PRIMARY_DARK = '#005F64'
+const WARNING = '#ED6C02'
 
-const KPI_ICONS = {
-  ytdRevenue: AccountBalanceWalletIcon,
-  monthlyRevenue: AttachMoneyIcon,
-  collected: PaidIcon,
-  staffCost: PaymentsIcon,
-  serviceTotal: GroupIcon,
-  newCases: PersonAddAlt1Icon,
-  staffTotal: BadgeIcon,
-  staffLeavers: PersonRemoveIcon,
-}
-
-// ── Shared atoms ──────────────────────────────────────────
-
-function DeltaRow({ delta }) {
-  if (!delta) return null
-  const color = delta.isWarning
-    ? WARNING
-    : delta.dir === 'flat'
-      ? 'rgba(0,0,0,0.6)'
-      : green[500]
-  const Icon =
-    delta.dir === 'up' ? ArrowUpwardIcon
-    : delta.dir === 'down' ? ArrowDownwardIcon
-    : TrendingFlatIcon
-  return (
-    <Box className="flex items-center gap-0.5" sx={{ mt: 0.5 }}>
-      <Icon sx={{ fontSize: 12, color }} />
-      <Typography variant="caption" sx={{ color, fontWeight: 500 }}>
-        {delta.text}
-      </Typography>
-    </Box>
-  )
-}
-
-function GradeChip({ grade }) {
-  const cfg = GRADE_CONFIG[grade] ?? { bg: 'rgba(0,0,0,0.08)', color: 'rgba(0,0,0,0.6)' }
-  return (
-    <Box
-      component="span"
-      sx={{
-        display: 'inline-block',
-        px: 1,
-        py: 0.25,
-        borderRadius: '16px',
-        bgcolor: cfg.bg,
-        color: cfg.color,
-        fontSize: 12,
-        lineHeight: '18px',
-        fontWeight: 500,
-        whiteSpace: 'nowrap',
-        flexShrink: 0,
-      }}
-    >
-      {grade}
-    </Box>
-  )
-}
-
-// ── KPI Card ──────────────────────────────────────────────
-
-function KpiCard({ title, value, unit, delta, hint, icon: Icon }) {
-  return (
-    <Card sx={{ height: '100%' }}>
-      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-        <Box className="flex items-start justify-between">
-          <Typography variant="body1">{title}</Typography>
-          <Box
-            sx={{
-              width: 32,
-              height: 32,
-              borderRadius: '8px',
-              bgcolor: '#C5F0F7',
-              color: PRIMARY_DARK,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              '& svg': { fontSize: 20 },
-            }}
-          >
-            <Icon />
-          </Box>
-        </Box>
-        <Box className="mt-3 flex items-baseline gap-1">
-          <Typography
-            sx={{
-              fontSize: 32,
-              fontWeight: 500,
-              lineHeight: 1.2,
-              letterSpacing: 0,
-              color: 'text.primary',
-            }}
-          >
-            {value}
-          </Typography>
-          {unit && (
-            <Typography variant="body2" color="textSecondary" sx={{ pb: '4px' }}>
-              {unit}
-            </Typography>
-          )}
-        </Box>
-        <Box sx={{ mt: 1 }}>
-          {delta && <DeltaRow delta={delta} />}
-          {hint && !delta && (
-            <Typography variant="caption" color="textSecondary">
-              {hint}
-            </Typography>
-          )}
-        </Box>
-      </CardContent>
-    </Card>
-  )
-}
-
-// ── Section card wrapper (with optional right-side header element) ─
-
-function SectionCard({ title, subtitle, headerRight, children }) {
-  return (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardContent
-        sx={{
-          p: 2,
-          '&:last-child': { pb: 2 },
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Box className="flex items-start justify-between" sx={{ mb: 2 }}>
-          <Box>
-            <Typography variant="h6">
-              {title}
-            </Typography>
-            {subtitle && (
-              <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.25 }}>
-                {subtitle}
-              </Typography>
-            )}
-          </Box>
-          {headerRight}
-        </Box>
-        <Box sx={{ flex: 1 }}>{children}</Box>
-      </CardContent>
-    </Card>
-  )
-}
-
-// ── Pie + legend rows (for service / revenue share) ────────
-
-function ShareCardContent({ data, totalLabel, unit, valueFormatter }) {
-  const total = data.reduce((s, d) => s + d.value, 0)
-  const fmt = valueFormatter ?? ((v) => v.toLocaleString())
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
-      <Box sx={{ width: 220, flexShrink: 0 }}>
-        <ServiceShareChart
-          data={data}
-          totalLabel={totalLabel}
-          unit={unit}
-          totalFormatter={fmt}
-          height={220}
-        />
-      </Box>
-      <Box sx={{ flex: 1, minWidth: 0, maxWidth: 240 }}>
-        {data.map((item) => {
-          const pct = ((item.value / total) * 100).toFixed(1)
-          return (
-            <Box
-              key={item.name}
-              className="flex items-center justify-between"
-              sx={{ py: 0.75 }}
-            >
-              <Box className="flex items-center gap-2">
-                <Box
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    bgcolor: item.color,
-                  }}
-                />
-                <Typography variant="body1">{item.name}</Typography>
-              </Box>
-              <Box className="flex items-baseline gap-4">
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {fmt(item.value)} {unit}
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  {pct}%
-                </Typography>
-              </Box>
-            </Box>
-          )
-        })}
-      </Box>
-    </Box>
-  )
-}
-
-// ── Facility list table ───────────────────────────────────
-
+// ── Table cell sx ─────────────────────────────────────────
 const headCellSx = {
   bgcolor: '#ECEFF1',
   color: '#546E7A',
@@ -271,272 +71,607 @@ const bodyCellSx = {
   verticalAlign: 'middle',
 }
 
-function YoyCell({ value }) {
+// ── Shared atoms ──────────────────────────────────────────
+
+function MoMDelta({ value }) {
   if (value == null) {
-    return <Typography variant="body2" color="textSecondary">—</Typography>
+    return (
+      <Typography variant="body1" color="textSecondary">
+        —
+      </Typography>
+    )
   }
   const isUp = value >= 0
   const Icon = isUp ? ArrowUpwardIcon : ArrowDownwardIcon
-  const color = isUp ? green[500] : WARNING
+  const color = isUp ? green[600] : WARNING
   return (
-    <Box className="flex items-center gap-0.5">
+    <Box className="flex items-center gap-0.5" sx={{ justifyContent: 'flex-end' }}>
       <Icon sx={{ fontSize: 14, color }} />
-      <Typography variant="body2" sx={{ color, fontWeight: 500 }}>
+      <Typography variant="body1" sx={{ color }}>
         {isUp ? `+${value}` : value}%
       </Typography>
     </Box>
   )
 }
 
-function FacilityTable() {
+function TypePill({ label }) {
   return (
-    <TableContainer>
-      <Table size="small" sx={{ '& th, & td': { whiteSpace: 'nowrap' } }}>
+    <Box
+      component="span"
+      sx={{
+        display: 'inline-block',
+        px: 0.75,
+        py: 0.125,
+        mr: 1,
+        borderRadius: '4px',
+        bgcolor: `${PRIMARY}1F`,
+        color: PRIMARY,
+        fontSize: 11,
+        fontWeight: 500,
+        lineHeight: '16px',
+        verticalAlign: 'middle',
+      }}
+    >
+      {label}
+    </Box>
+  )
+}
+
+// ── Section 1: 重點摘要 + 月營收排行榜 ───────────────────────
+
+function HighlightItem({ item }) {
+  const accent = item.tone === 'warning' ? '#FF9800' : PRIMARY
+
+  return (
+    <Box sx={{ display: 'flex', gap: 1, alignItems: 'stretch' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, alignSelf: 'stretch' }}>
+        <Box
+          sx={{
+            width: 4,
+            alignSelf: 'stretch',
+            borderRadius: '18px',
+            bgcolor: accent,
+          }}
+        />
+      </Box>
+      <Box
+        sx={{
+          flex: 1,
+          minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          gap: 0.5,
+        }}
+      >
+        <Typography variant="body1" sx={{ color: 'text.primary' }}>
+          {item.facility}：{item.metric}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          {item.hint}
+        </Typography>
+      </Box>
+    </Box>
+  )
+}
+
+function SummaryCard({ title, subtitle, children }) {
+  return (
+    <Paper
+      elevation={0}
+      sx={{
+        height: '100%',
+        bgcolor: '#FFFFFF',
+        borderRadius: '8px',
+        p: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
+      <Box>
+        <Typography variant="h6" sx={{ color: 'text.primary', lineHeight: 1.2 }}>
+          {title}
+        </Typography>
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          sx={{ display: 'block', mt: 0.25 }}
+        >
+          {subtitle}
+        </Typography>
+      </Box>
+      {children}
+    </Paper>
+  )
+}
+
+function HighlightsCard() {
+  return (
+    <SummaryCard title="重點摘要" subtitle="當月（2026/05）">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        {highlights.map((item, idx) => (
+          <Fragment key={`${item.facility}-${item.metric}`}>
+            {idx > 0 && <Divider />}
+            <HighlightItem item={item} />
+          </Fragment>
+        ))}
+      </Box>
+    </SummaryCard>
+  )
+}
+
+function RevenueRankBadge({ rank }) {
+  return (
+    <Box
+      sx={{
+        width: 28,
+        height: 28,
+        borderRadius: '50%',
+        bgcolor: 'rgba(0,151,167,0.12)',
+        color: PRIMARY_DARK,
+        fontWeight: 500,
+        fontSize: 16,
+        letterSpacing: '0.15px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}
+    >
+      {rank}
+    </Box>
+  )
+}
+
+function RevenueRankRow({ row }) {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: 1 }}>
+      <RevenueRankBadge rank={row.rank} />
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Typography
+          variant="body1"
+          sx={{ color: 'text.primary', lineHeight: 1.3 }}
+          noWrap
+        >
+          {row.name}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" sx={{ lineHeight: 1.4 }}>
+          {row.typeLabel}
+        </Typography>
+      </Box>
+      <Typography
+        variant="body1"
+        sx={{ fontWeight: 500, color: 'text.primary', whiteSpace: 'nowrap' }}
+      >
+        ${row.monthRevenue.toLocaleString()}{' '}
+        <Typography component="span" variant="caption" color="textSecondary">
+          萬
+        </Typography>
+      </Typography>
+    </Box>
+  )
+}
+
+function RevenueRankingCard() {
+  return (
+    <SummaryCard title="月營收排行榜" subtitle="當月（2026/05）・Top 5 機構">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, flex: 1 }}>
+        {revenueRankingTop5.map((row, idx) => (
+          <Fragment key={row.id}>
+            {idx > 0 && <Divider />}
+            <RevenueRankRow row={row} />
+          </Fragment>
+        ))}
+      </Box>
+    </SummaryCard>
+  )
+}
+
+function HighlightsSection() {
+  return (
+    <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <ShareableBlock title="重點摘要">
+          <HighlightsCard />
+        </ShareableBlock>
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <ShareableBlock title="月營收排行榜">
+          <RevenueRankingCard />
+        </ShareableBlock>
+      </Grid>
+    </Grid>
+  )
+}
+
+// ── Section 2: 財務概況 ──────────────────────────────────
+
+function FinancialRankingTable() {
+  return (
+    <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+      <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell sx={headCellSx}>機構名稱 / 類型</TableCell>
-            <TableCell sx={headCellSx} align="right">服務人數</TableCell>
-            <TableCell sx={headCellSx} align="right">員工數（新入）</TableCell>
-            <TableCell sx={headCellSx} align="right">流動率</TableCell>
-            <TableCell sx={headCellSx} align="center">照護比</TableCell>
-            <TableCell sx={headCellSx} align="right">意外事件</TableCell>
-            <TableCell sx={headCellSx} align="right">當月營收</TableCell>
-            <TableCell sx={headCellSx} align="right">YOY</TableCell>
-            <TableCell sx={headCellSx} align="center">健康度</TableCell>
+            <TableCell sx={headCellSx}>機構</TableCell>
+            <TableCell
+              sx={{ ...headCellSx, width: { xs: 'auto', lg: 200 } }}
+              align="right"
+            >
+              本月營收
+            </TableCell>
+            <TableCell
+              sx={{ ...headCellSx, width: { xs: 96, lg: 140 } }}
+              align="right"
+            >
+              YoY
+            </TableCell>
+            <TableCell
+              sx={{ ...headCellSx, width: { xs: 96, lg: 140 } }}
+              align="right"
+            >
+              MoM
+            </TableCell>
+            <TableCell sx={{ ...headCellSx, width: { xs: 200, lg: 300 } }}>
+              收款率
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {facilityList.map((row) => {
-            const warnTurnover = row.turnover > TURNOVER_WARNING_THRESHOLD
-            return (
-              <TableRow key={row.name} hover>
-                <TableCell sx={bodyCellSx}>
-                  <Typography variant="body1" sx={{ fontWeight: 500, lineHeight: 1.3 }}>
+          {financialRanking.map((row) => (
+            <TableRow key={row.id} hover>
+              <TableCell sx={bodyCellSx}>
+                <Box
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <TypePill label={row.typeLabel} />
+                  <Typography
+                    component="span"
+                    variant="body1"
+                    sx={{ lineHeight: 1.3 }}
+                  >
                     {row.name}
                   </Typography>
-                  <Typography variant="caption" color="textSecondary">
-                    {row.type}
-                  </Typography>
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  <Typography component="span" variant="body2" sx={{ fontWeight: 500 }}>
-                    {row.service}
-                  </Typography>
-                  <Typography component="span" variant="caption" color="textSecondary" sx={{ ml: 0.5 }}>
-                    （+{row.serviceNew}）
-                  </Typography>
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  <Typography component="span" variant="body2" sx={{ fontWeight: 500 }}>
-                    {row.staff}
-                  </Typography>
-                  <Typography component="span" variant="caption" color="textSecondary" sx={{ ml: 0.5 }}>
-                    （+{row.staffNew}）
-                  </Typography>
-                </TableCell>
-                <TableCell
-                  sx={{
-                    ...bodyCellSx,
-                    color: warnTurnover ? WARNING : 'text.primary',
-                    fontWeight: warnTurnover ? 700 : 400,
-                  }}
-                  align="right"
-                >
-                  {row.turnover}%
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="center">{row.careRatio}</TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  {row.incidents > 0 ? row.incidents : ''}
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  ${row.revenue.toLocaleString()} 萬
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="right">
-                  <Box sx={{ display: 'inline-flex', justifyContent: 'flex-end' }}>
-                    <YoyCell value={row.yoy} />
-                  </Box>
-                </TableCell>
-                <TableCell sx={bodyCellSx} align="center">
-                  <GradeChip grade={row.grade} />
-                </TableCell>
-              </TableRow>
-            )
-          })}
+                </Box>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Typography variant="body1">
+                  ${row.monthRevenue.toLocaleString()} 萬
+                </Typography>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <MoMDelta value={row.yoyPct} />
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <MoMDelta value={row.momPct} />
+              </TableCell>
+              <TableCell sx={bodyCellSx}>
+                <CollectionRateBar
+                  value={row.collectionRate}
+                  warningBelow={70}
+                  width={{ xs: 180, lg: 280 }}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
   )
 }
 
-// ── Page sections ─────────────────────────────────────────
-
-
-function KpiRow({ items }) {
+function FinancialSection() {
   return (
-    <Grid container spacing={2}>
-      {items.map((kpi) => (
-        <Grid key={kpi.key} size={{ xs: 12, sm: 6, md: 3 }}>
-          <KpiCard
-            title={kpi.title}
-            value={kpi.value}
-            unit={kpi.unit}
-            delta={kpi.delta}
-            hint={kpi.hint}
-            icon={KPI_ICONS[kpi.key]}
-          />
-        </Grid>
-      ))}
-    </Grid>
-  )
-}
+    <ShareableBlock title="財務概況">
+      <CategoryPaper
+        icon={<AttachMoneyIcon />}
+        title="財務概況"
+        subtitle="當月（2026/05）"
+      >
+        <Box className="flex flex-col gap-4">
+          {/* KPI tiles */}
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            {financialKpis.map((kpi) => (
+              <Grid key={kpi.key} size={{ xs: 12, sm: 6, md: 3 }}>
+                <KpiTile
+                  title={kpi.title}
+                  value={kpi.value}
+                  unit={kpi.unit}
+                  delta={kpi.delta}
+                  hint={kpi.hint}
+                />
+              </Grid>
+            ))}
+          </Grid>
 
-function ServiceRow() {
-  return (
-    <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <ShareableBlock title="服務人數趨勢">
-          <SectionCard title="服務人數趨勢" subtitle="近 13 個月（住宿 / 日照 / 居服）">
-            <StackedBarChart
-              months={serviceTrend.months}
-              series={serviceTrend.series}
-              yAxisSuffix=" 人"
-              height={280}
-            />
-          </SectionCard>
-        </ShareableBlock>
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <ShareableBlock title="服務人數佔比">
-          <SectionCard title="服務人數佔比" subtitle="當月（2026/05）">
-            <ShareCardContent
-              data={serviceShareCurrent}
-              totalLabel="服務人數"
-              unit="人"
-            />
-          </SectionCard>
-        </ShareableBlock>
-      </Grid>
-    </Grid>
-  )
-}
+          {/* Charts */}
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock
+                title="營收趨勢"
+                subtitle="近 13 個月（柱狀為各服務別、折線為 YoY 成長率）"
+              >
+                <RevenueComposedChart
+                  months={revenueTrend.months}
+                  series={revenueTrend.series}
+                  yoy={revenueTrend.yoy}
+                  height={280}
+                />
+              </OutlinedBlock>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock title="收款率" subtitle="當月（2026/05）">
+                <ShareCardContent
+                  data={collectionDonut.data}
+                  totalLabel="收款率"
+                  unit="萬"
+                  centerOverride={{
+                    label: '收款率',
+                    value: `${collectionDonut.ratePct}`,
+                    unit: '%',
+                  }}
+                />
+              </OutlinedBlock>
+            </Grid>
+          </Grid>
 
-function StaffRow() {
-  return (
-    <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <ShareableBlock title="員工人數趨勢">
-          <SectionCard title="員工人數趨勢" subtitle="近 13 個月（住宿 / 日照 / 居服）">
-            <StackedBarChart
-              months={staffTrend.months}
-              series={staffTrend.series}
-              yAxisSuffix=" 人"
-              height={280}
-            />
-          </SectionCard>
-        </ShareableBlock>
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <ShareableBlock title="流動率趨勢">
-          <SectionCard title="流動率趨勢" subtitle="近 13 個月（虛線為整體平均）">
-            <TrendLineChart
-              months={turnoverTrend.months}
-              series={turnoverTrend.series}
-              yAxisSuffix="%"
-              height={280}
-            />
-          </SectionCard>
-        </ShareableBlock>
-      </Grid>
-    </Grid>
-  )
-}
-
-function RevenueRow() {
-  const yoyBadge = (
-    <Box
-      sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 0.5,
-        bgcolor: 'rgba(46,125,50,0.12)',
-        color: green[700],
-        px: 1,
-        py: 0.25,
-        borderRadius: '16px',
-        flexShrink: 0,
-        mr: 5,
-      }}
-    >
-      <ArrowUpwardIcon sx={{ fontSize: 14 }} />
-      <Typography variant="caption" sx={{ color: 'inherit', fontWeight: 500 }}>
-        本月 YoY +{revenueTrend.yoyCurrent}%
-      </Typography>
-    </Box>
-  )
-
-  return (
-    <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <ShareableBlock title="營收佔比">
-          <SectionCard title="營收佔比" subtitle="當月（2026/05，單位：萬元）">
-            <ShareCardContent
-              data={revenueShareCurrent}
-              totalLabel="本月營收"
-              unit="萬元"
-            />
-          </SectionCard>
-        </ShareableBlock>
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <ShareableBlock title="營收月趨勢">
-          <SectionCard
-            title="營收月趨勢"
-            subtitle="近 13 個月（柱狀為各服務別、折線為 YoY 成長率）"
-            headerRight={yoyBadge}
-          >
-            <RevenueComposedChart
-              months={revenueTrend.months}
-              series={revenueTrend.series}
-              yoy={revenueTrend.yoy}
-              height={280}
-            />
-          </SectionCard>
-        </ShareableBlock>
-      </Grid>
-    </Grid>
-  )
-}
-
-function FacilityListSection() {
-  return (
-    <ShareableBlock title="各機構概況">
-      <Paper sx={{ borderRadius: '8px', overflow: 'hidden' }}>
-        <Box sx={{ px: 2, pt: 2, pb: 1, pr: 6 }}>
-          <Typography variant="h6">
-            各機構概況
-          </Typography>
-          <Typography variant="caption" color="textSecondary">
-            當月（2026/05）
-          </Typography>
+          {/* Ranking table */}
+          <OutlinedBlock title="各機構營收比較">
+            <FinancialRankingTable />
+          </OutlinedBlock>
         </Box>
-        <FacilityTable />
-      </Paper>
+      </CategoryPaper>
     </ShareableBlock>
   )
 }
 
-// ── Page ──────────────────────────────────────────────────
+// ── Section 3: 營運概況 ──────────────────────────────────
+
+function OperationsRankingTable() {
+  return (
+    <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell sx={headCellSx}>機構</TableCell>
+            <TableCell
+              sx={{ ...headCellSx, width: { xs: 120, lg: 160 } }}
+              align="right"
+            >
+              立案人數
+            </TableCell>
+            <TableCell
+              sx={{ ...headCellSx, width: { xs: 100, lg: 140 } }}
+              align="right"
+            >
+              個案數
+            </TableCell>
+            <TableCell sx={{ ...headCellSx, width: { xs: 200, lg: 300 } }}>
+              收案率
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {operationsRanking.map((row) => (
+            <TableRow key={row.id} hover>
+              <TableCell sx={bodyCellSx}>
+                <Box
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <TypePill label={row.typeLabel} />
+                  <Typography
+                    component="span"
+                    variant="body1"
+                    sx={{ lineHeight: 1.3 }}
+                  >
+                    {row.name}
+                  </Typography>
+                </Box>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Typography variant="body1">{row.beds}</Typography>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Typography variant="body1">{row.cases}</Typography>
+              </TableCell>
+              <TableCell sx={bodyCellSx}>
+                <CollectionRateBar
+                  value={row.intakeRate}
+                  width={{ xs: 180, lg: 280 }}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  )
+}
+
+function OperationsSection() {
+  return (
+    <ShareableBlock title="營運概況">
+      <CategoryPaper
+        icon={<AssessmentIcon />}
+        title="營運概況"
+        subtitle="當月（2026/05）"
+      >
+        <Box className="flex flex-col gap-4">
+          {/* KPI tiles */}
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            {operationsKpis.map((kpi) => (
+              <Grid key={kpi.key} size={{ xs: 12, sm: 6, md: 6 }}>
+                <KpiTile
+                  title={kpi.title}
+                  value={kpi.value}
+                  unit={kpi.unit}
+                  delta={kpi.delta}
+                />
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* Charts */}
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock
+                title="個案數趨勢"
+                subtitle="近 13 個月（住宿 / 日照 / 居服）"
+              >
+                <StackedBarChart
+                  months={caseTrend.months}
+                  series={caseTrend.series}
+                  yAxisSuffix=" 人"
+                  height={280}
+                />
+              </OutlinedBlock>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <OutlinedBlock title="個案數佔比" subtitle="當月（2026/05）">
+                <ShareCardContent
+                  data={caseShareCurrent}
+                  totalLabel="個案總數"
+                  unit="人"
+                />
+              </OutlinedBlock>
+            </Grid>
+          </Grid>
+
+          {/* Ranking table */}
+          <OutlinedBlock title="各機構營運比較">
+            <OperationsRankingTable />
+          </OutlinedBlock>
+        </Box>
+      </CategoryPaper>
+    </ShareableBlock>
+  )
+}
+
+// ── Section 4: 人力狀況 ──────────────────────────────────
+
+function HrComparisonTable() {
+  return (
+    <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell sx={headCellSx}>機構</TableCell>
+            <TableCell
+              sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }}
+              align="right"
+            >
+              總員工數
+            </TableCell>
+            <TableCell
+              sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }}
+              align="right"
+            >
+              全職員工
+            </TableCell>
+            <TableCell
+              sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }}
+              align="right"
+            >
+              兼職員工
+            </TableCell>
+            <TableCell
+              sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }}
+              align="right"
+            >
+              離職率
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {hrComparison.map((row) => (
+            <TableRow key={row.id} hover>
+              <TableCell sx={bodyCellSx}>
+                <Box
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <TypePill label={row.typeLabel} />
+                  <Typography
+                    component="span"
+                    variant="body1"
+                    sx={{ lineHeight: 1.3 }}
+                  >
+                    {row.name}
+                  </Typography>
+                </Box>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Typography variant="body1">{row.staffTotal} 人</Typography>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Typography variant="body1">{row.fullTime} 人</Typography>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Typography variant="body1">{row.partTime} 人</Typography>
+              </TableCell>
+              <TableCell sx={bodyCellSx} align="right">
+                <Typography variant="body1">
+                  {row.turnoverRate.toFixed(1)}%
+                </Typography>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  )
+}
+
+function HrSection() {
+  return (
+    <ShareableBlock title="人力狀況">
+      <CategoryPaper icon={<BadgeIcon />} title="人力狀況" subtitle="當月（2026/05）">
+        <Box className="flex flex-col gap-4">
+          {/* KPI tiles */}
+          <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
+            {hrKpis.map((kpi) => (
+              <Grid key={kpi.key} size={{ xs: 12, sm: 6, md: 3 }}>
+                <KpiTile
+                  title={kpi.title}
+                  value={kpi.value}
+                  unit={kpi.unit}
+                  delta={kpi.delta}
+                />
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* Comparison table */}
+          <OutlinedBlock title="各機構人力比較">
+            <HrComparisonTable />
+          </OutlinedBlock>
+        </Box>
+      </CategoryPaper>
+    </ShareableBlock>
+  )
+}
+
+// ── Page ─────────────────────────────────────────────────
 
 export default function Dashboard() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <PageHeader title="集團總覽" />
-      <KpiRow items={revenueKpis} />
-      <RevenueRow />
-      <KpiRow items={peopleKpis} />
-      <ServiceRow />
-      <StaffRow />
-      <FacilityListSection />
+      <HighlightsSection />
+      <FinancialSection />
+      <OperationsSection />
+      <HrSection />
     </Box>
   )
 }

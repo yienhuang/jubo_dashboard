@@ -45,6 +45,13 @@ import ServiceShareChart from '@/components/charts/ServiceShareChart'
 import MovementWaterfallChart from '@/components/charts/MovementWaterfallChart'
 import ShareableBlock from '@/components/ShareableBlock'
 import PageHeader from '@/components/PageHeader'
+import {
+  CategoryPaper,
+  OutlinedBlock,
+  KpiTile,
+  YoyBadge,
+  ShareCardContent,
+} from '@/components/SectionBlocks'
 
 import {
   overviewKpis,
@@ -182,171 +189,6 @@ function SectionCard({ title, subtitle, headerRight, children, fullHeight = true
         <Box sx={{ flex: 1 }}>{children}</Box>
       </CardContent>
     </Card>
-  )
-}
-
-// ── BranchTab building blocks ─────────────────────────────
-
-function SectionTitle({ icon, title, subtitle }) {
-  return (
-    <Box className="flex items-center gap-3" sx={{ mb: 2 }}>
-      <Box
-        sx={{
-          width: 44,
-          height: 44,
-          borderRadius: '8px',
-          bgcolor: 'rgba(0,151,167,0.12)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-          color: PRIMARY_DARK,
-          '& svg': { fontSize: 28 },
-        }}
-      >
-        {icon}
-      </Box>
-      <Box>
-        <Typography variant="h6" sx={{ color: '#37474F', lineHeight: 1.6, letterSpacing: '0.15px' }}>
-          {title}
-        </Typography>
-        {subtitle && (
-          <Typography variant="caption" color="textSecondary">
-            {subtitle}
-          </Typography>
-        )}
-      </Box>
-    </Box>
-  )
-}
-
-function CategoryPaper({ icon, title, subtitle, children }) {
-  return (
-    <Paper sx={{ borderRadius: '8px', p: 2, boxShadow: 'none' }}>
-      <SectionTitle icon={icon} title={title} subtitle={subtitle} />
-      {children}
-    </Paper>
-  )
-}
-
-function OutlinedBlock({ title, subtitle, headerRight, children, fullHeight = true }) {
-  return (
-    <Box
-      sx={{
-        height: fullHeight ? '100%' : 'auto',
-        bgcolor: '#FFFFFF',
-        border: '1px solid rgba(0,0,0,0.12)',
-        borderRadius: '8px',
-        p: 2,
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <Box className="flex items-start justify-between" sx={{ mb: 2 }}>
-        <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-            {title}
-          </Typography>
-          {subtitle && (
-            <Typography
-              variant="caption"
-              color="textSecondary"
-              sx={{ display: 'block', mt: 0.25 }}
-            >
-              {subtitle}
-            </Typography>
-          )}
-        </Box>
-        {headerRight}
-      </Box>
-      <Box sx={{ flex: 1 }}>{children}</Box>
-    </Box>
-  )
-}
-
-function KpiTile({ title, value, unit, delta, warningBg }) {
-  return (
-    <Box
-      sx={{
-        height: '100%',
-        bgcolor: warningBg ? 'rgba(237,108,2,0.06)' : 'rgba(120,144,156,0.08)',
-        borderRadius: '8px',
-        p: 2,
-      }}
-    >
-      <Typography variant="body1">{title}</Typography>
-      <Box className="mt-3 flex items-baseline gap-1">
-        <Typography
-          sx={{
-            fontSize: 32,
-            fontWeight: 500,
-            lineHeight: 1.2,
-            color: 'text.primary',
-            letterSpacing: 0,
-          }}
-        >
-          {value}
-        </Typography>
-        {unit && (
-          <Typography variant="body2" color="textSecondary" sx={{ pb: '2px' }}>
-            {unit}
-          </Typography>
-        )}
-      </Box>
-      <DeltaRow delta={delta} />
-    </Box>
-  )
-}
-
-// ── Share Card Content (pie + legend) ─────────────────────
-
-function ShareCardContent({ data, totalLabel, unit, valueFormatter }) {
-  const total = data.reduce((s, d) => s + d.value, 0)
-  const fmt = valueFormatter ?? ((v) => v.toLocaleString())
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
-      <Box sx={{ width: 220, flexShrink: 0 }}>
-        <ServiceShareChart
-          data={data}
-          totalLabel={totalLabel}
-          unit={unit}
-          totalFormatter={fmt}
-          height={220}
-        />
-      </Box>
-      <Box sx={{ flex: 1, minWidth: 0, maxWidth: 240 }}>
-        {data.map((item) => {
-          const pct = ((item.value / total) * 100).toFixed(1)
-          return (
-            <Box
-              key={item.name}
-              className="flex items-center justify-between"
-              sx={{ py: 0.75 }}
-            >
-              <Box className="flex items-center gap-2">
-                <Box
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    bgcolor: item.color,
-                  }}
-                />
-                <Typography variant="body1">{item.name}</Typography>
-              </Box>
-              <Box className="flex items-baseline gap-4">
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {fmt(item.value)} {unit}
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  {pct}%
-                </Typography>
-              </Box>
-            </Box>
-          )
-        })}
-      </Box>
-    </Box>
   )
 }
 
@@ -488,32 +330,6 @@ function IncidentsPie({ incidents }) {
           </Box>
         ))}
       </Box>
-    </Box>
-  )
-}
-
-// ── YoY Badge ─────────────────────────────────────────────
-
-function YoyBadge({ value, sx }) {
-  return (
-    <Box
-      sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 0.5,
-        bgcolor: 'rgba(46,125,50,0.12)',
-        color: green[700],
-        px: 1,
-        py: 0.25,
-        borderRadius: '16px',
-        flexShrink: 0,
-        ...sx,
-      }}
-    >
-      <ArrowUpwardIcon sx={{ fontSize: 14 }} />
-      <Typography variant="caption" sx={{ color: 'inherit', fontWeight: 500 }}>
-        YoY +{value}%
-      </Typography>
     </Box>
   )
 }

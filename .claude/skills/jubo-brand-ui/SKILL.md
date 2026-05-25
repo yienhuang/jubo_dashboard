@@ -15,12 +15,14 @@ This skill ensures Claude generates UI code that matches Jubo's brand visual sty
 This product is built with **React 19 + MUI (Material UI v9) + Tailwind CSS v3**, dual-track styling.
 
 **Styling rules:**
+
 - **Component-level styling** (colors, typography, internal padding, variants): use MUI `sx` prop or `styled()`.
 - **Layout** (flex / grid / spacing between blocks): Tailwind utilities are preferred and shorter.
 - **Do NOT** set the same property in both `sx` and `className` on the same element — specificity becomes unintuitive.
 - Tailwind preflight is disabled; MUI `CssBaseline` handles reset. Tailwind has `important: '#root'` so utilities can override MUI inline styles when needed.
 
 **MUI v9 specifics:**
+
 - Grid v2 syntax: `<Grid size={{ xs: 12, sm: 6 }}>` — NOT the legacy `<Grid item xs={12}>`.
 - All API calls should go through `@/lib/api` (configured Axios with token interceptor).
 
@@ -46,29 +48,29 @@ The brand logo is an SVG wordmark. Always render it at `width="96" height="24"`.
 ```js
 const colors = {
   // Brand
-  primary:        '#0097A7',
-  primaryDark:    '#005F64',
-  primaryLight:   '#C5F0F7',   // nav active background
+  primary: '#0097A7',
+  primaryDark: '#005F64',
+  primaryLight: '#C5F0F7', // nav active background
 
   // Neutrals
-  secondary:      '#546E7A',
-  secondaryDark:  '#37474F',
-  secondary50:    '#ECEFF1',   // table header background
+  secondary: '#546E7A',
+  secondaryDark: '#37474F',
+  secondary50: '#ECEFF1', // table header background
 
   // Semantic
-  error:          '#D32F2F',
-  success:        '#2E7D32',
-  info:           '#0288D1',
+  error: '#D32F2F',
+  success: '#2E7D32',
+  info: '#0288D1',
 
   // Backgrounds
-  bgPage:         '#EAF3F5',   // page/app background
-  bgPaper:        '#FFFFFF',   // card/paper background
+  bgPage: '#EAF3F5', // page/app background
+  bgPaper: '#FFFFFF', // card/paper background
 
   // Text
-  textPrimary:    'rgba(0,0,0,0.87)',
-  textSecondary:  'rgba(0,0,0,0.6)',
-  divider:        'rgba(0,0,0,0.12)',
-  border:         'rgba(0,0,0,0.23)',  // outlined inputs
+  textPrimary: 'rgba(0,0,0,0.87)',
+  textSecondary: 'rgba(0,0,0,0.6)',
+  divider: 'rgba(0,0,0,0.12)',
+  border: 'rgba(0,0,0,0.23)', // outlined inputs
 }
 ```
 
@@ -79,19 +81,23 @@ const colors = {
 Font family: **Noto Sans TC** (Traditional Chinese) + fallback `sans-serif`.
 
 Load via Google Fonts:
+
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+  rel="stylesheet"
+/>
 ```
 
 Jubo 直接沿用 MUI 預設的 typography variant（`h1`~`h6`, `subtitle1`, `subtitle2`, `body1`, `body2`, `caption`, `button`, `overline`），**不要在 `theme.typography` 內重新覆寫這些預設值**。
 
 僅以下為自訂或 override：
 
-| Role              | Size  | Weight   | Letter Spacing | MUI variant       | 備註                         |
-|-------------------|-------|----------|----------------|-------------------|------------------------------|
-| Subtitle 3        | 16px  | 500      | 0.1px          | `subtitle3`       | 自訂 variant                 |
-| Caption Medium    | 12px  | 500      | 0.4px          | `captionMedium`   | 自訂 variant                 |
-| Table header      | 14px  | **700**  | 0.17px         | —                 | MUI 預設 + 在 `MuiTableCell.head` 強制改為 Bold |
+| Role           | Size | Weight  | Letter Spacing | MUI variant     | 備註                                            |
+| -------------- | ---- | ------- | -------------- | --------------- | ----------------------------------------------- |
+| Subtitle 3     | 16px | 500     | 0.1px          | `subtitle3`     | 自訂 variant                                    |
+| Caption Medium | 12px | 500     | 0.4px          | `captionMedium` | 自訂 variant                                    |
+| Table header   | 14px | **700** | 0.17px         | —               | MUI 預設 + 在 `MuiTableCell.head` 強制改為 Bold |
 
 使用方式：
 
@@ -104,6 +110,7 @@ Jubo 直接沿用 MUI 預設的 typography variant（`h1`~`h6`, `subtitle1`, `su
 ```
 
 **Body text rule:**
+
 - `body1` (16px) — 主要內容：說明文字、列表項目、表格內容、輸入框文字
 - `body2` (14px) — 次要內容：輔助說明、次要標籤、表格次要欄位
 - `caption` (12px) — 附註文字，**非常少用**：時間戳記、輔助提示、圖例說明
@@ -122,16 +129,16 @@ Common values: `4, 8, 12, 16, 20, 24, 32, 48`
 
 ## Border Radius
 
-| Element                | Radius  |
-|------------------------|---------|
-| Card / Block / Paper   | `8px`   |
-| Button                 | `4px`   |
-| Chip                   | `16px`  |
-| Avatar / Icon btn      | `50%`   |
-| Input (outlined)       | `4px`   |
-| Progress bar           | `4px`   |
+| Element                     | Radius |
+| --------------------------- | ------ |
+| Card / Block / Paper        | `8px`  |
+| Button                      | `4px`  |
+| Chip                        | `16px` |
+| Avatar / Icon btn           | `50%`  |
+| Input (outlined)            | `4px`  |
+| Progress bar                | `4px`  |
 | Rail / Bottom nav icon pill | `16px` |
-| Drawer active row      | `4px`   |
+| Drawer active row           | `4px`  |
 
 ---
 
@@ -140,6 +147,7 @@ Common values: `4, 8, 12, 16, 20, 24, 32, 48`
 **Default: NO shadow.** Use `boxShadow: 'none'` for cards by default.
 
 Use soft shadows **only** for overlaid elements:
+
 - Dialog: `0px 11px 15px rgba(0,0,0,0.2), 0px 9px 46px rgba(0,0,0,0.12)`
 - Snackbar: `0px 3px 5px rgba(0,0,0,0.2)`
 - Floating elements that sit above the page content
@@ -171,6 +179,7 @@ Cards use a **1px border** (`rgba(0,0,0,0.12)`) instead of shadow when a boundar
 The nav column width animates between `72px` (rail collapsed) and `256px` (drawer expanded). Main content's width adjusts in sync.
 
 ### App Bar
+
 - Background: `#EAF3F5` (same as page, no shadow, no border-bottom)
 - Height: `64px`
 - Left: hamburger icon (72px wide zone) → inline Logo SVG → product name text (Medium 20px)
@@ -179,6 +188,7 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
 - **Mobile (`xs`):** hide the hamburger (`display: { xs: 'none', sm: 'inline-flex' }`) and remove the Logo's left margin compensation (`ml: { xs: 0, sm: 2 }`). Side nav is replaced by Bottom Navigation Bar.
 
 ### Navigation Rail (collapsed)
+
 - Width: `72px`, full height
 - Background: `#EAF3F5`
 - Each item: `72×72px`, flex column, centered
@@ -190,6 +200,7 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
 - **Hover:** the button itself stays transparent — **only the icon pill changes background**. Non-selected → `rgba(0,151,167,0.08)` (Primary @ 8%); selected → keep `#C5F0F7`. Do not apply a hover background to the whole `72×72` button — it makes the hit area feel heavy and clashes with the pill shape.
 
 ### Navigation Drawer (expanded — toggled by hamburger icon)
+
 - Triggered by clicking the hamburger `≡` icon in the App Bar (toggles open/close)
 - Width: `256px`, full height
 - Background: `#EAF3F5`
@@ -213,15 +224,16 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
   - Text and icon color: `#005F64` (Primary Dark) — same in default and active states
   - Default: no background
   - **Active state:** background `#C5F0F7`, `borderRadius: 4px`, label weight 500
-  - Hover: `rgba(0,151,167,0.08)` background (kept as `#C5F0F7` when active so it doesn't flash). Unlike the rail/bottom nav, the drawer item *is* a full-width row, so the whole row gets the hover background.
+  - Hover: `rgba(0,151,167,0.08)` background (kept as `#C5F0F7` when active so it doesn't flash). Unlike the rail/bottom nav, the drawer item _is_ a full-width row, so the whole row gets the hover background.
 
 ### Navigation Bar (bottom — mobile only)
+
 - Shown only on `xs` (`display: { xs: 'flex', sm: 'none' }`); replaces the side rail/drawer entirely on mobile.
 - Position: `fixed`, `bottom: 0`, `left/right: 0`, `zIndex: 1200`
 - Height: `64px`
 - Background: `#EAF3F5` (same as page, no shadow)
 - **Top border:** `1px solid rgba(84,110,122,0.12)` (Secondary @ 12%) — provides the only separator between content and bar. Do not use a black-based divider here.
-- Items: flat list of *all* primary nav items (no group labels — there isn't room). Each item gets `flex: 1` so they share the bar equally.
+- Items: flat list of _all_ primary nav items (no group labels — there isn't room). Each item gets `flex: 1` so they share the bar equally.
 - Each item reuses the rail's visual language:
   - Flex column, gap `4px`, centered
   - Icon zone: `56×32px` pill, `borderRadius: 16px`
@@ -232,12 +244,14 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
 - **Main content offset:** when the bottom nav is present, add `pb: '80px'` (64px bar + 16px breathing room) to the main content area so it doesn't sit underneath the bar.
 
 ### Content Area
+
 - Background: `#EAF3F5`
 - Padding: `0 16px 16px` (no top padding — app bar provides gap)
 - **Most pages:** single white block (`border-radius: 8px`, `background: #FFFFFF`) that fills the content area
 - **Dashboard only:** rows of cards with `gap: 16px` (each card is white, `border-radius: 8px`)
 
 ### Page Header (inside white content block)
+
 - Height: `64px`
 - Background: `#FFFFFF`
 - Padding: `0 16px`
@@ -245,8 +259,8 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
 - **Left:** Page title — H6 (Medium 20px, `rgba(0,0,0,0.87)`)
 - **Right:** action buttons — IconButtons (edit, delete, etc.) + primary Contained Button
 
-
 ### Contained Button (primary action)
+
 - Background: `#0097A7`
 - Text: white, Medium 14px, uppercase, letter-spacing 0.4px
 - Border radius: `4px`
@@ -255,6 +269,7 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
 - Optional leading icon (20px)
 
 ### Cards (Dashboard only)
+
 - Background: `#FFFFFF`
 - Border radius: `8px`
 - No shadow (default)
@@ -267,6 +282,7 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
 ## Key Components
 
 ### Table
+
 - Header row background: `#ECEFF1`
 - Header text: Bold 14px, color `#546E7A` (Secondary)
 - Row divider: `1px solid rgba(0,0,0,0.12)`
@@ -275,6 +291,7 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
 - No outer border on table — contained within card
 
 ### Chip (Filled M3 Style)
+
 - Border radius: `16px`
 - Padding: `4px` (container) + `3px 6px` (label)
 - Text: 13px Regular
@@ -285,24 +302,28 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
   - Primary: bg `rgba(0,151,167,0.12)`, text `#0097A7`
 
 ### Button (Text variant)
+
 - Primary text buttons: color `#0097A7`
 - Font: Medium 14px, letter-spacing 0.4px, UPPERCASE
 - No background, no border, no shadow
 - Used for "顯示更多" actions at bottom of lists
 
 ### Outlined Input / Select
+
 - Border: `1px solid rgba(0,0,0,0.23)`
 - Border radius: `4px`
 - Padding: `8px 12px`
 - Label floats, arrow dropdown on right
 
 ### Progress Bar (custom)
+
 - Active fill: `#0097A7`
 - Inactive fill: `rgba(120,144,156,0.08)`
 - Height: `16px`, border-radius: `4px`
 - Left side rounded on both ends; the two sections join seamlessly
 
 ### Divider
+
 - `1px solid rgba(0,0,0,0.12)`
 - Horizontal only (use MUI `<Divider />`)
 
@@ -313,30 +334,40 @@ The nav column width animates between `72px` (rail collapsed) and `256px` (drawe
 ```js
 const theme = createTheme({
   palette: {
-    primary:   { main: '#0097A7', dark: '#005F64', light: '#C5F0F7' },
+    primary: { main: '#0097A7', dark: '#005F64', light: '#C5F0F7' },
     secondary: { main: '#546E7A', dark: '#37474F' },
-    error:     { main: '#D32F2F' },
-    success:   { main: '#2E7D32' },
-    info:      { main: '#0288D1' },
+    error: { main: '#D32F2F' },
+    success: { main: '#2E7D32' },
+    info: { main: '#0288D1' },
     background: { default: '#EAF3F5', paper: '#FFFFFF' },
     text: {
-      primary:   'rgba(0,0,0,0.87)',
+      primary: 'rgba(0,0,0,0.87)',
       secondary: 'rgba(0,0,0,0.6)',
     },
     divider: 'rgba(0,0,0,0.12)',
   },
   typography: {
     fontFamily: "'Noto Sans TC', sans-serif",
-    fontWeightLight:   400,
+    fontWeightLight: 400,
     fontWeightRegular: 400,
-    fontWeightMedium:  500,
-    fontWeightBold:    700,
+    fontWeightMedium: 500,
+    fontWeightBold: 700,
     // 其餘 variant 全沿用 MUI 預設，不要再覆寫
-    subtitle3:     { fontSize: '16px', fontWeight: 500, lineHeight: 1.5,  letterSpacing: '0.1px' },
-    captionMedium: { fontSize: '12px', fontWeight: 500, lineHeight: 1.66, letterSpacing: '0.4px' },
+    subtitle3: {
+      fontSize: '16px',
+      fontWeight: 500,
+      lineHeight: 1.5,
+      letterSpacing: '0.1px',
+    },
+    captionMedium: {
+      fontSize: '12px',
+      fontWeight: 500,
+      lineHeight: 1.66,
+      letterSpacing: '0.4px',
+    },
   },
-  shape: { borderRadius: 4 },  // MUI default; override per-component as needed
-  shadows: ['none', ...Array(24).fill('none')],  // all shadows off by default
+  shape: { borderRadius: 4 }, // MUI default; override per-component as needed
+  shadows: ['none', ...Array(24).fill('none')], // all shadows off by default
   components: {
     MuiTypography: {
       defaultProps: {
@@ -346,9 +377,13 @@ const theme = createTheme({
         },
       },
     },
-    MuiCard:      { styleOverrides: { root: { borderRadius: 8, boxShadow: 'none' } } },
-    MuiAppBar:    { styleOverrides: { root: { backgroundColor: '#EAF3F5', boxShadow: 'none' } } },
-    MuiDialog:    { styleOverrides: { paper: { boxShadow: '0px 11px 15px rgba(0,0,0,0.2)' } } },
+    MuiCard: { styleOverrides: { root: { borderRadius: 8, boxShadow: 'none' } } },
+    MuiAppBar: {
+      styleOverrides: { root: { backgroundColor: '#EAF3F5', boxShadow: 'none' } },
+    },
+    MuiDialog: {
+      styleOverrides: { paper: { boxShadow: '0px 11px 15px rgba(0,0,0,0.2)' } },
+    },
     MuiTableHead: { styleOverrides: { root: { backgroundColor: '#ECEFF1' } } },
   },
 })
@@ -359,6 +394,7 @@ const theme = createTheme({
 ## Do's and Don'ts
 
 **Do:**
+
 - Use `#EAF3F5` as page background, white for cards/papers
 - Use `Noto Sans TC` font
 - Stick to 4px spacing multiples (Tailwind's default scale aligns: `p-1`=4px, `p-2`=8px, `p-4`=16px…)
@@ -369,6 +405,7 @@ const theme = createTheme({
 - Use the SVG logo inline at `96×24px`
 
 **Don't:**
+
 - Don't add drop shadows to cards or navigation
 - Don't use colors outside the defined palette
 - Don't use fonts other than Noto Sans TC

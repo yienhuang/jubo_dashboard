@@ -8,11 +8,11 @@
 
 ## 部署選項比較（為什麼選 GitHub Pages）
 
-| 平台 | 優點 | 缺點 |
-|---|---|---|
-| **GitHub Pages** | 免費、跟 repo 整合、不用註冊新服務 | 免費版只支援 public repo、SPA 路由要處理、子路徑部署要設 base |
-| **Vercel** | SPA 原生支援、private repo 也免費、零設定 | 要另外註冊帳號 |
-| **Netlify** | 同 Vercel | 同上 |
+| 平台             | 優點                                      | 缺點                                                          |
+| ---------------- | ----------------------------------------- | ------------------------------------------------------------- |
+| **GitHub Pages** | 免費、跟 repo 整合、不用註冊新服務        | 免費版只支援 public repo、SPA 路由要處理、子路徑部署要設 base |
+| **Vercel**       | SPA 原生支援、private repo 也免費、零設定 | 要另外註冊帳號                                                |
+| **Netlify**      | 同 Vercel                                 | 同上                                                          |
 
 本筆記走 GitHub Pages。如果之後改用 Vercel，需要回退一些設定（base path、HashRouter、workflow），詳見最後的對照表。
 
@@ -37,7 +37,8 @@ GitHub Pages 把 project repo 部署在 `https://<帳號>.github.io/<repo名稱>
 如果不設定，build 出來的 `index.html` 會用絕對路徑載入資源：
 
 ```html
-<script src="/assets/index-xxx.js"></script>  <!-- 載入失敗：實際路徑是 /jubo_dashboard/assets/... -->
+<script src="/assets/index-xxx.js"></script>
+<!-- 載入失敗：實際路徑是 /jubo_dashboard/assets/... -->
 ```
 
 結果就是頁面打開一片空白，console 一堆 404。
@@ -48,7 +49,7 @@ GitHub Pages 把 project repo 部署在 `https://<帳號>.github.io/<repo名稱>
 
 ```js
 export default defineConfig({
-  base: '/jubo_dashboard/',  // 注意前後都要有斜線、要對應 repo 名稱
+  base: '/jubo_dashboard/', // 注意前後都要有斜線、要對應 repo 名稱
   plugins: [react()],
   // ...
 })
@@ -57,7 +58,8 @@ export default defineConfig({
 build 後 `dist/index.html` 會變成：
 
 ```html
-<script src="/jubo_dashboard/assets/index-xxx.js"></script>  <!-- ✓ -->
+<script src="/jubo_dashboard/assets/index-xxx.js"></script>
+<!-- ✓ -->
 ```
 
 ## Step 2：處理 React Router 的 SPA refresh 404
@@ -87,6 +89,7 @@ export const router = createHashRouter([
 ```
 
 網址會變成 `https://.../jubo_dashboard/#/residents`：
+
 - `#` 後面的部分瀏覽器不會發送給伺服器
 - 所以 GitHub Pages 永遠只看到 `/jubo_dashboard/` → 回 `index.html`
 - 然後前端 JS 讀 `#/residents` 決定要 render 哪個頁面
@@ -120,7 +123,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  workflow_dispatch:  # 也允許手動觸發
+  workflow_dispatch: # 也允許手動觸發
 
 permissions:
   contents: read
@@ -144,7 +147,7 @@ jobs:
       - run: npm run build
       - uses: actions/configure-pages@v5
         with:
-          enablement: true   # ← 關鍵！見 Step 5
+          enablement: true # ← 關鍵！見 Step 5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -186,6 +189,7 @@ GitHub Pages 在**免費方案下只支援 public repo**。Private repo 要升�
 ### 注意
 
 如果改成 public，**所有歷史 commit 也會公開**。要確認：
+
 - 沒有 commit 過 `.env` 或任何 secret
 - 沒有真實住民/客戶資料
 - 沒有內部 API 文件
@@ -212,6 +216,7 @@ git push origin main
 ```
 
 Push 完去 `https://github.com/<帳號>/<repo>/actions` 看：
+
 - 黃點 = 跑中
 - 綠勾 = 成功
 - 紅叉 = 失敗
@@ -223,6 +228,7 @@ Push 完去 `https://github.com/<帳號>/<repo>/actions` 看：
 ### 錯誤 1：`Get Pages site failed - Not Found`
 
 完整訊息：
+
 > Get Pages site failed. Please verify that the repository has Pages enabled and configured to build using GitHub Actions, or consider exploring the `enablement` parameter for this action.
 
 **原因**：典型的 chicken-and-egg —— UI 上選了 "GitHub Actions" 但 Pages 站台還沒實際被「初始化」，需要至少成功 deploy 一次才會初始化、但 deploy 又需要 Pages 已啟用。
@@ -252,6 +258,7 @@ Push 完去 `https://github.com/<帳號>/<repo>/actions` 看：
 ### 警告：Node.js 20 deprecation
 
 Workflow 跑的時候會看到：
+
 > Node.js 20 actions are deprecated... Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026.
 
 **處理方式**：先不用管。等 GitHub 釋出新版 actions 再升 `actions/checkout@v4` 等版本即可。
@@ -276,13 +283,13 @@ push 到 main → Actions 自動 build & deploy → 網址內容自動更新（1
 
 ## 對照表：未來如果想改用 Vercel
 
-| 設定 | GitHub Pages | Vercel |
-|---|---|---|
-| `vite.config.js` 的 `base` | 需要 `'/jubo_dashboard/'` | **要拿掉**（部署在根路徑） |
-| Router | HashRouter | BrowserRouter（Vercel 自動處理 SPA） |
-| `.github/workflows/deploy.yml` | 需要 | **可刪除**（Vercel 自己處理） |
-| Private repo | 不支援（免費版） | 支援 |
-| 環境變數 | 寫在 workflow + GitHub Secrets | Vercel dashboard 直接設定 |
+| 設定                           | GitHub Pages                   | Vercel                               |
+| ------------------------------ | ------------------------------ | ------------------------------------ |
+| `vite.config.js` 的 `base`     | 需要 `'/jubo_dashboard/'`      | **要拿掉**（部署在根路徑）           |
+| Router                         | HashRouter                     | BrowserRouter（Vercel 自動處理 SPA） |
+| `.github/workflows/deploy.yml` | 需要                           | **可刪除**（Vercel 自己處理）        |
+| Private repo                   | 不支援（免費版）               | 支援                                 |
+| 環境變數                       | 寫在 workflow + GitHub Secrets | Vercel dashboard 直接設定            |
 
 ## 本專案實際走過的步驟摘要
 

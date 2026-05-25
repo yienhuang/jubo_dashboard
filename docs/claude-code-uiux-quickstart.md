@@ -24,12 +24,12 @@
 
 **Extension 與 Terminal 的差異：**
 
-| 項目 | VSCode Extension | Terminal（CLI） |
-|------|-----------------|----------------|
-| 介面 | 整合在 IDE 側欄，可直接點選檔案、看 diff | 純文字命令列 |
-| 看程式碼 | 可直接框選程式碼，右鍵傳給 Claude | 需手動貼上或指定路徑 |
-| 適合對象 | 設計師、不熟 CLI 的協作者 | 工程師、習慣 Terminal |
-| 功能差異 | 完整 Claude Code 功能 | 完整 Claude Code 功能 |
+| 項目     | VSCode Extension                         | Terminal（CLI）       |
+| -------- | ---------------------------------------- | --------------------- |
+| 介面     | 整合在 IDE 側欄，可直接點選檔案、看 diff | 純文字命令列          |
+| 看程式碼 | 可直接框選程式碼，右鍵傳給 Claude        | 需手動貼上或指定路徑  |
+| 適合對象 | 設計師、不熟 CLI 的協作者                | 工程師、習慣 Terminal |
+| 功能差異 | 完整 Claude Code 功能                    | 完整 Claude Code 功能 |
 
 **安裝步驟：**
 
@@ -44,6 +44,7 @@
 前往 [nodejs.org](https://nodejs.org/) 下載 **LTS 版本**安裝。
 
 確認安裝成功：
+
 ```bash
 node -v   # 應顯示 v20.x.x 以上
 npm -v    # 應顯示版本號
@@ -155,7 +156,7 @@ createRoot(document.getElementById('root')).render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <App />
-  </ThemeProvider>
+  </ThemeProvider>,
 )
 ```
 
@@ -164,6 +165,7 @@ createRoot(document.getElementById('root')).render(
 我們有針對 MUI Typography 做客製化（字體、字重、行高）。
 
 對 Claude 說：
+
 ```
 請幫我修改 MUI Theme 的 typography，加入以下設定：
 
@@ -196,17 +198,20 @@ Skill 檔案放在 `.claude/skills/` 資料夾中（副檔名 `.md`）。
 當使用者請我建立 UI 元件時：
 
 ## 色彩規則
+
 - 主色：primary.main (#0066CC)
 - 強調色：secondary.main (#00A870)
 - 警示色：warning.main (#F5A623)
 - 文字：text.primary (#1A1A2E)、text.secondary (#6B7280)
 
 ## 元件規範
+
 - 按鈕：使用 MUI Button，rounded 8px
 - 卡片：使用 MUI Card，elevation 0，border 1px solid #E5E7EB
 - 表格：使用 MUI DataGrid，斑馬紋配色
 
 ## 排版規則
+
 - 頁面標題：h1 或 Typography variant="h4"
 - Section 間距：mb: 3（24px）
 - 卡片內距：p: 3（24px）
@@ -251,11 +256,13 @@ Claude 會透過 Figma MCP 自動讀取設計稿的視覺內容、顏色、尺�
 複雜的頁面或多檔案修改，先讓 Claude 列出計畫，確認後再動工。
 
 在 VSCode Claude 側欄輸入：
+
 ```
 /plan 幫我建立一個住民列表頁面，包含搜尋欄、篩選器和表格，使用 MUI DataGrid
 ```
 
 Claude 會列出：
+
 - 預計建立的檔案
 - 實作步驟
 - 可能的風險
@@ -285,6 +292,7 @@ git merge feature/new-dashboard-page
 ```
 
 若不熟悉 Git，可以對 Claude 說：
+
 ```
 幫我建立一個叫 feature/login-page 的分支，並切換過去
 ```

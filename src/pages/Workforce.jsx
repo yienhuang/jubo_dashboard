@@ -54,14 +54,18 @@ const ROLE_COLORS = [
 
 // ── Status chip ───────────────────────────────────────────────
 const STATUS_CONFIG = {
-  stable:   { label: '穩定',     bg: 'rgba(76,175,80,0.12)',  color: green[600] },
-  ok:       { label: '正常',     bg: 'rgba(76,175,80,0.12)',  color: green[600] },
-  watch:    { label: '留意',     bg: 'rgba(237,108,2,0.12)',  color: WARNING },
+  stable: { label: '穩定', bg: 'rgba(76,175,80,0.12)', color: green[600] },
+  ok: { label: '正常', bg: 'rgba(76,175,80,0.12)', color: green[600] },
+  watch: { label: '留意', bg: 'rgba(237,108,2,0.12)', color: WARNING },
   shortage: { label: '人員緊缺', bg: 'rgba(237,108,2,0.12)', color: WARNING },
 }
 
 function StatusChip({ status }) {
-  const cfg = STATUS_CONFIG[status] ?? { label: status, bg: 'rgba(0,0,0,0.08)', color: 'rgba(0,0,0,0.6)' }
+  const cfg = STATUS_CONFIG[status] ?? {
+    label: status,
+    bg: 'rgba(0,0,0,0.08)',
+    color: 'rgba(0,0,0,0.6)',
+  }
   return (
     <Box
       component="span"
@@ -124,7 +128,9 @@ function KpiCard({ title, value, unit, delta, hint, icon: Icon }) {
           </Box>
         </Box>
         <Box className="mt-3 flex items-baseline gap-1">
-          <Typography sx={{ fontSize: 32, fontWeight: 500, lineHeight: 1.2, letterSpacing: 0 }}>
+          <Typography
+            sx={{ fontSize: 32, fontWeight: 500, lineHeight: 1.2, letterSpacing: 0 }}
+          >
             {value}
           </Typography>
           {unit && (
@@ -136,7 +142,9 @@ function KpiCard({ title, value, unit, delta, hint, icon: Icon }) {
         <Box className="mt-2">
           <DeltaRow delta={delta} />
           {hint && !delta && (
-            <Typography variant="caption" color="textSecondary">{hint}</Typography>
+            <Typography variant="caption" color="textSecondary">
+              {hint}
+            </Typography>
           )}
         </Box>
       </CardContent>
@@ -170,26 +178,44 @@ function SectionStatCard({ title, value, unit, hint, delta, alert }) {
     >
       <Typography variant="body1">{title}</Typography>
       <Box className="flex items-baseline gap-1">
-        <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: 1.2, color: 'text.primary', letterSpacing: 0 }}>
+        <Typography
+          sx={{
+            fontSize: 24,
+            fontWeight: 500,
+            lineHeight: 1.2,
+            color: 'text.primary',
+            letterSpacing: 0,
+          }}
+        >
           {value}
         </Typography>
-        {unit && <Typography variant="caption" color="textSecondary">{unit}</Typography>}
+        {unit && (
+          <Typography variant="caption" color="textSecondary">
+            {unit}
+          </Typography>
+        )}
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
         {delta && DeltaIcon && (
           <>
             <DeltaIcon sx={{ fontSize: 12, color: deltaColor }} />
-            <Typography variant="caption" sx={{ color: deltaColor, fontWeight: 500 }}>{delta.text}</Typography>
+            <Typography variant="caption" sx={{ color: deltaColor, fontWeight: 500 }}>
+              {delta.text}
+            </Typography>
           </>
         )}
         {alert && (
           <>
             <WarningAmberIcon sx={{ fontSize: 12, color: 'warning.main' }} />
-            <Typography variant="caption" sx={{ color: 'warning.main', fontWeight: 500 }}>{alert}</Typography>
+            <Typography variant="caption" sx={{ color: 'warning.main', fontWeight: 500 }}>
+              {alert}
+            </Typography>
           </>
         )}
         {hint && !delta && !alert && (
-          <Typography variant="caption" color="textSecondary">{hint}</Typography>
+          <Typography variant="caption" color="textSecondary">
+            {hint}
+          </Typography>
         )}
       </Box>
     </Box>
@@ -201,7 +227,11 @@ function SectionCard({ title, children }) {
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-        {title && <Typography variant="body1" sx={{ fontWeight: 500, mb: 2 }}>{title}</Typography>}
+        {title && (
+          <Typography variant="body1" sx={{ fontWeight: 500, mb: 2 }}>
+            {title}
+          </Typography>
+        )}
         {children}
       </CardContent>
     </Card>
@@ -238,7 +268,10 @@ function StaffPieChart({ data }) {
       </Box>
       <Box sx={{ flex: 1, display: 'flex', gap: '24px', ml: '24px' }}>
         {[data.slice(0, 4), data.slice(4)].map((col, colIdx) => (
-          <Box key={colIdx} sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <Box
+            key={colIdx}
+            sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1.5 }}
+          >
             {col.map((item) => {
               const idx = data.indexOf(item)
               return (
@@ -253,7 +286,9 @@ function StaffPieChart({ data }) {
                     }}
                   />
                   <Typography variant="body1">{item.name}</Typography>
-                  <Typography variant="body1" color="textSecondary">{item.pct}%</Typography>
+                  <Typography variant="body1" color="textSecondary">
+                    {item.pct}%
+                  </Typography>
                 </Box>
               )
             })}
@@ -268,11 +303,17 @@ function StaffPieChart({ data }) {
 function RoleStackedBar({ distribution }) {
   return (
     <Box>
-      <Box sx={{ display: 'flex', height: 10, borderRadius: 4, overflow: 'hidden', mb: 1.5 }}>
+      <Box
+        sx={{ display: 'flex', height: 10, borderRadius: 4, overflow: 'hidden', mb: 1.5 }}
+      >
         {distribution.map((role, idx) => (
           <Box
             key={role.name}
-            sx={{ width: `${role.pct}%`, bgcolor: ROLE_COLORS[idx % ROLE_COLORS.length], height: '100%' }}
+            sx={{
+              width: `${role.pct}%`,
+              bgcolor: ROLE_COLORS[idx % ROLE_COLORS.length],
+              height: '100%',
+            }}
           />
         ))}
       </Box>
@@ -303,38 +344,81 @@ function FacilityCard({ facility }) {
   const { id, name, status, totalStaff, newHired, resigned, roleDistribution } = facility
   return (
     <Card sx={{ height: '100%', border: '1px solid rgba(0,0,0,0.08)' }}>
-      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 }, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <CardContent
+        sx={{
+          p: 2,
+          '&:last-child': { pb: 2 },
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
         <Box>
           <Box className="flex items-center justify-between gap-2" sx={{ mb: 0.5 }}>
-            <Typography variant="body1" sx={{ fontWeight: 500 }}>{name}</Typography>
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              {name}
+            </Typography>
             <StatusChip status={status} />
           </Box>
-          <Typography variant="caption" color="textSecondary">ID: {id}</Typography>
+          <Typography variant="caption" color="textSecondary">
+            ID: {id}
+          </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box>
-            <Typography variant="caption" color="textSecondary">總員工</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              總員工
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {totalStaff}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="textSecondary">本月入職</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              本月入職
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {newHired}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="textSecondary">本月離職</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              本月離職
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {resigned}
             </Typography>
           </Box>
         </Box>
 
         <Box>
-          <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mb: 1 }}>
+          <Typography
+            variant="caption"
+            color="textSecondary"
+            sx={{ display: 'block', mb: 1 }}
+          >
             職類分佈
           </Typography>
           <RoleStackedBar distribution={roleDistribution} />
@@ -350,8 +434,12 @@ function RiskAlertsCard() {
     <Card sx={{ height: '100%' }}>
       <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
         <Box sx={{ mb: 2 }}>
-          <Typography variant="body1" sx={{ fontWeight: 500 }}>人力風險提示</Typography>
-          <Typography variant="caption" color="textSecondary">AI 預測高風險與即時警示</Typography>
+          <Typography variant="body1" sx={{ fontWeight: 500 }}>
+            人力風險提示
+          </Typography>
+          <Typography variant="caption" color="textSecondary">
+            AI 預測高風險與即時警示
+          </Typography>
         </Box>
         <Box className="flex flex-col gap-2">
           {riskAlerts.map((alert) => (
@@ -373,9 +461,14 @@ function ResidentialContent() {
     <Box className="flex flex-col gap-3">
       <Box sx={{ display: 'flex', gap: 2 }}>
         {[
-          { title: '員工總數',   value: totalStaff, unit: '人', hint: '兩間機構合計' },
-          { title: '本月新入職', value: newHired,   unit: '人' },
-          { title: '本月離職',  value: resigned,   unit: '人', hint: `離職率 ${resignRate}%` },
+          { title: '員工總數', value: totalStaff, unit: '人', hint: '兩間機構合計' },
+          { title: '本月新入職', value: newHired, unit: '人' },
+          {
+            title: '本月離職',
+            value: resigned,
+            unit: '人',
+            hint: `離職率 ${resignRate}%`,
+          },
         ].map((s) => (
           <Box key={s.title} sx={{ flex: 1 }}>
             <SectionStatCard {...s} />
@@ -402,9 +495,15 @@ function DaycareContent() {
     <Box className="flex flex-col gap-3">
       <Box sx={{ display: 'flex', gap: 2 }}>
         {[
-          { title: '員工總數',   value: totalStaff, unit: '人', hint: '兩間機構合計' },
-          { title: '本月新入職', value: newHired,   unit: '人' },
-          { title: '本月離職',  value: resigned,   unit: '人', hint: `離職率 ${resignRate}%`, alert: status === 'watch' ? '留意異動' : undefined },
+          { title: '員工總數', value: totalStaff, unit: '人', hint: '兩間機構合計' },
+          { title: '本月新入職', value: newHired, unit: '人' },
+          {
+            title: '本月離職',
+            value: resigned,
+            unit: '人',
+            hint: `離職率 ${resignRate}%`,
+            alert: status === 'watch' ? '留意異動' : undefined,
+          },
         ].map((s) => (
           <Box key={s.title} sx={{ flex: 1 }}>
             <SectionStatCard {...s} />
@@ -431,9 +530,9 @@ function HomecareContent() {
     <Box className="flex flex-col gap-3">
       <Box sx={{ display: 'flex', gap: 2 }}>
         {[
-          { title: '員工總數',   value: totalStaff, unit: '人', hint: '兩間機構合計' },
-          { title: '本月新入職', value: newHired,   unit: '人', delta: newHiredDelta },
-          { title: '本月離職',  value: resigned,   unit: '人' },
+          { title: '員工總數', value: totalStaff, unit: '人', hint: '兩間機構合計' },
+          { title: '本月新入職', value: newHired, unit: '人', delta: newHiredDelta },
+          { title: '本月離職', value: resigned, unit: '人' },
         ].map((s) => (
           <Box key={s.title} sx={{ flex: 1 }}>
             <SectionStatCard {...s} />
@@ -462,9 +561,9 @@ const TABS = [
 
 const KPI_ICONS = {
   totalStaff: BadgeIcon,
-  newHired:   PersonAddIcon,
-  resigned:   PersonRemoveIcon,
-  licensed:   WorkspacePremiumIcon,
+  newHired: PersonAddIcon,
+  resigned: PersonRemoveIcon,
+  licensed: WorkspacePremiumIcon,
 }
 
 export default function Workforce() {
@@ -484,12 +583,18 @@ export default function Workforce() {
           }}
         >
           <Box>
-            <Typography variant="h6" sx={{ lineHeight: 1.2 }}>人力管理</Typography>
+            <Typography variant="h6" sx={{ lineHeight: 1.2 }}>
+              人力管理
+            </Typography>
             <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
               集團人力分佈、人員異動與風險監控
             </Typography>
           </Box>
-          <Typography variant="caption" color="textSecondary" sx={{ mt: 0.5, flexShrink: 0 }}>
+          <Typography
+            variant="caption"
+            color="textSecondary"
+            sx={{ mt: 0.5, flexShrink: 0 }}
+          >
             {workforceReportDate}
           </Typography>
         </Box>
@@ -526,39 +631,41 @@ export default function Workforce() {
       </Grid>
 
       <ShareableBlock title="依機構類型人力分析">
-      <Paper sx={{ borderRadius: '8px' }}>
-        <Box sx={{ px: 2, pt: 2, pr: 6 }}>
-          <Typography variant="body1" sx={{ fontWeight: 500 }}>依機構類型人力分析</Typography>
-        </Box>
-        <Tabs
-          value={tab}
-          onChange={(_, v) => setTab(v)}
-          sx={{
-            px: 1,
-            mt: 1,
-            borderBottom: '1px solid rgba(0,0,0,0.12)',
-            '& .MuiTab-root': {
-              color: '#546E7A',
-              fontWeight: 400,
-              fontSize: 14,
-              textTransform: 'none',
-              letterSpacing: '0.17px',
-              minHeight: 48,
-            },
-            '& .Mui-selected': { color: '#0097A7', fontWeight: 500 },
-            '& .MuiTabs-indicator': { backgroundColor: '#0097A7' },
-          }}
-        >
-          {TABS.map((t) => (
-            <Tab key={t.label} icon={t.icon} iconPosition="start" label={t.label} />
-          ))}
-        </Tabs>
-        <Box sx={{ p: 2 }}>
-          {tab === 0 && <ResidentialContent />}
-          {tab === 1 && <DaycareContent />}
-          {tab === 2 && <HomecareContent />}
-        </Box>
-      </Paper>
+        <Paper sx={{ borderRadius: '8px' }}>
+          <Box sx={{ px: 2, pt: 2, pr: 6 }}>
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              依機構類型人力分析
+            </Typography>
+          </Box>
+          <Tabs
+            value={tab}
+            onChange={(_, v) => setTab(v)}
+            sx={{
+              px: 1,
+              mt: 1,
+              borderBottom: '1px solid rgba(0,0,0,0.12)',
+              '& .MuiTab-root': {
+                color: '#546E7A',
+                fontWeight: 400,
+                fontSize: 14,
+                textTransform: 'none',
+                letterSpacing: '0.17px',
+                minHeight: 48,
+              },
+              '& .Mui-selected': { color: '#0097A7', fontWeight: 500 },
+              '& .MuiTabs-indicator': { backgroundColor: '#0097A7' },
+            }}
+          >
+            {TABS.map((t) => (
+              <Tab key={t.label} icon={t.icon} iconPosition="start" label={t.label} />
+            ))}
+          </Tabs>
+          <Box sx={{ p: 2 }}>
+            {tab === 0 && <ResidentialContent />}
+            {tab === 1 && <DaycareContent />}
+            {tab === 2 && <HomecareContent />}
+          </Box>
+        </Paper>
       </ShareableBlock>
     </Box>
   )

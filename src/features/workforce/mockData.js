@@ -32,14 +32,14 @@ export const kpis = [
 ]
 
 export const staffDistribution = [
-  { name: '照服員',         value: 328, pct: 54.5 },
-  { name: '護理師',         value: 116, pct: 19.2 },
-  { name: '行政/會計',      value: 72,  pct: 12.0 },
-  { name: '督導/主任',      value: 24,  pct: 4.0  },
-  { name: '藥師',           value: 18,  pct: 3.0  },
-  { name: '復健/職能治療師', value: 22, pct: 3.6  },
-  { name: '營養師',         value: 12,  pct: 2.0  },
-  { name: '司機/其他',      value: 11,  pct: 1.7  },
+  { name: '照服員', value: 328, pct: 54.5 },
+  { name: '護理師', value: 116, pct: 19.2 },
+  { name: '行政/會計', value: 72, pct: 12.0 },
+  { name: '督導/主任', value: 24, pct: 4.0 },
+  { name: '藥師', value: 18, pct: 3.0 },
+  { name: '復健/職能治療師', value: 22, pct: 3.6 },
+  { name: '營養師', value: 12, pct: 2.0 },
+  { name: '司機/其他', value: 11, pct: 1.7 },
 ]
 
 export const riskAlerts = [
@@ -77,10 +77,10 @@ export const residentialFacilities = [
     newHired: 5,
     resigned: 2,
     roleDistribution: [
-      { name: '護理師',   value: 25, pct: 20.2 },
-      { name: '照服員',   value: 70, pct: 56.5 },
+      { name: '護理師', value: 25, pct: 20.2 },
+      { name: '照服員', value: 70, pct: 56.5 },
       { name: '行政/會計', value: 20, pct: 16.1 },
-      { name: '督導/主任', value: 9,  pct: 7.2  },
+      { name: '督導/主任', value: 9, pct: 7.2 },
     ],
   },
   {
@@ -91,10 +91,10 @@ export const residentialFacilities = [
     newHired: 4,
     resigned: 3,
     roleDistribution: [
-      { name: '護理師',   value: 20, pct: 17.9 },
-      { name: '照服員',   value: 65, pct: 58.0 },
+      { name: '護理師', value: 20, pct: 17.9 },
+      { name: '照服員', value: 65, pct: 58.0 },
       { name: '行政/會計', value: 18, pct: 16.1 },
-      { name: '督導/主任', value: 9,  pct: 8.0  },
+      { name: '督導/主任', value: 9, pct: 8.0 },
     ],
   },
 ]
@@ -118,10 +118,10 @@ export const daycareFacilities = [
     newHired: 2,
     resigned: 0,
     roleDistribution: [
-      { name: '照服員',    value: 25, pct: 55.6 },
-      { name: '主任/督導', value: 4,  pct: 8.9  },
-      { name: '職能治療師', value: 3, pct: 6.7  },
-      { name: '司機',      value: 2,  pct: 4.4  },
+      { name: '照服員', value: 25, pct: 55.6 },
+      { name: '主任/督導', value: 4, pct: 8.9 },
+      { name: '職能治療師', value: 3, pct: 6.7 },
+      { name: '司機', value: 2, pct: 4.4 },
     ],
   },
   {
@@ -132,10 +132,10 @@ export const daycareFacilities = [
     newHired: 3,
     resigned: 4,
     roleDistribution: [
-      { name: '照服員',    value: 60, pct: 61.2 },
-      { name: '主任/督導', value: 6,  pct: 6.1  },
-      { name: '職能治療師', value: 5, pct: 5.1  },
-      { name: '司機',      value: 4,  pct: 4.1  },
+      { name: '照服員', value: 60, pct: 61.2 },
+      { name: '主任/督導', value: 6, pct: 6.1 },
+      { name: '職能治療師', value: 5, pct: 5.1 },
+      { name: '司機', value: 4, pct: 4.1 },
     ],
   },
 ]
@@ -159,9 +159,9 @@ export const homecareFacilities = [
     resigned: 8,
     roleDistribution: [
       { name: '照服員', value: 100, pct: 64.1 },
-      { name: '行政',   value: 28,  pct: 17.9 },
-      { name: '督導',   value: 16,  pct: 10.3 },
-      { name: '主任',   value: 12,  pct: 7.7  },
+      { name: '行政', value: 28, pct: 17.9 },
+      { name: '督導', value: 16, pct: 10.3 },
+      { name: '主任', value: 12, pct: 7.7 },
     ],
   },
   {
@@ -173,9 +173,9 @@ export const homecareFacilities = [
     resigned: 2,
     roleDistribution: [
       { name: '照服員', value: 40, pct: 58.8 },
-      { name: '行政',   value: 13, pct: 19.1 },
-      { name: '督導',   value: 9,  pct: 13.2 },
-      { name: '主任',   value: 6,  pct: 8.8  },
+      { name: '行政', value: 13, pct: 19.1 },
+      { name: '督導', value: 9, pct: 13.2 },
+      { name: '主任', value: 6, pct: 8.8 },
     ],
   },
 ]

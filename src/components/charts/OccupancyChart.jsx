@@ -50,6 +50,7 @@ export default function OccupancyChart({ data = sample, height = 280 }) {
             fontFamily: "'Noto Sans TC', sans-serif",
             fontSize: 13,
           }}
+          itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
           cursor={{ stroke: 'rgba(0,151,167,0.2)', strokeWidth: 2 }}
         />
         <Legend

@@ -7,14 +7,22 @@ export default function ServiceShareChart({
   totalLabel = '服務人數',
   unit = '人',
   totalFormatter,
+  centerOverride,
 }) {
   const total = data.reduce((sum, d) => sum + d.value, 0)
   const totalDisplay = totalFormatter ? totalFormatter(total) : total.toLocaleString()
   const chartData = data.map((d) => ({ ...d, fill: d.color }))
+  const centerLabel = centerOverride?.label ?? totalLabel
+  const centerValue = centerOverride?.value ?? totalDisplay
+  const centerUnit = centerOverride?.unit ?? unit
 
   return (
     <Box sx={{ position: 'relative', width: height, height }}>
-      <PieChart width={height} height={height} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+      <PieChart
+        width={height}
+        height={height}
+        margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+      >
         <Pie
           data={chartData}
           dataKey="value"
@@ -28,7 +36,10 @@ export default function ServiceShareChart({
           isAnimationActive={false}
         />
         <Tooltip
-          formatter={(value, name) => [`${value.toLocaleString()} ${unit} (${((value / total) * 100).toFixed(1)}%)`, name]}
+          formatter={(value, name) => [
+            `${value.toLocaleString()} ${unit} (${((value / total) * 100).toFixed(1)}%)`,
+            name,
+          ]}
           wrapperStyle={{ zIndex: 10, outline: 'none' }}
           contentStyle={{
             border: '1px solid rgba(0,0,0,0.12)',
@@ -37,6 +48,7 @@ export default function ServiceShareChart({
             fontFamily: "'Noto Sans TC', sans-serif",
             fontSize: 13,
           }}
+          itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
         />
       </PieChart>
 
@@ -52,13 +64,15 @@ export default function ServiceShareChart({
         }}
       >
         <Typography variant="caption" sx={{ color: '#546E7A' }}>
-          {totalLabel}
+          {centerLabel}
         </Typography>
-        <Typography sx={{ fontSize: 28, fontWeight: 500, color: 'text.primary', lineHeight: 1.2 }}>
-          {totalDisplay}
+        <Typography
+          sx={{ fontSize: 28, fontWeight: 500, color: 'text.primary', lineHeight: 1.2 }}
+        >
+          {centerValue}
         </Typography>
         <Typography variant="caption" sx={{ color: '#546E7A' }}>
-          {unit}
+          {centerUnit}
         </Typography>
       </Box>
     </Box>

@@ -194,9 +194,7 @@ function DrawerItem({ item, selected }) {
         },
       }}
     >
-      <ListItemIcon sx={{ minWidth: 40, color: '#005F64' }}>
-        {item.icon}
-      </ListItemIcon>
+      <ListItemIcon sx={{ minWidth: 40, color: '#005F64' }}>{item.icon}</ListItemIcon>
       <ListItemText
         primary={item.label}
         slotProps={{
@@ -262,9 +260,7 @@ function ExpandableDrawerItem({ item, pathname }) {
           '&:hover': { backgroundColor: 'rgba(0,151,167,0.08)' },
         }}
       >
-        <ListItemIcon sx={{ minWidth: 40, color: '#005F64' }}>
-          {item.icon}
-        </ListItemIcon>
+        <ListItemIcon sx={{ minWidth: 40, color: '#005F64' }}>{item.icon}</ListItemIcon>
         <ListItemText
           primary={item.label}
           slotProps={{
@@ -324,10 +320,7 @@ export default function MainLayout() {
             <MenuIcon />
           </IconButton>
 
-          <Box
-            className="flex items-center gap-3"
-            sx={{ ml: { xs: 0, sm: 2 } }}
-          >
+          <Box className="flex items-center gap-3" sx={{ ml: { xs: 0, sm: 2 } }}>
             <Logo />
             <Typography
               variant="h6"
@@ -458,7 +451,7 @@ export default function MainLayout() {
                           item={item}
                           selected={isItemSelected(pathname, item.to)}
                         />
-                      )
+                      ),
                     )}
                   </List>
                 </Box>

@@ -8,12 +8,12 @@
 
 ## 現況
 
-| 頁面 | Page header 現況 |
-|---|---|
-| `Dashboard.jsx` | 本地 `PageHeader` function（line 373），顯示標題 + `reportDate` |
-| `Accommodation.jsx` | 內嵌 header（line 1128），顯示分院名稱 + `reportDate` |
-| `DayCare.jsx` | 空殼（return null） |
-| `HomeCare.jsx` | 空殼（return null） |
+| 頁面                | Page header 現況                                                |
+| ------------------- | --------------------------------------------------------------- |
+| `Dashboard.jsx`     | 本地 `PageHeader` function（line 373），顯示標題 + `reportDate` |
+| `Accommodation.jsx` | 內嵌 header（line 1128），顯示分院名稱 + `reportDate`           |
+| `DayCare.jsx`       | 空殼（return null）                                             |
+| `HomeCare.jsx`      | 空殼（return null）                                             |
 
 ---
 
@@ -59,6 +59,7 @@ UI 選擇器元件，包含：
 ```
 
 Props：
+
 - `title`（string）：頁面標題
 - `showDateRange`（bool，預設 `true`）：是否顯示月份選擇器
 
@@ -69,10 +70,12 @@ Props：
 ## 修改檔案
 
 ### `src/pages/Dashboard.jsx`
+
 - 移除本地 `PageHeader` function（line 373–397）
 - 引入 `src/components/PageHeader`，替換 line 558 的 `<PageHeader />`
 
 ### `src/pages/Accommodation.jsx`
+
 - 替換 line 1128–1136 的 inline header，改用 `<PageHeader title={branch ?? '住宿機構'} />`
 
 ---

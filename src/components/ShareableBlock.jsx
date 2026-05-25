@@ -54,9 +54,7 @@ async function copyBlobToClipboard(blob) {
   if (!navigator.clipboard || typeof window.ClipboardItem !== 'function') {
     throw new Error('clipboard-unsupported')
   }
-  await navigator.clipboard.write([
-    new window.ClipboardItem({ [blob.type]: blob }),
-  ])
+  await navigator.clipboard.write([new window.ClipboardItem({ [blob.type]: blob })])
 }
 
 function downloadBlob(blob, filename) {

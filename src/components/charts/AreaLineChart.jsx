@@ -47,6 +47,7 @@ export default function AreaLineChart({
             boxShadow: 'none',
             fontSize: 12,
           }}
+          itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
           formatter={(value) => [`${value}${yAxisSuffix}`, '營收']}
         />
         <Area

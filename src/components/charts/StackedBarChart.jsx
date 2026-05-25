@@ -45,6 +45,7 @@ export default function StackedBarChart({
             boxShadow: 'none',
             fontSize: 12,
           }}
+          itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
           formatter={(value, name) => [format(value), name]}
         />
         <Legend
@@ -54,13 +55,7 @@ export default function StackedBarChart({
           formatter={(value) => <span style={{ color: 'rgba(0,0,0,0.6)' }}>{value}</span>}
         />
         {series.map((s) => (
-          <Bar
-            key={s.name}
-            dataKey={s.name}
-            stackId="a"
-            fill={s.color}
-            maxBarSize={26}
-          />
+          <Bar key={s.name} dataKey={s.name} stackId="a" fill={s.color} maxBarSize={26} />
         ))}
       </BarChart>
     </ResponsiveContainer>

@@ -9,7 +9,12 @@ import {
   YAxis,
 } from 'recharts'
 
-export default function TrendLineChart({ months, series, yAxisSuffix = '', height = 200 }) {
+export default function TrendLineChart({
+  months,
+  series,
+  yAxisSuffix = '',
+  height = 200,
+}) {
   const data = months.map((month, i) => ({
     month,
     ...series.reduce((acc, s) => ({ ...acc, [s.name]: s.data[i] }), {}),
@@ -38,6 +43,7 @@ export default function TrendLineChart({ months, series, yAxisSuffix = '', heigh
             boxShadow: 'none',
             fontSize: 12,
           }}
+          itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
           formatter={(value, name) => [`${value}${yAxisSuffix}`, name]}
         />
         <Legend

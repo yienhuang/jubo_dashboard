@@ -142,8 +142,7 @@ const theme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          boxShadow:
-            '0px 11px 15px rgba(0,0,0,0.2), 0px 9px 46px rgba(0,0,0,0.12)',
+          boxShadow: '0px 11px 15px rgba(0,0,0,0.2), 0px 9px 46px rgba(0,0,0,0.12)',
           borderRadius: 8,
         },
       },

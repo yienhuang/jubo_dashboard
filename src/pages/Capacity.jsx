@@ -52,9 +52,9 @@ const WARNING = '#ED6C02'
 
 // ── Utilities ─────────────────────────────────────────────
 const STATUS_CONFIG = {
-  stable:   { label: '穩定',     bg: 'rgba(76,175,80,0.12)',  color: GREEN_500 },
-  ok:       { label: '正常',     bg: 'rgba(76,175,80,0.12)',  color: GREEN_500 },
-  watch:    { label: '留意',     bg: 'rgba(237,108,2,0.12)',  color: WARNING },
+  stable: { label: '穩定', bg: 'rgba(76,175,80,0.12)', color: GREEN_500 },
+  ok: { label: '正常', bg: 'rgba(76,175,80,0.12)', color: GREEN_500 },
+  watch: { label: '留意', bg: 'rgba(237,108,2,0.12)', color: WARNING },
   shortage: { label: '人員緊缺', bg: 'rgba(237,108,2,0.12)', color: WARNING },
 }
 
@@ -69,7 +69,11 @@ function getEmptyRateColor(rate) {
 // ── Shared components ─────────────────────────────────────
 
 function StatusChip({ status }) {
-  const cfg = STATUS_CONFIG[status] ?? { label: status, bg: 'rgba(0,0,0,0.08)', color: 'rgba(0,0,0,0.6)' }
+  const cfg = STATUS_CONFIG[status] ?? {
+    label: status,
+    bg: 'rgba(0,0,0,0.08)',
+    color: 'rgba(0,0,0,0.6)',
+  }
   return (
     <Box
       component="span"
@@ -152,7 +156,9 @@ function KpiCard({ title, value, unit, delta, hint, icon: Icon, warning }) {
         <Box className="mt-2 flex items-center gap-2">
           <DeltaRow delta={delta} />
           {hint && !delta && (
-            <Typography variant="caption" color="textSecondary">{hint}</Typography>
+            <Typography variant="caption" color="textSecondary">
+              {hint}
+            </Typography>
           )}
         </Box>
       </CardContent>
@@ -160,10 +166,14 @@ function KpiCard({ title, value, unit, delta, hint, icon: Icon, warning }) {
   )
 }
 
-
 function SectionCard({ title, children, noPadBottom, fillContent }) {
   return (
-    <Card sx={{ height: '100%', ...(fillContent && { display: 'flex', flexDirection: 'column' }) }}>
+    <Card
+      sx={{
+        height: '100%',
+        ...(fillContent && { display: 'flex', flexDirection: 'column' }),
+      }}
+    >
       <CardContent
         sx={{
           p: 2,
@@ -171,7 +181,9 @@ function SectionCard({ title, children, noPadBottom, fillContent }) {
           ...(fillContent && { flex: 1, display: 'flex', flexDirection: 'column' }),
         }}
       >
-        <Typography variant="body1" sx={{ fontWeight: 500, mb: 2 }}>{title}</Typography>
+        <Typography variant="body1" sx={{ fontWeight: 500, mb: 2 }}>
+          {title}
+        </Typography>
         {fillContent ? <Box sx={{ flex: 1 }}>{children}</Box> : children}
       </CardContent>
     </Card>
@@ -181,8 +193,22 @@ function SectionCard({ title, children, noPadBottom, fillContent }) {
 function UtilizationBar({ value, colorFn, color: colorProp }) {
   const color = colorProp ?? (colorFn ? colorFn(value) : getOccupancyColor(value))
   return (
-    <Box sx={{ height: 8, borderRadius: 4, bgcolor: 'rgba(120,144,156,0.16)', overflow: 'hidden' }}>
-      <Box sx={{ width: `${Math.min(value, 100)}%`, height: '100%', bgcolor: color, borderRadius: 4 }} />
+    <Box
+      sx={{
+        height: 8,
+        borderRadius: 4,
+        bgcolor: 'rgba(120,144,156,0.16)',
+        overflow: 'hidden',
+      }}
+    >
+      <Box
+        sx={{
+          width: `${Math.min(value, 100)}%`,
+          height: '100%',
+          bgcolor: color,
+          borderRadius: 4,
+        }}
+      />
     </Box>
   )
 }
@@ -193,7 +219,12 @@ function ComparisonBars({ items, unit, colorFn, colors, footerItem, fillHeight }
     <Box
       sx={
         fillHeight
-          ? { display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }
+          ? {
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              justifyContent: 'space-between',
+            }
           : { display: 'flex', flexDirection: 'column', gap: 2 }
       }
     >
@@ -209,11 +240,21 @@ function ComparisonBars({ items, unit, colorFn, colors, footerItem, fillHeight }
             <Box className="flex items-center justify-between" sx={{ mb: 0.75 }}>
               <Typography variant="body2">{item.name}</Typography>
               <Typography variant="body2" sx={{ fontWeight: 500, color }}>
-                {item.value}{unit}
+                {item.value}
+                {unit}
               </Typography>
             </Box>
-            <Box sx={{ height: 8, borderRadius: 4, bgcolor: 'rgba(120,144,156,0.16)', overflow: 'hidden' }}>
-              <Box sx={{ width: `${pct}%`, height: '100%', bgcolor: color, borderRadius: 4 }} />
+            <Box
+              sx={{
+                height: 8,
+                borderRadius: 4,
+                bgcolor: 'rgba(120,144,156,0.16)',
+                overflow: 'hidden',
+              }}
+            >
+              <Box
+                sx={{ width: `${pct}%`, height: '100%', bgcolor: color, borderRadius: 4 }}
+              />
             </Box>
           </Box>
         )
@@ -222,9 +263,12 @@ function ComparisonBars({ items, unit, colorFn, colors, footerItem, fillHeight }
         <>
           <Divider />
           <Box className="flex items-center justify-between">
-            <Typography variant="body2" color="textSecondary">{footerItem.label}</Typography>
+            <Typography variant="body2" color="textSecondary">
+              {footerItem.label}
+            </Typography>
             <Typography variant="body2" sx={{ fontWeight: 500 }} color="textSecondary">
-              {footerItem.value}{unit}
+              {footerItem.value}
+              {unit}
             </Typography>
           </Box>
         </>
@@ -249,31 +293,70 @@ function ResidentialFacilityCard({ facility }) {
   const { id, name, status, inService, emptyBeds, occupancyRate, capacity } = facility
   return (
     <Card sx={{ height: '100%', border: '1px solid rgba(0,0,0,0.08)' }}>
-      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 }, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <CardContent
+        sx={{
+          p: 2,
+          '&:last-child': { pb: 2 },
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
         <Box>
           <Box className="flex items-center justify-between gap-2" sx={{ mb: 0.5 }}>
-            <Typography variant="body1" sx={{ fontWeight: 500 }}>{name}</Typography>
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              {name}
+            </Typography>
             <StatusChip status={status} />
           </Box>
-          <Typography variant="caption" color="textSecondary">ID: {id}</Typography>
+          <Typography variant="caption" color="textSecondary">
+            ID: {id}
+          </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box>
-            <Typography variant="caption" color="textSecondary">在院人數</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              在院人數
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {inService}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="textSecondary">空床數</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              空床數
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {emptyBeds}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="textSecondary">佔床率</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              佔床率
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {occupancyRate}%
             </Typography>
           </Box>
@@ -281,15 +364,29 @@ function ResidentialFacilityCard({ facility }) {
 
         <Box>
           <Box className="flex justify-between" sx={{ mb: 0.75 }}>
-            <Typography variant="caption" color="textSecondary">床位使用率</Typography>
-            <Typography variant="caption" sx={{ color: 'rgba(0,0,0,0.87)', fontWeight: 500 }}>{occupancyRate}%</Typography>
+            <Typography variant="caption" color="textSecondary">
+              床位使用率
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{ color: 'rgba(0,0,0,0.87)', fontWeight: 500 }}
+            >
+              {occupancyRate}%
+            </Typography>
           </Box>
           <UtilizationBar value={occupancyRate} color="#0097A7" />
         </Box>
 
         <Box className="flex items-center justify-between">
-          <Typography variant="body2" color="textSecondary">核定床位：{capacity} 床</Typography>
-          <Button variant="text" size="small" endIcon={<ChevronRightIcon sx={{ fontSize: 16 }} />} sx={detailBtnSx}>
+          <Typography variant="body2" color="textSecondary">
+            核定床位：{capacity} 床
+          </Typography>
+          <Button
+            variant="text"
+            size="small"
+            endIcon={<ChevronRightIcon sx={{ fontSize: 16 }} />}
+            sx={detailBtnSx}
+          >
             查看詳情
           </Button>
         </Box>
@@ -299,15 +396,40 @@ function ResidentialFacilityCard({ facility }) {
 }
 
 function ResidentialContent() {
-  const { totalBeds, occupiedBeds, emptyBeds, emptyRate, occupiedDelta, emptyRateDelta } = residentialSummary
+  const { totalBeds, occupiedBeds, emptyBeds, emptyRate, occupiedDelta, emptyRateDelta } =
+    residentialSummary
   return (
     <Box className="flex flex-col gap-3">
       <Grid container spacing={2}>
         {[
-          { title: '總床數',    value: totalBeds,    unit: '床', hint: '兩間機構合計',  icon: BedIcon },
-          { title: '佔床數',    value: occupiedBeds, unit: '床', delta: occupiedDelta,  icon: PersonIcon },
-          { title: '空床數',    value: emptyBeds,    unit: '床', hint: '可安置床位',    icon: HotelIcon },
-          { title: '平均空床率', value: emptyRate,    unit: '%',  delta: emptyRateDelta, icon: QueryStatsIcon },
+          {
+            title: '總床數',
+            value: totalBeds,
+            unit: '床',
+            hint: '兩間機構合計',
+            icon: BedIcon,
+          },
+          {
+            title: '佔床數',
+            value: occupiedBeds,
+            unit: '床',
+            delta: occupiedDelta,
+            icon: PersonIcon,
+          },
+          {
+            title: '空床數',
+            value: emptyBeds,
+            unit: '床',
+            hint: '可安置床位',
+            icon: HotelIcon,
+          },
+          {
+            title: '平均空床率',
+            value: emptyRate,
+            unit: '%',
+            delta: emptyRateDelta,
+            icon: QueryStatsIcon,
+          },
         ].map((s) => (
           <Grid key={s.title} size={{ xs: 6, sm: 3 }}>
             <KpiCard {...s} />
@@ -364,31 +486,70 @@ function DaycareFacilityCard({ facility }) {
   const { id, name, status, quota, todayAttend, todayAbsent, attendRate } = facility
   return (
     <Card sx={{ height: '100%', border: '1px solid rgba(0,0,0,0.08)' }}>
-      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 }, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <CardContent
+        sx={{
+          p: 2,
+          '&:last-child': { pb: 2 },
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
         <Box>
           <Box className="flex items-center justify-between gap-2" sx={{ mb: 0.5 }}>
-            <Typography variant="body1" sx={{ fontWeight: 500 }}>{name}</Typography>
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              {name}
+            </Typography>
             <StatusChip status={status} />
           </Box>
-          <Typography variant="caption" color="textSecondary">ID: {id}</Typography>
+          <Typography variant="caption" color="textSecondary">
+            ID: {id}
+          </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box>
-            <Typography variant="caption" color="textSecondary">核定人數</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              核定人數
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {quota}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="textSecondary">今日出席</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              今日出席
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {todayAttend}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="textSecondary">出席率</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              出席率
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {attendRate}%
             </Typography>
           </Box>
@@ -396,15 +557,29 @@ function DaycareFacilityCard({ facility }) {
 
         <Box>
           <Box className="flex justify-between" sx={{ mb: 0.75 }}>
-            <Typography variant="caption" color="textSecondary">出席率</Typography>
-            <Typography variant="caption" sx={{ color: 'rgba(0,0,0,0.87)', fontWeight: 500 }}>{attendRate}%</Typography>
+            <Typography variant="caption" color="textSecondary">
+              出席率
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{ color: 'rgba(0,0,0,0.87)', fontWeight: 500 }}
+            >
+              {attendRate}%
+            </Typography>
           </Box>
           <UtilizationBar value={attendRate} color="#0097A7" />
         </Box>
 
         <Box className="flex items-center justify-between">
-          <Typography variant="body2" color="textSecondary">今日未到人數：{todayAbsent} 人</Typography>
-          <Button variant="text" size="small" endIcon={<ChevronRightIcon sx={{ fontSize: 16 }} />} sx={detailBtnSx}>
+          <Typography variant="body2" color="textSecondary">
+            今日未到人數：{todayAbsent} 人
+          </Typography>
+          <Button
+            variant="text"
+            size="small"
+            endIcon={<ChevronRightIcon sx={{ fontSize: 16 }} />}
+            sx={detailBtnSx}
+          >
             查看詳情
           </Button>
         </Box>
@@ -414,15 +589,46 @@ function DaycareFacilityCard({ facility }) {
 }
 
 function DaycareContent() {
-  const { totalQuota, todayAttend, todayAbsent, attendRate, todayAttendDelta, attendRateDelta } = daycareSummary
+  const {
+    totalQuota,
+    todayAttend,
+    todayAbsent,
+    attendRate,
+    todayAttendDelta,
+    attendRateDelta,
+  } = daycareSummary
   return (
     <Box className="flex flex-col gap-3">
       <Grid container spacing={2}>
         {[
-          { title: '核定總人數', value: totalQuota,  unit: '人', hint: '兩間日照合計名額', icon: GroupsIcon },
-          { title: '今日出席',   value: todayAttend, unit: '人', delta: todayAttendDelta,  icon: PersonIcon },
-          { title: '今日缺席',   value: todayAbsent, unit: '人', hint: '含請假與臨時缺席', icon: PersonIcon },
-          { title: '出席率',     value: attendRate,  unit: '%',  delta: attendRateDelta,   icon: QueryStatsIcon },
+          {
+            title: '核定總人數',
+            value: totalQuota,
+            unit: '人',
+            hint: '兩間日照合計名額',
+            icon: GroupsIcon,
+          },
+          {
+            title: '今日出席',
+            value: todayAttend,
+            unit: '人',
+            delta: todayAttendDelta,
+            icon: PersonIcon,
+          },
+          {
+            title: '今日缺席',
+            value: todayAbsent,
+            unit: '人',
+            hint: '含請假與臨時缺席',
+            icon: PersonIcon,
+          },
+          {
+            title: '出席率',
+            value: attendRate,
+            unit: '%',
+            delta: attendRateDelta,
+            icon: QueryStatsIcon,
+          },
         ].map((s) => (
           <Grid key={s.title} size={{ xs: 6, sm: 3 }}>
             <KpiCard {...s} />
@@ -476,48 +682,104 @@ function DaycareContent() {
 // ── 居家服務 ──────────────────────────────────────────────
 
 function HomecareFacilityCard({ facility }) {
-  const { id, name, status, cases, staffCount, monthlyHours, newCases, closedCases, alert } = facility
+  const {
+    id,
+    name,
+    status,
+    cases,
+    staffCount,
+    monthlyHours,
+    newCases,
+    closedCases,
+    alert,
+  } = facility
   return (
     <Card sx={{ height: '100%', border: '1px solid rgba(0,0,0,0.08)' }}>
-      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 }, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <CardContent
+        sx={{
+          p: 2,
+          '&:last-child': { pb: 2 },
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
         <Box>
           <Box className="flex items-center justify-between gap-2" sx={{ mb: 0.5 }}>
-            <Typography variant="body1" sx={{ fontWeight: 500 }}>{name}</Typography>
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              {name}
+            </Typography>
             <StatusChip status={status} />
           </Box>
-          <Typography variant="caption" color="textSecondary">ID: {id}</Typography>
+          <Typography variant="caption" color="textSecondary">
+            ID: {id}
+          </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box>
-            <Typography variant="caption" color="textSecondary">服務案件</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              服務案件
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {cases}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="textSecondary">居服員</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              居服員
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {staffCount}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="textSecondary">月服時數</Typography>
-            <Typography sx={{ fontSize: 22, fontWeight: 500, color: 'rgba(0,0,0,0.87)', lineHeight: 1.3 }}>
+            <Typography variant="caption" color="textSecondary">
+              月服時數
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(0,0,0,0.87)',
+                lineHeight: 1.3,
+              }}
+            >
               {monthlyHours.toLocaleString()}
             </Typography>
           </Box>
         </Box>
 
         {alert && (
-          <Alert severity="warning" sx={{ py: 0.5 }}>{alert}</Alert>
+          <Alert severity="warning" sx={{ py: 0.5 }}>
+            {alert}
+          </Alert>
         )}
 
         <Box className="flex items-center justify-between">
           <Typography variant="body2" color="textSecondary">
             本月：新入案 {newCases} 案・離案 {closedCases} 案
           </Typography>
-          <Button variant="text" size="small" endIcon={<ChevronRightIcon sx={{ fontSize: 16 }} />} sx={detailBtnSx}>
+          <Button
+            variant="text"
+            size="small"
+            endIcon={<ChevronRightIcon sx={{ fontSize: 16 }} />}
+            sx={detailBtnSx}
+          >
             查看詳情
           </Button>
         </Box>
@@ -532,13 +794,31 @@ function HomecareContent() {
     <Box className="flex flex-col gap-3">
       <Grid container spacing={2}>
         <Grid size={{ xs: 6, sm: 4 }}>
-          <KpiCard title="服務案件數" value={totalCases.toLocaleString()} unit="案" hint="兩間居服合計" icon={AssignmentIcon} />
+          <KpiCard
+            title="服務案件數"
+            value={totalCases.toLocaleString()}
+            unit="案"
+            hint="兩間居服合計"
+            icon={AssignmentIcon}
+          />
         </Grid>
         <Grid size={{ xs: 6, sm: 4 }}>
-          <KpiCard title="月服務時數" value={monthlyHours.toLocaleString()} unit="時" delta={hoursDelta} icon={ScheduleIcon} />
+          <KpiCard
+            title="月服務時數"
+            value={monthlyHours.toLocaleString()}
+            unit="時"
+            delta={hoursDelta}
+            icon={ScheduleIcon}
+          />
         </Grid>
         <Grid size={{ xs: 6, sm: 4 }}>
-          <KpiCard title="居服人數" value={staffCount} unit="人" hint="兩間居服合計" icon={GroupsIcon} />
+          <KpiCard
+            title="居服人數"
+            value={staffCount}
+            unit="人"
+            hint="兩間居服合計"
+            icon={GroupsIcon}
+          />
         </Grid>
       </Grid>
 
@@ -595,7 +875,10 @@ const TABS = [
 
 export default function Capacity() {
   const [searchParams] = useSearchParams()
-  const initialTab = Math.min(Math.max(parseInt(searchParams.get('tab') ?? '0', 10), 0), TABS.length - 1)
+  const initialTab = Math.min(
+    Math.max(parseInt(searchParams.get('tab') ?? '0', 10), 0),
+    TABS.length - 1,
+  )
   const [tab, setTab] = useState(initialTab)
 
   useEffect(() => {
@@ -616,12 +899,18 @@ export default function Capacity() {
           }}
         >
           <Box>
-            <Typography variant="h6" sx={{ lineHeight: 1.2 }}>產能管理</Typography>
+            <Typography variant="h6" sx={{ lineHeight: 1.2 }}>
+              產能管理
+            </Typography>
             <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
               監控全集團長照・日照・居服即時資源利用率與服務量
             </Typography>
           </Box>
-          <Typography variant="caption" color="textSecondary" sx={{ mt: 0.5, flexShrink: 0 }}>
+          <Typography
+            variant="caption"
+            color="textSecondary"
+            sx={{ mt: 0.5, flexShrink: 0 }}
+          >
             {capacityReportDate}
           </Typography>
         </Box>

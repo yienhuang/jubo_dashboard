@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom'
 
 export default function NotFound() {
   return (
-    <Box className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+    <Box className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
       <Typography variant="h3" sx={{ fontWeight: 700 }}>
         404
       </Typography>

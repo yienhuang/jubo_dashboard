@@ -8,13 +8,14 @@
 
 ## 1. 先搞懂三個東西
 
-| 名詞 | 是什麼 | 角色 |
-|---|---|---|
-| **Git** | 版本控制系統（軟體） | 真正在記錄程式碼變動的引擎 |
-| **GitHub** | 一個網站（github.com） | 把 Git 紀錄放上雲端，方便多人協作 |
-| **Fork** | 一個 Mac/Windows 軟體 | 圖形化操作介面，幫你按按鈕代替打指令 |
+| 名詞       | 是什麼                 | 角色                                 |
+| ---------- | ---------------------- | ------------------------------------ |
+| **Git**    | 版本控制系統（軟體）   | 真正在記錄程式碼變動的引擎           |
+| **GitHub** | 一個網站（github.com） | 把 Git 紀錄放上雲端，方便多人協作    |
+| **Fork**   | 一個 Mac/Windows 軟體  | 圖形化操作介面，幫你按按鈕代替打指令 |
 
 簡單比喻：
+
 - **Git** ≈ Word 的「檔案歷史紀錄」功能
 - **GitHub** ≈ Google Drive，存放檔案讓別人也能看
 - **Fork** ≈ Word 的選單列，按按鈕呼叫 Git 的指令
@@ -24,16 +25,20 @@
 ## 2. 第一次設定 Fork
 
 ### 2.1 下載與安裝
+
 到 https://git-fork.com/ 下載對應系統版本，安裝。
 
 ### 2.2 設定你的身份（重要）
+
 Git 會把你的名字和 email 記在每個 commit 上。
 
 **Fork 操作**：選單 `Fork` → `Preferences` → `Git Config` 分頁
+
 - **Name**：你的名字（會顯示在 commit 紀錄上）
 - **Email**：建議用 GitHub 帳號的 email（這樣 GitHub 才會把 commit 對應到你的帳號）
 
 ### 2.3 連動 GitHub 帳號（推薦）
+
 **Fork 操作**：選單 `Fork` → `Preferences` → `Accounts` 分頁 → `+` → 選 GitHub → 登入授權
 
 連動後 push/pull 不用每次輸入密碼，Fork 會自動處理認證。
@@ -54,6 +59,7 @@ Git 會把你的名字和 email 記在每個 commit 上。
 ```
 
 **對應到 Fork 介面**：
+
 - 左下角 `Changes` 分頁 → **Working Directory**（目前的修改）
 - 中間 `Staged` 區塊 → **Staging Area**（已勾選要 commit 的）
 - 左側 `All Commits` 列表 → **Repository**（已存檔的歷史）
@@ -82,6 +88,7 @@ Git 會把你的名字和 email 記在每個 commit 上。
    - ❌ Choose a license
 
    **為什麼？** 勾了會在遠端先建立一個 commit，等你從本機 push 時可能會遇到「兩邊歷史對不上」的錯誤。第一次操作從**完全空的 repo** 開始最單純。這些檔案晚一點在本機加都來得及。
+
 5. 點 `Create repository`
 6. 建好後會看到指引頁，把那個 `https://github.com/你的帳號/repo名.git` URL 複製下來，下一步要用
 
@@ -94,6 +101,7 @@ Git 會把你的名字和 email 記在每個 commit 上。
 **做法**：先在 GitHub 建好空 repo（上一步），然後在 Fork 中 clone 下來。
 
 **Fork 操作**：
+
 1. 選單 `File` → `Clone`
 2. **Repository URL**：貼上 GitHub repo URL
 3. **Parent Folder**：選一個放專案的資料夾（例如 `~/Documents/projects`）
@@ -111,9 +119,11 @@ Git 會把你的名字和 email 記在每個 commit 上。
 **步驟**：
 
 #### B-1. 在 GitHub 建一個空 repo
+
 依照上面「第 4 節」的步驟，建一個**空的**（不勾 README/gitignore/license）repo。
 
 #### B-2. 在 Fork 加 remote
+
 1. 在 Fork 中打開你的本機專案
 2. 左側欄找到 `Remotes` 區塊
 3. 在 `Remotes` 上**右鍵** → `Add Remote`
@@ -125,6 +135,7 @@ Git 會把你的名字和 email 記在每個 commit 上。
 加完後 `Remotes` 下面會出現 `origin`，展開可以看到 `(no branches yet)`。
 
 #### B-3. 第一次 Push
+
 1. 上方工具列點 `Push` 按鈕
 2. 彈出視窗確認：
    - **Local Branch**：`main`
@@ -133,6 +144,7 @@ Git 會把你的名字和 email 記在每個 commit 上。
 3. 按 `Push`
 
 #### B-4. 到 GitHub 網頁確認
+
 重新整理你的 repo 頁面，應該看到所有檔案和 commit 都上去了。
 
 > 💡 **完成後**：本機和 GitHub 已經接起來，之後流程就跟情境 A 一樣，跳到下一節。
@@ -148,15 +160,20 @@ Git 會把你的名字和 email 記在每個 commit 上。
 ```
 
 ### 6.1 改檔案
+
 正常用編輯器（VS Code 等）改檔案，Fork 會自動偵測變動。
 
 ### 6.2 看你改了什麼
+
 **Fork**：左下 `Changes` 分頁
+
 - 點檔案會在右邊顯示左右對照（紅色舊版 / 綠色新版）
 - 確認一下自己沒改到不該改的東西
 
 ### 6.3 Stage：挑選要存檔的修改
+
 **Fork**：在 `Changes` 分頁
+
 - **全部 stage**：點上方 `Stage All` 按鈕
 - **單一檔案 stage**：每個檔案最右邊有 `+` 號，點一下加入
 - **連單獨幾行也可以 stage**：選取那幾行 → 右鍵 → `Stage Selected Lines`（適合一個檔案有多種改動想分成不同 commit）
@@ -164,7 +181,9 @@ Git 會把你的名字和 email 記在每個 commit 上。
 被 stage 的檔案會跑到中間 `Staged` 區塊。
 
 ### 6.4 Commit：建立存檔點
+
 **Fork**：底部會有 commit message 輸入框
+
 1. **Subject（上面那行）**：一句話總結這次改了什麼
    - 動詞開頭：`add`、`fix`、`update`、`remove`
    - 不超過 50 字
@@ -173,6 +192,7 @@ Git 會把你的名字和 email 記在每個 commit 上。
 3. 按 `Commit`
 
 > 💡 **常見 commit message 格式**：團隊常用 [Conventional Commits](https://www.conventionalcommits.org/) 前綴：
+>
 > - `feat:` 新功能
 > - `fix:` 修 bug
 > - `docs:` 改文件
@@ -184,7 +204,9 @@ Git 會把你的名字和 email 記在每個 commit 上。
 Commit 完，左側 `All Commits` 列表會出現你剛剛的 commit。
 
 ### 6.5 Push：推到 GitHub
+
 **Fork**：工具列 `Push` 按鈕
+
 - Commit 還沒 push 時，分支名稱旁邊會顯示「↑ N」表示有 N 個 commit 還沒推
 - Push 完後 GitHub 網頁就能看到你的更新
 
@@ -193,6 +215,7 @@ Commit 完，左側 `All Commits` 列表會出現你剛剛的 commit。
 ## 7. Branch 分支
 
 ### 7.1 為什麼要分支？
+
 你在做新功能 A 時，老闆突然要你修一個緊急 bug。如果都在同一條線（`main`）上改，會很亂——bug 修完想推上 production，可是新功能還沒寫完不能推。
 
 **解法**：每個任務開一條 branch，做完再合併回 main。
@@ -204,6 +227,7 @@ feature:            ●───●───●
 ```
 
 ### 7.2 在 Fork 建立 branch
+
 1. 確認你目前在哪條 branch（左側 `Branches` 區塊，**粗體**那條就是當前）
 2. 在想要分支的起點上**右鍵**（通常是 `main`）→ `New Branch`
 3. 輸入 branch 名稱
@@ -212,14 +236,17 @@ feature:            ●───●───●
 5. 按 `Create Branch`
 
 ### 7.3 切換 branch
+
 **Fork**：在左側 `Branches` 區塊**雙擊**任一 branch 名稱即可切換。
 
 ⚠️ **切換前確認 `Changes` 分頁是空的**（沒有未 commit 的修改），不然 Fork 會跳警告。要嘛先 commit、要嘛用 Stash（進階功能）暫存。
 
 ### 7.4 合併 branch（merge）
+
 功能做完後，把 feature branch 併回 main：
 
 **Fork 操作**：
+
 1. **先切到目標分支**（例如 main）— 雙擊 `main`
 2. 在想合併的 branch（例如 `feature/login`）上**右鍵** → `Merge ... into 'main'`
 3. 確認 → 按 `Merge`
@@ -234,15 +261,16 @@ feature:            ●───●───●
 
 ### 8.1 三個按鈕的差別
 
-| Fork 按鈕 | 做什麼 | 何時用 |
-|---|---|---|
+| Fork 按鈕 | 做什麼                                       | 何時用                                      |
+| --------- | -------------------------------------------- | ------------------------------------------- |
 | **Fetch** | 從 GitHub 下載最新資訊到本機，**但不會合併** | 想知道遠端有沒有更新，但還不想動目前的 code |
-| **Pull** | Fetch + 自動合併到目前 branch | 確定要把遠端的更新拉下來合併 |
-| **Push** | 把本機 commit 推到 GitHub | 你做完工作要分享給別人 |
+| **Pull**  | Fetch + 自動合併到目前 branch                | 確定要把遠端的更新拉下來合併                |
+| **Push**  | 把本機 commit 推到 GitHub                    | 你做完工作要分享給別人                      |
 
 **安全建議**：開始工作前先按 `Fetch` 看一下遠端狀況，再決定要不要 Pull。
 
 ### 8.2 典型協作流程
+
 ```
 早上開工：Pull main（拿同事昨天的更新）
    ↓
@@ -258,24 +286,31 @@ feature:            ●───●───●
 ## 9. 救援情境（出錯了怎麼辦？）
 
 ### 9.1 改錯了，想丟掉還沒 commit 的修改
+
 **Fork**：在 `Changes` 分頁，檔案上**右鍵** → `Discard Changes`
 
 ⚠️ **不可復原**，沒 commit 的修改會永久消失。
 
 ### 9.2 Stage 錯檔案了，想拿掉
+
 **Fork**：在 `Staged` 區塊，檔案旁邊的 `−` 號
+
 - 檔案會回到 `Changes`，**修改不會消失**
 
 ### 9.3 剛 commit 完發現訊息寫錯
+
 **Fork**：在最後一個 commit 上**右鍵** → `Amend Commit`
+
 - 改完訊息按 `Amend`
 
 ⚠️ **只能改還沒 push 的 commit**。已經 push 上去的不要改，會破壞歷史紀錄。
 
 ### 9.4 Merge 衝突（conflict）
+
 你和同事改了同一行，merge 時 Git 不知道要保留哪個版本，就會跳衝突。
 
 **Fork 的處理方式**：
+
 1. 衝突檔案在 `Changes` 分頁會標紅，圖示是 `!`
 2. 點開檔案，Fork 顯示左右對照：
    - 左邊：你的版本（current）
@@ -289,7 +324,9 @@ feature:            ●───●───●
 6. 按 `Continue Merge`（或直接 commit）完成
 
 ### 9.5 看歷史紀錄
+
 **Fork**：左側 `All Commits` 分頁，列出所有 commit
+
 - 點任一 commit 可以看那次改了什麼檔案、什麼內容
 - 右鍵 commit → `Copy SHA` 取得 commit ID（追蹤特定 commit 用）
 
@@ -299,26 +336,26 @@ feature:            ●───●───●
 
 平常用 Fork 不需要記這些，但偶爾要在 terminal 用時可以對照：
 
-| Fork 介面 | CLI 指令 | 用途 |
-|---|---|---|
-| File → Clone | `git clone <url>` | 複製遠端 repo |
-| Changes 分頁 | `git status` | 看狀態 |
-| 點檔案看 diff | `git diff` | 看具體改了什麼 |
-| `+` Stage | `git add <file>` | 加入暫存區 |
-| `−` Unstage | `git restore --staged <file>` | 移出暫存區 |
-| Commit 按鈕 | `git commit -m "訊息"` | 建立 commit |
-| Push 按鈕 | `git push` | 推到遠端 |
-| Push（第一次） | `git push -u origin main` | 第一次推並建立追蹤 |
-| Fetch 按鈕 | `git fetch` | 取得遠端資訊 |
-| Pull 按鈕 | `git pull` | 拉並合併 |
-| Add Remote | `git remote add origin <url>` | 加遠端 |
-| 看遠端 | `git remote -v` | 列出有哪些遠端 |
-| New Branch | `git switch -c <name>` | 建立並切換 branch |
-| 雙擊 branch | `git switch <name>` | 切換 branch |
-| Merge into ... | `git merge <name>` | 合併分支 |
-| Discard Changes | `git restore <file>` | 丟棄修改 |
-| Amend Commit | `git commit --amend` | 修改最後一個 commit |
-| All Commits | `git log --oneline` | 看歷史 |
+| Fork 介面       | CLI 指令                      | 用途                |
+| --------------- | ----------------------------- | ------------------- |
+| File → Clone    | `git clone <url>`             | 複製遠端 repo       |
+| Changes 分頁    | `git status`                  | 看狀態              |
+| 點檔案看 diff   | `git diff`                    | 看具體改了什麼      |
+| `+` Stage       | `git add <file>`              | 加入暫存區          |
+| `−` Unstage     | `git restore --staged <file>` | 移出暫存區          |
+| Commit 按鈕     | `git commit -m "訊息"`        | 建立 commit         |
+| Push 按鈕       | `git push`                    | 推到遠端            |
+| Push（第一次）  | `git push -u origin main`     | 第一次推並建立追蹤  |
+| Fetch 按鈕      | `git fetch`                   | 取得遠端資訊        |
+| Pull 按鈕       | `git pull`                    | 拉並合併            |
+| Add Remote      | `git remote add origin <url>` | 加遠端              |
+| 看遠端          | `git remote -v`               | 列出有哪些遠端      |
+| New Branch      | `git switch -c <name>`        | 建立並切換 branch   |
+| 雙擊 branch     | `git switch <name>`           | 切換 branch         |
+| Merge into ...  | `git merge <name>`            | 合併分支            |
+| Discard Changes | `git restore <file>`          | 丟棄修改            |
+| Amend Commit    | `git commit --amend`          | 修改最後一個 commit |
+| All Commits     | `git log --oneline`           | 看歷史              |
 
 ---
 

@@ -36,15 +36,34 @@ function CustomTooltip({ active, payload, label }) {
       <div style={{ marginBottom: 6, fontWeight: 500, color: 'rgba(0,0,0,0.87)' }}>
         {label}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.6)' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          color: 'rgba(0,0,0,0.87)',
+        }}
+      >
         <span>月底總數</span>
-        <span style={{ color: 'rgba(0,0,0,0.87)', fontWeight: 500 }}>{d.total} 人</span>
+        <span style={{ fontWeight: 500 }}>{d.total} 人</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', color: INFLOW_COLOR, marginTop: 2 }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          color: 'rgba(0,0,0,0.87)',
+          marginTop: 2,
+        }}
+      >
         <span>新入住</span>
         <span>+{d.newIn} 人</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', color: OUTFLOW_COLOR }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          color: 'rgba(0,0,0,0.87)',
+        }}
+      >
         <span>退住</span>
         <span>-{d.newOut} 人</span>
       </div>
@@ -54,11 +73,23 @@ function CustomTooltip({ active, payload, label }) {
           margin: '6px 0 4px',
         }}
       />
-      <div style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.6)' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          color: 'rgba(0,0,0,0.87)',
+        }}
+      >
         <span>住院</span>
         <span>{d.hospitalized} 人</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.6)' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          color: 'rgba(0,0,0,0.87)',
+        }}
+      >
         <span>請假</span>
         <span>{d.onLeave} 人</span>
       </div>

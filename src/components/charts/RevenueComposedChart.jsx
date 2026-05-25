@@ -13,12 +13,7 @@ import {
 const YOY_COLOR = '#CDDC39'
 const LEGEND_COLOR = 'rgba(0,0,0,0.6)'
 
-export default function RevenueComposedChart({
-  months,
-  series,
-  yoy,
-  height = 240,
-}) {
+export default function RevenueComposedChart({ months, series, yoy, height = 240 }) {
   const data = months.map((month, i) => ({
     month,
     ...series.reduce((acc, s) => ({ ...acc, [s.name]: s.data[i] }), {}),
@@ -58,6 +53,7 @@ export default function RevenueComposedChart({
             boxShadow: 'none',
             fontSize: 12,
           }}
+          itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
           formatter={(value, name) => {
             if (value == null) return ['—', name]
             return name === 'YoY' ? [`${value}%`, name] : [`${value} 萬`, name]

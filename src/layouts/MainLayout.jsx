@@ -31,7 +31,7 @@ const APPBAR_HEIGHT = 64
 const navGroups = [
   {
     label: '集團總部',
-    items: [{ label: '總覽', to: '/', icon: <DashboardIcon /> }],
+    items: [{ label: '集團總覽', railLabel: '總覽', to: '/', icon: <DashboardIcon /> }],
   },
   {
     label: '服務類型',
@@ -42,9 +42,9 @@ const navGroups = [
         icon: <HotelIcon />,
         children: [
           { label: '總覽', to: '/accommodation', exact: true },
-          { label: '台北信義老人長照分院', to: '/accommodation/台北信義' },
-          { label: '高雄左營長照分院', to: '/accommodation/高雄左營' },
-          { label: '新北板橋長照分院', to: '/accommodation/新北板橋' },
+          { label: '台北信義', to: '/accommodation/台北信義' },
+          { label: '高雄左營', to: '/accommodation/高雄左營' },
+          { label: '新北板橋', to: '/accommodation/新北板橋' },
         ],
       },
       {
@@ -122,7 +122,7 @@ function RailItem({ item, selected }) {
           lineHeight: 1.2,
         }}
       >
-        {item.label}
+        {item.railLabel ?? item.label}
       </Typography>
     </ListItemButton>
   )

@@ -42,16 +42,16 @@ export function RankingRow({ row, valueFormatter, showTypeLabel }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
       <RankingBadge rank={row.rank} />
-      <Box sx={{ flex: 1, minWidth: 0 }}>
+      <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 0.5 }}>
         <Typography
           variant="body1"
-          sx={{ color: 'text.primary', lineHeight: 1.3 }}
+          sx={{ color: 'text.primary' }}
           noWrap
         >
           {row.name}
         </Typography>
         {showTypeLabel && row.typeLabel && (
-          <Typography variant="body2" color="textSecondary" sx={{ lineHeight: 1.4 }}>
+          <Typography variant="body2" color="textSecondary">
             {row.typeLabel}
           </Typography>
         )}
@@ -59,7 +59,7 @@ export function RankingRow({ row, valueFormatter, showTypeLabel }) {
           <Typography
             variant="caption"
             color="textSecondary"
-            sx={{ display: 'block', lineHeight: 1.4 }}
+            sx={{ display: 'block' }}
           >
             {row.subtitle}
           </Typography>

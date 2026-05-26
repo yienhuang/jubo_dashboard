@@ -245,7 +245,7 @@ const FINANCE_COMPARISON_COLUMNS = [
     type: 'progress',
     align: 'left',
     width: 260,
-    warningBelow: 90,
+    warningBelow: null,
   },
 ]
 
@@ -295,7 +295,7 @@ const REIMBURSEMENT_COMPARISON_COLUMNS = [
     type: 'progress',
     align: 'left',
     width: 260,
-    warningBelow: 80,
+    warningBelow: null,
   },
   {
     key: 'growthSpace',
@@ -362,27 +362,9 @@ const QUALITY_COMPARISON_COLUMNS = [
 
 const HR_COMPARISON_COLUMNS = [
   { key: 'name', label: '機構', type: 'text', align: 'left' },
-  {
-    key: 'staffTotal',
-    label: '員工總數',
-    type: 'number',
-    align: 'right',
-    width: NUMBER_COL_WIDTH,
-  },
-  {
-    key: 'careWorkers',
-    label: '照服員人數',
-    type: 'number',
-    align: 'right',
-    width: NUMBER_COL_WIDTH,
-  },
-  {
-    key: 'resignations',
-    label: '當月照服員離職人數',
-    type: 'number',
-    align: 'right',
-    width: NUMBER_COL_WIDTH,
-  },
+  { key: 'fullTime', label: '全職員工', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'partTime', label: '兼職員工', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'resignations', label: '離職人數', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
   {
     key: 'turnoverRate',
     label: '離職率',

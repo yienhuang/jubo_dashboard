@@ -40,7 +40,7 @@ const defaultValueFormatter = (item) => (
 export function RankingRow({ row, valueFormatter, showTypeLabel }) {
   const fmt = valueFormatter ?? defaultValueFormatter
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: 1 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
       <RankingBadge rank={row.rank} />
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Typography
@@ -84,7 +84,7 @@ export default function RankingCard({
 }) {
   return (
     <SummaryCard title={title} subtitle={subtitle}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, flex: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
         {items.map((row, idx) => (
           <Fragment key={row.id ?? `${row.rank}-${row.name}`}>
             {idx > 0 && <Divider />}

@@ -8,7 +8,7 @@ export const trendMonths = [
 ]
 
 const COLOR_KAOHSIUNG = '#0097A7'
-const COLOR_TAICHUNG = '#00838F'
+const COLOR_TAICHUNG = '#4DB6AC'
 
 // ── 兩家日照中心核心數據 ───────────────────────────────────
 export const BRANCH_INFO = [

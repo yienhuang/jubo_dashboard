@@ -29,8 +29,8 @@ export const BRANCH_INFO = [
     collectionRate: 94.1,
     collected: 181,
     uncollected: 11,
-    subsidyQuota: 1200,
-    actualServiceCount: 1100,
+    subsidyQuota: 209,
+    actualServiceCount: 192,
     subsidyUsageRate: 91.7,
     lowIncomeCount: 36,
     regularCount: 54,
@@ -43,6 +43,7 @@ export const BRANCH_INFO = [
     totalIncidents: 3,
     falls: 1,
     abnormalEvents: 2,
+    complaints: 0,
     closedCases: 3,
     status: 'good',
     alert: '無',
@@ -65,8 +66,8 @@ export const BRANCH_INFO = [
     collectionRate: 88.7,
     collected: 137,
     uncollected: 18,
-    subsidyQuota: 900,
-    actualServiceCount: 780,
+    subsidyQuota: 179,
+    actualServiceCount: 155,
     subsidyUsageRate: 86.7,
     lowIncomeCount: 23,
     regularCount: 46,
@@ -79,6 +80,7 @@ export const BRANCH_INFO = [
     totalIncidents: 4,
     falls: 2,
     abnormalEvents: 2,
+    complaints: 1,
     closedCases: 3,
     status: 'warning',
     alert: '收款率 88.7%，需積極催收',
@@ -108,6 +110,7 @@ const totalLowIncomeCount = sumBy('lowIncomeCount')
 const totalIncidents = sumBy('totalIncidents')
 const totalFalls = sumBy('falls')
 const totalAbnormalEvents = sumBy('abnormalEvents')
+const totalComplaints = sumBy('complaints')
 const totalClosedCases = sumBy('closedCases')
 
 const weightedCollectionRate = +((totalCollected / totalMonthRevenue) * 100).toFixed(1)
@@ -352,15 +355,15 @@ export const overviewReimbursementKpis = [
     key: 'subsidyQuota',
     title: '核定補助額度',
     value: totalSubsidyQuota.toLocaleString(),
-    unit: '人次/月',
+    unit: '萬',
     delta: null,
   },
   {
     key: 'actualServiceCount',
-    title: '實際服務人次',
+    title: '實際服務金額',
     value: totalActualServiceCount.toLocaleString(),
-    unit: '人次',
-    delta: { dir: 'up', text: '較上個月 +35 人次', isWarning: false },
+    unit: '萬',
+    delta: { dir: 'up', text: '較上個月 +5 萬', isWarning: false },
   },
   {
     key: 'subsidyUsageRate',
@@ -373,7 +376,7 @@ export const overviewReimbursementKpis = [
     key: 'growthSpace',
     title: '成長空間',
     value: totalGrowthSpace.toLocaleString(),
-    unit: '人次',
+    unit: '萬',
     delta: { noIcon: true, text: `尚有 ${(100 - weightedSubsidyUsage).toFixed(1)}% 額度可利用` },
   },
 ]
@@ -516,28 +519,18 @@ export const caseComparison = BRANCH_INFO.map((b) => ({
 // ── 照護品質分區 ──────────────────────────────────────────
 export const overviewQualityKpis = [
   {
-    key: 'totalIncidents',
-    title: '總件數',
-    value: String(totalIncidents),
-    unit: '件',
-    delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
-  },
-  {
-    key: 'falls',
-    title: '跌倒',
-    value: String(totalFalls),
-    unit: '件',
-    delta: {
-      text: `發生率 ${+((totalFalls / totalCases) * 100).toFixed(1)}%`,
-      isWarning: false,
-    },
-  },
-  {
     key: 'abnormalEvents',
-    title: '異常事件',
+    title: '異常事件數',
     value: String(totalAbnormalEvents),
     unit: '件',
     delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
+  },
+  {
+    key: 'complaints',
+    title: '申訴件數',
+    value: String(totalComplaints),
+    unit: '件',
+    delta: { dir: 'flat', text: '較上個月 持平', isWarning: totalComplaints > 0 },
   },
   {
     key: 'closedCaseRate',
@@ -551,9 +544,8 @@ export const overviewQualityKpis = [
 export const qualityComparison = BRANCH_INFO.map((b) => ({
   id: b.short,
   name: b.full,
-  totalIncidents: b.totalIncidents,
-  falls: b.falls,
   abnormalEvents: b.abnormalEvents,
+  complaints: b.complaints,
   closedCaseRate: +((b.closedCases / b.totalIncidents) * 100).toFixed(1),
 }))
 
@@ -824,15 +816,15 @@ function makeReimbursementKpis(b) {
       key: 'subsidyQuota',
       title: '核定補助額度',
       value: b.subsidyQuota.toLocaleString(),
-      unit: '人次/月',
+      unit: '萬',
       delta: null,
     },
     {
       key: 'actualServiceCount',
-      title: '實際服務人次',
+      title: '實際服務金額',
       value: b.actualServiceCount.toLocaleString(),
-      unit: '人次',
-      delta: { dir: 'up', text: '較上個月 +20 人次', isWarning: false },
+      unit: '萬',
+      delta: { dir: 'up', text: '較上個月 +4 萬', isWarning: false },
     },
     {
       key: 'subsidyUsageRate',
@@ -849,7 +841,7 @@ function makeReimbursementKpis(b) {
       key: 'growthSpace',
       title: '成長空間',
       value: growthSpace.toLocaleString(),
-      unit: '人次',
+      unit: '萬',
       delta: {
         noIcon: true,
         text: `尚有 ${(100 - b.subsidyUsageRate).toFixed(1)}% 額度可利用`,
@@ -893,29 +885,21 @@ function makeCaseKpis(b) {
 }
 
 function makeQualityKpis(b) {
-  const fallRate = +((b.falls / b.cases) * 100).toFixed(1)
   const closureRate = +((b.closedCases / b.totalIncidents) * 100).toFixed(1)
   return [
     {
-      key: 'totalIncidents',
-      title: '總件數',
-      value: String(b.totalIncidents),
-      unit: '件',
-      delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
-    },
-    {
-      key: 'falls',
-      title: '跌倒',
-      value: String(b.falls),
-      unit: '件',
-      delta: { text: `發生率 ${fallRate}%`, isWarning: false },
-    },
-    {
       key: 'abnormalEvents',
-      title: '異常事件',
+      title: '異常事件數',
       value: String(b.abnormalEvents),
       unit: '件',
       delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
+    },
+    {
+      key: 'complaints',
+      title: '申訴件數',
+      value: String(b.complaints),
+      unit: '件',
+      delta: { dir: 'flat', text: '較上個月 持平', isWarning: b.complaints > 0 },
     },
     {
       key: 'closedCaseRate',

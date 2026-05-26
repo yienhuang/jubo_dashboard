@@ -182,6 +182,11 @@ const COLUMN_RENDERERS = {
       ${typeof v === 'number' ? v.toLocaleString() : v} 萬
     </Typography>
   ),
+  wan: (v) => (
+    <Typography variant="body1">
+      {typeof v === 'number' ? v.toLocaleString() : v}萬
+    </Typography>
+  ),
   delta: (v) => <DeltaText value={v} />,
   progress: (v, col) => <ProgressCell value={v} warningBelow={col.warningBelow} />,
 }
@@ -277,15 +282,15 @@ const REIMBURSEMENT_COMPARISON_COLUMNS = [
   { key: 'name', label: '機構', type: 'text', align: 'left' },
   {
     key: 'subsidyQuota',
-    label: '核定補助額度（人次）',
-    type: 'number',
+    label: '核定補助額度',
+    type: 'wan',
     align: 'right',
     width: NUMBER_COL_WIDTH,
   },
   {
     key: 'actualServiceCount',
-    label: '實際服務人次',
-    type: 'number',
+    label: '實際服務金額',
+    type: 'wan',
     align: 'right',
     width: NUMBER_COL_WIDTH,
   },
@@ -299,8 +304,8 @@ const REIMBURSEMENT_COMPARISON_COLUMNS = [
   },
   {
     key: 'growthSpace',
-    label: '成長空間（人次）',
-    type: 'number',
+    label: '成長空間',
+    type: 'wan',
     align: 'right',
     width: NUMBER_COL_WIDTH,
   },

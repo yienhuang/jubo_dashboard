@@ -18,6 +18,7 @@ export const BRANCH_INFO = [
     color: COLOR_KAOHSIUNG,
     licensed: 50,
     cases: 45,
+    activeCases: 42,
     monthlyServiceCount: 43,
     attendanceRate: 86.0,
     newCases: 3,
@@ -33,10 +34,13 @@ export const BRANCH_INFO = [
     subsidyQuota: 158,
     actualServiceCount: 142,
     subsidyUsageRate: 89.6,
-    lowIncomeCount: 16,
+    selfPay: 18,
+    lowIncomeCount: 8,
+    midLowIncomeCount: 8,
     regularCount: 29,
     staffTotal: 18,
     careWorkers: 12,
+    careWorkerResignations: 1,
     fullTime: 14,
     partTime: 4,
     resignations: 1,
@@ -55,6 +59,7 @@ export const BRANCH_INFO = [
     color: COLOR_TAICHUNG,
     licensed: 40,
     cases: 32,
+    activeCases: 28,
     monthlyServiceCount: 30,
     attendanceRate: 75.0,
     newCases: 2,
@@ -70,10 +75,13 @@ export const BRANCH_INFO = [
     subsidyQuota: 138,
     actualServiceCount: 108,
     subsidyUsageRate: 78.1,
-    lowIncomeCount: 10,
+    selfPay: 12,
+    lowIncomeCount: 5,
+    midLowIncomeCount: 5,
     regularCount: 22,
     staffTotal: 14,
     careWorkers: 9,
+    careWorkerResignations: 2,
     fullTime: 11,
     partTime: 3,
     resignations: 2,
@@ -103,12 +111,16 @@ const totalCollected = sumBy('collected')
 const totalUncollected = sumBy('uncollected')
 const totalStaffTotal = sumBy('staffTotal')
 const totalCareWorkers = sumBy('careWorkers')
+const totalCareWorkerResignations = sumBy('careWorkerResignations')
 const totalFullTime = sumBy('fullTime')
 const totalPartTime = sumBy('partTime')
 const totalResignations = sumBy('resignations')
 const totalSubsidyQuota = sumBy('subsidyQuota')
 const totalActualServiceCount = sumBy('actualServiceCount')
+const totalSelfPay = sumBy('selfPay')
 const totalLowIncomeCount = sumBy('lowIncomeCount')
+const totalMidLowIncomeCount = sumBy('midLowIncomeCount')
+const totalRegularCount = sumBy('regularCount')
 const totalIncidents = sumBy('totalIncidents')
 const totalFalls = sumBy('falls')
 const totalAbnormalEvents = sumBy('abnormalEvents')
@@ -119,8 +131,9 @@ const weightedAttendance = +(
 ).toFixed(1)
 const weightedCollectionRate = +((totalCollected / totalMonthRevenue) * 100).toFixed(1)
 const weightedTurnover = +((totalResignations / totalStaffTotal) * 100).toFixed(1)
+const careWorkerTurnoverRate = +((totalCareWorkerResignations / totalCareWorkers) * 100).toFixed(1)
 const weightedSubsidyUsage = +((totalActualServiceCount / totalSubsidyQuota) * 100).toFixed(1)
-const lowIncomePct = +((totalLowIncomeCount / totalCases) * 100).toFixed(1)
+const regularPct = +((totalRegularCount / totalCases) * 100).toFixed(1)
 const closedCaseRate = +((totalClosedCases / totalIncidents) * 100).toFixed(1)
 
 export const BRANCHES = BRANCH_INFO.map((b) => b.short)
@@ -278,7 +291,7 @@ export const overviewOperationKpis = [
     title: '總收案數',
     value: String(totalCases),
     unit: '人',
-    delta: { dir: 'up', text: '較上個月 +5 人', isWarning: false },
+    hint: '當月服務+暫停',
   },
   {
     key: 'monthlyServiceCount',
@@ -370,7 +383,6 @@ export const operationComparison = BRANCH_INFO.map((b) => ({
 }))
 
 // ── 核銷分析分區 ──────────────────────────────────────────
-const totalGrowthSpace = totalSubsidyQuota - totalActualServiceCount
 
 export const overviewReimbursementKpis = [
   {
@@ -378,11 +390,11 @@ export const overviewReimbursementKpis = [
     title: '核定補助額度',
     value: totalSubsidyQuota.toLocaleString(),
     unit: '萬',
-    delta: null,
+    delta: { dir: 'down', text: 'YoY -5.3%', isWarning: true },
   },
   {
     key: 'actualServiceCount',
-    title: '實際服務金額',
+    title: '實際補助使用',
     value: totalActualServiceCount.toLocaleString(),
     unit: '萬',
     delta: { dir: 'up', text: '較上個月 +4 萬', isWarning: false },
@@ -395,11 +407,11 @@ export const overviewReimbursementKpis = [
     delta: { dir: 'down', text: '較上個月 -0.7%', isWarning: false },
   },
   {
-    key: 'growthSpace',
-    title: '成長空間',
-    value: totalGrowthSpace.toLocaleString(),
+    key: 'selfPay',
+    title: '實際自費使用',
+    value: totalSelfPay.toLocaleString(),
     unit: '萬',
-    delta: { noIcon: true, text: `尚有 ${(100 - weightedSubsidyUsage).toFixed(1)}% 額度可利用` },
+    delta: { dir: 'up', text: '較上個月 +2 萬', isWarning: false },
   },
 ]
 
@@ -433,7 +445,7 @@ export const codeRevenueRanking = [
   { name: 'BD03 個別訓練', value: 28 },
 ]
 
-// 核銷統計趨勢（政府補助 / 自付 / 自費，13 個月）
+// 核銷統計趨勢（政府補助 / 自費，13 個月）
 export const reimbursementBreakdownTrend = {
   months: trendMonths,
   series: [
@@ -443,13 +455,8 @@ export const reimbursementBreakdownTrend = {
       data: [110, 115, 112, 116, 115, 118, 117, 120, 119, 123, 122, 126, 130],
     },
     {
-      name: '自付',
-      color: '#80CBC4',
-      data: [50, 51, 50, 52, 51, 53, 52, 54, 52, 55, 53, 55, 52],
-    },
-    {
       name: '自費',
-      color: '#CFD8DC',
+      color: '#B2DFDB',
       data: [58, 59, 59, 61, 61, 63, 63, 64, 65, 66, 67, 66, 68],
     },
   ],
@@ -461,36 +468,44 @@ export const reimbursementComparison = BRANCH_INFO.map((b) => ({
   subsidyQuota: b.subsidyQuota,
   actualServiceCount: b.actualServiceCount,
   subsidyUsageRate: b.subsidyUsageRate,
+  selfPay: b.selfPay,
   growthSpace: b.subsidyQuota - b.actualServiceCount,
 }))
 
 // ── 個案分析分區 ──────────────────────────────────────────
 export const overviewCaseKpis = [
   {
-    key: 'cases',
-    title: '總收案數',
-    value: String(totalCases),
-    unit: '人',
-    delta: { dir: 'up', text: '較上個月 +5 人', isWarning: false },
+    key: 'monthlyServiceCount',
+    title: '服務中個案',
+    value: String(totalMonthlyServiceCount),
+    unit: `/${totalCases} 人`,
+    hint: '服務中個案/總收案數',
   },
   {
     key: 'lowIncomeCount',
-    title: '低收/中低收人數',
+    title: '低收人數',
     value: String(totalLowIncomeCount),
     unit: '人',
-    delta: { dir: 'up', text: '較上個月 +2 人', isWarning: false },
+    delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
+  },
+  {
+    key: 'midLowIncomeCount',
+    title: '中低收人數',
+    value: String(totalMidLowIncomeCount),
+    unit: '人',
+    delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
   },
   {
     key: 'regularCount',
     title: '一般身份人數',
-    value: String(totalCases - totalLowIncomeCount),
+    value: String(totalRegularCount),
     unit: '人',
-    delta: { dir: 'up', text: '較上個月 +3 人', isWarning: false },
+    delta: { dir: 'up', text: '較上個月 +2 人', isWarning: false },
   },
   {
-    key: 'lowIncomePct',
-    title: '低收/中低收比例',
-    value: String(lowIncomePct),
+    key: 'regularPct',
+    title: '一般身份比例',
+    value: String(regularPct),
     unit: '%',
     delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
   },
@@ -530,10 +545,12 @@ export const cmsLevelDonut = [
 export const caseComparison = BRANCH_INFO.map((b) => ({
   id: b.short,
   name: b.full,
+  activeCases: b.activeCases,
   cases: b.cases,
   lowIncomeCount: b.lowIncomeCount,
+  midLowIncomeCount: b.midLowIncomeCount,
   regularCount: b.regularCount,
-  lowIncomePct: +((b.lowIncomeCount / b.cases) * 100).toFixed(1),
+  regularPct: +((b.regularCount / b.cases) * 100).toFixed(1),
 }))
 
 // ── 照護品質分區 ──────────────────────────────────────────
@@ -583,32 +600,39 @@ export const qualityComparison = BRANCH_INFO.map((b) => ({
 // ── 人力狀況分區 ──────────────────────────────────────────
 export const overviewHrKpis = [
   {
-    key: 'fullTime',
-    title: '全職員工',
-    value: String(totalFullTime),
+    key: 'staffTotal',
+    title: '員工總數',
+    value: String(totalStaffTotal),
+    unit: '人',
+    hint: '正職+兼職',
+  },
+  {
+    key: 'otherStaff',
+    title: '其他員工',
+    value: String(totalStaffTotal - totalCareWorkers),
+    unit: '人',
+    hint: '非照服員員工',
+  },
+  {
+    key: 'careWorkers',
+    title: '照服員人數',
+    value: String(totalCareWorkers),
     unit: '人',
     delta: { dir: 'up', text: '較上個月 +2 人', isWarning: false },
   },
   {
-    key: 'partTime',
-    title: '兼職員工',
-    value: String(totalPartTime),
-    unit: '人',
-    delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
-  },
-  {
-    key: 'resignations',
-    title: '離職人數',
-    value: String(totalResignations),
+    key: 'careWorkerResignations',
+    title: '照服員離職人數',
+    value: String(totalCareWorkerResignations),
     unit: '人',
     delta: { dir: 'up', text: '較上個月 +1 人', isWarning: true },
   },
   {
-    key: 'turnoverRate',
-    title: '離職率',
-    value: String(weightedTurnover),
+    key: 'careWorkerTurnoverRate',
+    title: '照服員離職率',
+    value: String(careWorkerTurnoverRate),
     unit: '%',
-    delta: { dir: 'up', text: '較上個月 +0.6%', isWarning: true },
+    delta: { dir: 'up', text: '較上個月 +3.2%', isWarning: true },
   },
 ]
 
@@ -623,10 +647,11 @@ export const overviewPositionStats = [
 export const hrComparison = BRANCH_INFO.map((b) => ({
   id: b.short,
   name: b.full,
-  fullTime: b.fullTime,
-  partTime: b.partTime,
-  resignations: b.resignations,
-  turnoverRate: b.turnoverRate,
+  staffTotal: b.staffTotal,
+  otherStaff: b.staffTotal - b.careWorkers,
+  careWorkers: b.careWorkers,
+  careWorkerResignations: b.careWorkerResignations,
+  careWorkerTurnoverRate: +((b.careWorkerResignations / b.careWorkers) * 100).toFixed(1),
 }))
 
 // ── 各機構詳細資料（BranchTab 使用） ──────────────────────
@@ -645,13 +670,8 @@ const branchOverrides = {
           data: [60, 62, 61, 63, 62, 65, 64, 66, 65, 68, 67, 70, 70],
         },
         {
-          name: '自付',
-          color: '#80CBC4',
-          data: [28, 29, 28, 30, 29, 30, 30, 31, 30, 32, 31, 32, 32],
-        },
-        {
           name: '自費',
-          color: '#CFD8DC',
+          color: '#B2DFDB',
           data: [32, 33, 33, 33, 34, 34, 34, 34, 33, 34, 35, 35, 40],
         },
       ],
@@ -696,11 +716,6 @@ const branchOverrides = {
           name: '政府補助',
           color: COLOR_KAOHSIUNG,
           data: [50, 53, 51, 53, 53, 53, 53, 54, 54, 55, 55, 56, 60],
-        },
-        {
-          name: '自付',
-          color: '#80CBC4',
-          data: [22, 22, 22, 22, 22, 23, 22, 23, 22, 23, 22, 23, 20],
         },
         {
           name: '自費',
@@ -848,18 +863,17 @@ function makeOperationKpis(b) {
 }
 
 function makeReimbursementKpis(b) {
-  const growthSpace = b.subsidyQuota - b.actualServiceCount
   return [
     {
       key: 'subsidyQuota',
       title: '核定補助額度',
       value: b.subsidyQuota.toLocaleString(),
       unit: '萬',
-      delta: null,
+      delta: { dir: 'down', text: 'YoY -5.3%', isWarning: true },
     },
     {
       key: 'actualServiceCount',
-      title: '實際服務金額',
+      title: '實際補助使用',
       value: b.actualServiceCount.toLocaleString(),
       unit: '萬',
       delta: { dir: 'up', text: '較上個月 +3 萬', isWarning: false },
@@ -876,46 +890,50 @@ function makeReimbursementKpis(b) {
       },
     },
     {
-      key: 'growthSpace',
-      title: '成長空間',
-      value: growthSpace.toLocaleString(),
+      key: 'selfPay',
+      title: '實際自費使用',
+      value: b.selfPay.toLocaleString(),
       unit: '萬',
-      delta: {
-        noIcon: true,
-        text: `尚有 ${(100 - b.subsidyUsageRate).toFixed(1)}% 額度可利用`,
-      },
+      delta: { dir: 'up', text: '較上個月 +1 萬', isWarning: false },
     },
   ]
 }
 
 function makeCaseKpis(b) {
-  const pct = +((b.lowIncomeCount / b.cases) * 100).toFixed(1)
+  const regPct = +((b.regularCount / b.cases) * 100).toFixed(1)
   return [
     {
-      key: 'cases',
-      title: '總收案數',
-      value: String(b.cases),
-      unit: '人',
-      delta: { dir: 'up', text: '較上個月 +2 人', isWarning: false },
+      key: 'monthlyServiceCount',
+      title: '服務中個案',
+      value: String(b.monthlyServiceCount),
+      unit: `/${b.cases} 人`,
+      hint: '服務中個案/總收案數',
     },
     {
       key: 'lowIncomeCount',
-      title: '低收/中低收人數',
+      title: '低收人數',
       value: String(b.lowIncomeCount),
       unit: '人',
-      delta: { dir: 'flat', text: `比例 ${pct}%`, isWarning: false },
+      delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
+    },
+    {
+      key: 'midLowIncomeCount',
+      title: '中低收人數',
+      value: String(b.midLowIncomeCount),
+      unit: '人',
+      delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
     },
     {
       key: 'regularCount',
       title: '一般身份人數',
       value: String(b.regularCount),
       unit: '人',
-      delta: { dir: 'up', text: '較上個月 +2 人', isWarning: false },
+      delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
     },
     {
-      key: 'lowIncomePct',
-      title: '低收/中低收比例',
-      value: String(pct),
+      key: 'regularPct',
+      title: '一般身份比例',
+      value: String(regPct),
       unit: '%',
       delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
     },
@@ -958,41 +976,49 @@ function makeQualityKpis(b) {
 }
 
 function makeHrKpis(b) {
+  const cwTurnover = +((b.careWorkerResignations / b.careWorkers) * 100).toFixed(1)
   return [
     {
-      key: 'fullTime',
-      title: '全職員工',
-      value: String(b.fullTime),
+      key: 'staffTotal',
+      title: '員工總數',
+      value: String(b.staffTotal),
+      unit: '人',
+      hint: '正職+兼職',
+    },
+    {
+      key: 'otherStaff',
+      title: '其他員工',
+      value: String(b.staffTotal - b.careWorkers),
+      unit: '人',
+      hint: '非照服員員工',
+    },
+    {
+      key: 'careWorkers',
+      title: '照服員人數',
+      value: String(b.careWorkers),
       unit: '人',
       delta: { dir: 'up', text: '較上個月 +1 人', isWarning: false },
     },
     {
-      key: 'partTime',
-      title: '兼職員工',
-      value: String(b.partTime),
-      unit: '人',
-      delta: { dir: 'flat', text: '較上個月 持平', isWarning: false },
-    },
-    {
-      key: 'resignations',
-      title: '離職人數',
-      value: String(b.resignations),
+      key: 'careWorkerResignations',
+      title: '照服員離職人數',
+      value: String(b.careWorkerResignations),
       unit: '人',
       delta: {
-        dir: b.resignations > 1 ? 'up' : 'flat',
-        text: b.resignations > 1 ? '較上個月 +1 人' : '較上個月 持平',
-        isWarning: b.resignations > 1,
+        dir: b.careWorkerResignations > 0 ? 'up' : 'flat',
+        text: b.careWorkerResignations > 0 ? '較上個月 +1 人' : '較上個月 持平',
+        isWarning: b.careWorkerResignations > 1,
       },
     },
     {
-      key: 'turnoverRate',
-      title: '離職率',
-      value: String(b.turnoverRate),
+      key: 'careWorkerTurnoverRate',
+      title: '照服員離職率',
+      value: String(cwTurnover),
       unit: '%',
       delta: {
-        dir: b.turnoverRate > 10 ? 'up' : 'flat',
-        text: b.turnoverRate > 10 ? '較上個月 +2.1%' : '較上個月 持平',
-        isWarning: b.turnoverRate > 10,
+        dir: cwTurnover > 10 ? 'up' : 'flat',
+        text: cwTurnover > 10 ? '較上個月 +2.1%' : '較上個月 持平',
+        isWarning: cwTurnover > 10,
       },
     },
   ]

@@ -458,10 +458,10 @@ export const overviewOperationKpis = [
   },
   {
     key: 'occupiedBeds',
-    title: '佔床數',
-    value: String(totalOccupiedBeds),
-    unit: '床',
-    delta: { dir: 'up', text: '較上個月 +2 床', isWarning: false },
+    title: '佔床率',
+    value: String(weightedOccupancy),
+    unit: '%',
+    delta: { dir: 'down', text: '較上個月 -1.2%', isWarning: true },
   },
   {
     key: 'vacantBeds',
@@ -1150,10 +1150,10 @@ function makeOperationKpis(b) {
     },
     {
       key: 'occupiedBeds',
-      title: '佔床數',
-      value: String(occupied),
-      unit: '床',
-      delta: { dir: 'up', text: '較上個月 +1 床', isWarning: false },
+      title: '佔床率',
+      value: String(b.occupancyRate),
+      unit: '%',
+      delta: { dir: 'down', text: '較上個月 -1.2%', isWarning: b.occupancyRate < 90 },
     },
     {
       key: 'vacantBeds',

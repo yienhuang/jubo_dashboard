@@ -3,7 +3,6 @@ import MainLayout from '@/layouts/MainLayout'
 import Dashboard from '@/pages/Dashboard'
 import Residents from '@/pages/Residents'
 import CareRecords from '@/pages/CareRecords'
-import Capacity from '@/pages/Capacity'
 import Workforce from '@/pages/Workforce'
 import Accommodation from '@/pages/Accommodation'
 import DayCare from '@/pages/DayCare'
@@ -19,7 +18,6 @@ export const router = createHashRouter([
       { index: true, element: <Dashboard /> },
       { path: 'residents', element: <Residents /> },
       { path: 'care-records', element: <CareRecords /> },
-      { path: 'capacity', element: <Capacity /> },
       { path: 'workforce', element: <Workforce /> },
       { path: 'accommodation', element: <Accommodation /> },
       { path: 'accommodation/:branch', element: <Accommodation /> },

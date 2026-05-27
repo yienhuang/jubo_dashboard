@@ -191,7 +191,7 @@ const COLUMN_RENDERERS = {
 function SectionComparisonTable({ title, subtitle, columns, rows }) {
   return (
     <OutlinedBlock title={title} subtitle={subtitle}>
-      <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+      <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
         <Table size="small" sx={{ '& th, & td': { whiteSpace: 'nowrap' } }}>
           <TableHead>
             <TableRow>
@@ -657,7 +657,7 @@ const INVENTORY_COLUMNS = [
 
 function InventoryTable({ rows }) {
   return (
-    <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+    <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
       <Table size="small" sx={{ '& th, & td': { whiteSpace: 'nowrap' } }}>
         <TableHead>
           <TableRow>

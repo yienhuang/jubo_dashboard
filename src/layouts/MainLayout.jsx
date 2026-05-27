@@ -374,6 +374,7 @@ export default function MainLayout() {
               top: APPBAR_HEIGHT,
               height: `calc(100% - ${APPBAR_HEIGHT}px)`,
               overflowX: 'hidden',
+              borderRight: 'none',
               transition: (theme) =>
                 theme.transitions.create('width', {
                   easing: theme.transitions.easing.sharp,
@@ -427,6 +428,12 @@ export default function MainLayout() {
                   theme.transitions.create('opacity', {
                     duration: theme.transitions.duration.shortest,
                   }),
+                '&::-webkit-scrollbar': { width: 4 },
+                '&::-webkit-scrollbar-track': { background: 'transparent' },
+                '&::-webkit-scrollbar-thumb': {
+                  background: 'rgba(0,95,100,0.25)',
+                  borderRadius: 2,
+                },
               }}
             >
               {expandedNavList}
@@ -468,7 +475,22 @@ export default function MainLayout() {
               <Logo />
             </Box>
           </Box>
-          <Box sx={{ pt: 1, px: 1, overflowY: 'auto', flex: 1 }}>{expandedNavList}</Box>
+          <Box
+            sx={{
+              pt: 1,
+              px: 1,
+              overflowY: 'auto',
+              flex: 1,
+              '&::-webkit-scrollbar': { width: 4 },
+              '&::-webkit-scrollbar-track': { background: 'transparent' },
+              '&::-webkit-scrollbar-thumb': {
+                background: 'rgba(0,95,100,0.25)',
+                borderRadius: 2,
+              },
+            }}
+          >
+            {expandedNavList}
+          </Box>
         </Drawer>
       </Box>
 

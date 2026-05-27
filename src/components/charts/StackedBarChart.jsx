@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Bar,
   BarChart,
@@ -16,15 +17,26 @@ export default function StackedBarChart({
   height = 240,
   valueFormatter,
 }) {
+  const [activeSeries, setActiveSeries] = useState(null)
+
   const data = months.map((month, i) => ({
     month,
     ...series.reduce((acc, s) => ({ ...acc, [s.name]: s.data[i] }), {}),
   }))
   const format = valueFormatter ?? ((v) => `${v}${yAxisSuffix}`)
 
+  function handleLegendClick(payload, _index, event) {
+    event.stopPropagation()
+    setActiveSeries((prev) => (prev === payload.value ? null : payload.value))
+  }
+
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} margin={{ top: 4, right: 16, bottom: 0, left: -8 }}>
+      <BarChart
+        data={data}
+        margin={{ top: 4, right: 16, bottom: 0, left: -8 }}
+        onClick={() => setActiveSeries(null)}
+      >
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.08)" vertical={false} />
         <XAxis
           dataKey="month"
@@ -51,12 +63,35 @@ export default function StackedBarChart({
         <Legend
           iconType="circle"
           iconSize={8}
-          wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
-          formatter={(value) => <span style={{ color: 'rgba(0,0,0,0.6)' }}>{value}</span>}
+          wrapperStyle={{ fontSize: 12, paddingTop: 8, cursor: 'pointer' }}
+          onClick={handleLegendClick}
+          formatter={(value) => {
+            const isDimmed = activeSeries !== null && activeSeries !== value
+            return (
+              <span
+                style={{
+                  color: isDimmed ? 'rgba(0,0,0,0.25)' : 'rgba(0,0,0,0.6)',
+                  transition: 'color 0.2s',
+                }}
+              >
+                {value}
+              </span>
+            )
+          }}
         />
-        {series.map((s) => (
-          <Bar key={s.name} dataKey={s.name} stackId="a" fill={s.color} maxBarSize={26} />
-        ))}
+        {series.map((s) => {
+          const isDimmed = activeSeries !== null && activeSeries !== s.name
+          return (
+            <Bar
+              key={s.name}
+              dataKey={s.name}
+              stackId="a"
+              fill={s.color}
+              maxBarSize={26}
+              fillOpacity={isDimmed ? 0.15 : 1}
+            />
+          )
+        })}
       </BarChart>
     </ResponsiveContainer>
   )

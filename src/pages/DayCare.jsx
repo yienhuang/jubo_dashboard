@@ -20,16 +20,6 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import AssessmentIcon from '@mui/icons-material/Assessment'
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
-
 import TrendLineChart from '@/components/charts/TrendLineChart'
 import RevenueComposedChart from '@/components/charts/RevenueComposedChart'
 import HorizontalBarChart from '@/components/charts/HorizontalBarChart'
@@ -73,7 +63,6 @@ import {
   overviewQualityKpis,
   qualityComparison,
   overviewHrKpis,
-  overviewPositionStats,
   hrComparison,
 } from '@/features/daycare/mockData'
 
@@ -82,40 +71,6 @@ const PRIMARY = '#0097A7'
 const WARNING = '#ED6C02'
 
 const BRANCH_FULL_NAME = Object.fromEntries(BRANCH_INFO.map((b) => [b.short, b.full]))
-
-// ── 在職人員職位統計（直條圖）────────────────────────────
-function PositionStatsBarChart({ data, height = 260 }) {
-  return (
-    <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: -8 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.08)" vertical={false} />
-        <XAxis
-          dataKey="name"
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
-          tickLine={false}
-          axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
-        />
-        <YAxis
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
-          tickLine={false}
-          axisLine={false}
-          tickFormatter={(v) => `${v} 人`}
-        />
-        <Tooltip
-          contentStyle={{
-            borderRadius: 8,
-            border: '1px solid rgba(0,0,0,0.12)',
-            boxShadow: 'none',
-            fontSize: 12,
-          }}
-          itemStyle={{ color: 'rgba(0,0,0,0.87)' }}
-          formatter={(v) => [`${v} 人`, '人數']}
-        />
-        <Bar dataKey="value" fill={PRIMARY} maxBarSize={36} radius={[4, 4, 0, 0]} />
-      </BarChart>
-    </ResponsiveContainer>
-  )
-}
 
 // ── Section Comparison Table ──────────────────────────────
 const headCellSx = {
@@ -194,7 +149,7 @@ const COLUMN_RENDERERS = {
 function SectionComparisonTable({ title, subtitle, columns, rows }) {
   return (
     <OutlinedBlock title={title} subtitle={subtitle}>
-      <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+      <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
         <Table size="small" sx={{ '& th, & td': { whiteSpace: 'nowrap' } }}>
           <TableHead>
             <TableRow>
@@ -289,7 +244,7 @@ const REIMBURSEMENT_COMPARISON_COLUMNS = [
   },
   {
     key: 'actualServiceCount',
-    label: '實際服務金額',
+    label: '實際補助使用',
     type: 'wan',
     align: 'right',
     width: NUMBER_COL_WIDTH,
@@ -303,8 +258,8 @@ const REIMBURSEMENT_COMPARISON_COLUMNS = [
     warningBelow: null,
   },
   {
-    key: 'growthSpace',
-    label: '成長空間',
+    key: 'selfPay',
+    label: '實際自費使用',
     type: 'wan',
     align: 'right',
     width: NUMBER_COL_WIDTH,
@@ -313,24 +268,32 @@ const REIMBURSEMENT_COMPARISON_COLUMNS = [
 
 const CASE_COMPARISON_COLUMNS = [
   { key: 'name', label: '機構', type: 'text', align: 'left' },
+  { key: 'activeCases', label: '服務中個案', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
   { key: 'cases', label: '總收案數', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
   {
     key: 'lowIncomeCount',
-    label: '低收/中低收',
+    label: '低收人數',
+    type: 'number',
+    align: 'right',
+    width: NUMBER_COL_WIDTH,
+  },
+  {
+    key: 'midLowIncomeCount',
+    label: '中低收人數',
     type: 'number',
     align: 'right',
     width: NUMBER_COL_WIDTH,
   },
   {
     key: 'regularCount',
-    label: '一般身份',
+    label: '一般身份人數',
     type: 'number',
     align: 'right',
     width: NUMBER_COL_WIDTH,
   },
   {
-    key: 'lowIncomePct',
-    label: '低收/中低收比例',
+    key: 'regularPct',
+    label: '一般身份比例',
     type: 'progress',
     align: 'left',
     width: 260,
@@ -367,12 +330,19 @@ const QUALITY_COMPARISON_COLUMNS = [
 
 const HR_COMPARISON_COLUMNS = [
   { key: 'name', label: '機構', type: 'text', align: 'left' },
-  { key: 'fullTime', label: '全職員工', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
-  { key: 'partTime', label: '兼職員工', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
-  { key: 'resignations', label: '離職人數', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'staffTotal', label: '員工總數', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'otherStaff', label: '其他員工', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
+  { key: 'careWorkers', label: '照服員人數', type: 'number', align: 'right', width: NUMBER_COL_WIDTH },
   {
-    key: 'turnoverRate',
-    label: '離職率',
+    key: 'careWorkerResignations',
+    label: '照服員離職',
+    type: 'number',
+    align: 'right',
+    width: NUMBER_COL_WIDTH,
+  },
+  {
+    key: 'careWorkerTurnoverRate',
+    label: '照服員離職率',
     type: 'progress',
     align: 'left',
     width: 200,
@@ -481,12 +451,13 @@ function OverviewOperationsSection() {
         <Box className="flex flex-col gap-4">
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {overviewOperationKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
+              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 3 }}>
                 <KpiTile
                   title={kpi.title}
                   value={kpi.value}
                   unit={kpi.unit}
                   delta={kpi.delta}
+                  hint={kpi.hint}
                 />
               </Grid>
             ))}
@@ -572,7 +543,7 @@ function OverviewReimbursementSection() {
           </Grid>
           <OutlinedBlock
             title="核銷統計趨勢圖"
-            subtitle="近 13 個月（25/05 ～ 26/05，政府補助／自付／自費，單位：萬元）"
+            subtitle="近 13 個月（25/05 ～ 26/05，政府補助／自費，單位：萬元）"
           >
             <StackedBarChart
               months={reimbursementBreakdownTrend.months}
@@ -604,12 +575,13 @@ function OverviewCaseSection() {
         <Box className="flex flex-col gap-4">
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {overviewCaseKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
+              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
                 <KpiTile
                   title={kpi.title}
                   value={kpi.value}
                   unit={kpi.unit}
                   delta={kpi.delta}
+                  hint={kpi.hint}
                 />
               </Grid>
             ))}
@@ -617,7 +589,7 @@ function OverviewCaseSection() {
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             <Grid size={{ xs: 12, md: 6 }}>
               <OutlinedBlock
-                title="有排班個案福利身份別"
+                title="服務中個案福利身份別"
                 subtitle="近 13 個月（25/05 ～ 26/05，單位：人）"
               >
                 <StackedBarChart
@@ -629,7 +601,7 @@ function OverviewCaseSection() {
               </OutlinedBlock>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="當月有排班個案 CMS 等級" subtitle="當月（2026/05）">
+              <OutlinedBlock title="服務中個案CMS等級" subtitle="當月（2026/05）">
                 <ShareCardContent
                   data={cmsLevelDonut}
                   totalLabel="排班個案"
@@ -690,19 +662,17 @@ function OverviewHrSection() {
         <Box className="flex flex-col gap-4">
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {overviewHrKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
+              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
                 <KpiTile
                   title={kpi.title}
                   value={kpi.value}
                   unit={kpi.unit}
                   delta={kpi.delta}
+                  hint={kpi.hint}
                 />
               </Grid>
             ))}
           </Grid>
-          <OutlinedBlock title="在職人員職位統計" subtitle="當月（2026/05）">
-            <PositionStatsBarChart data={overviewPositionStats} height={260} />
-          </OutlinedBlock>
           <SectionComparisonTable
             title="各機構人力比較"
             subtitle="本月（2026/05）"
@@ -800,7 +770,7 @@ function BranchOperationsSection({ data, branchName, attendanceSeries, newCasesS
         <Box className="flex flex-col gap-4">
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {data.operationKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
+              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 3 }}>
                 <KpiTile
                   title={kpi.title}
                   value={kpi.value}
@@ -888,7 +858,7 @@ function BranchReimbursementSection({ data, branchName, subsidySeries }) {
           </Grid>
           <OutlinedBlock
             title="核銷統計趨勢圖"
-            subtitle="近 13 個月（25/05 ～ 26/05，政府補助／自付／自費，單位：萬元）"
+            subtitle="近 13 個月（25/05 ～ 26/05，政府補助／自費，單位：萬元）"
           >
             <StackedBarChart
               months={data.reimbursementBreakdownTrend.months}
@@ -914,7 +884,7 @@ function BranchCaseSection({ data, branchName }) {
         <Box className="flex flex-col gap-4">
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {data.caseKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
+              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
                 <KpiTile
                   title={kpi.title}
                   value={kpi.value}
@@ -927,7 +897,7 @@ function BranchCaseSection({ data, branchName }) {
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             <Grid size={{ xs: 12, md: 6 }}>
               <OutlinedBlock
-                title="有排班個案福利身份別"
+                title="服務中個案福利身份別"
                 subtitle="近 13 個月（25/05 ～ 26/05，單位：人）"
               >
                 <StackedBarChart
@@ -939,7 +909,7 @@ function BranchCaseSection({ data, branchName }) {
               </OutlinedBlock>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <OutlinedBlock title="當月有排班個案 CMS 等級" subtitle="當月（2026/05）">
+              <OutlinedBlock title="服務中個案CMS等級" subtitle="當月（2026/05）">
                 <ShareCardContent
                   data={data.cmsLevelDonut}
                   totalLabel="排班個案"
@@ -988,19 +958,17 @@ function BranchHrSection({ data, branchName }) {
         <Box className="flex flex-col gap-4">
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {data.hrKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 6, sm: 6, md: 3 }}>
+              <Grid key={kpi.key} size={{ xs: 6, sm: 4, md: 'grow' }}>
                 <KpiTile
                   title={kpi.title}
                   value={kpi.value}
                   unit={kpi.unit}
                   delta={kpi.delta}
+                  hint={kpi.hint}
                 />
               </Grid>
             ))}
           </Grid>
-          <OutlinedBlock title="在職人員職位統計" subtitle="當月（2026/05）">
-            <PositionStatsBarChart data={data.positionStats} height={260} />
-          </OutlinedBlock>
         </Box>
       </CategoryPaper>
     </ShareableBlock>

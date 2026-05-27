@@ -221,7 +221,7 @@ export function KpiTile({ title, value, unit, delta, hint }) {
         )}
       </Box>
       {delta && <DeltaRow delta={delta} />}
-      {!delta && hint && (
+      {hint && (
         <Typography
           variant="caption"
           color="textSecondary"
@@ -273,6 +273,7 @@ export function ShareCardContent({
     <Box
       sx={{
         display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
         alignItems: 'center',
         justifyContent: 'center',
         gap: 3,
@@ -288,7 +289,7 @@ export function ShareCardContent({
           centerOverride={centerOverride}
         />
       </Box>
-      <Box sx={{ flex: 1, minWidth: 0, maxWidth: 240 }}>
+      <Box sx={{ flex: 1, minWidth: 0, maxWidth: { xs: '100%', sm: 240 }, width: { xs: '100%', sm: 'auto' } }}>
         {data.map((item) => {
           const pct = ((item.value / total) * 100).toFixed(1)
           return (

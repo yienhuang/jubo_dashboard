@@ -151,11 +151,11 @@ function HighlightsSection() {
 
 function FinancialRankingTable() {
   return (
-    <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+    <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell sx={headCellSx}>機構</TableCell>
+            <TableCell sx={{ ...headCellSx, minWidth: 160 }}>機構</TableCell>
             <TableCell
               sx={{ ...headCellSx, width: { xs: 'auto', lg: 200 } }}
               align="right"
@@ -228,7 +228,7 @@ function FinancialSection() {
           {/* KPI tiles */}
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {financialKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 12, sm: 6, md: 3 }}>
+              <Grid key={kpi.key} size={{ xs: 6, md: 3 }}>
                 <KpiTile
                   title={kpi.title}
                   value={kpi.value}
@@ -285,11 +285,11 @@ function FinancialSection() {
 
 function OperationsRankingTable() {
   return (
-    <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+    <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell sx={headCellSx}>機構</TableCell>
+            <TableCell sx={{ ...headCellSx, minWidth: 160 }}>機構</TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 120, lg: 160 } }} align="right">
               立案人數
             </TableCell>
@@ -347,7 +347,7 @@ function OperationsSection() {
           {/* KPI tiles */}
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {operationsKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 12, sm: 6, md: 6 }}>
+              <Grid key={kpi.key} size={{ xs: 6, md: 3 }}>
                 <KpiTile
                   title={kpi.title}
                   value={kpi.value}
@@ -398,11 +398,11 @@ function OperationsSection() {
 
 function HrComparisonTable() {
   return (
-    <TableContainer sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+    <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell sx={headCellSx}>機構</TableCell>
+            <TableCell sx={{ ...headCellSx, minWidth: 160 }}>機構</TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
               總員工數
             </TableCell>
@@ -462,7 +462,7 @@ function HrSection() {
           {/* KPI tiles */}
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
             {hrKpis.map((kpi) => (
-              <Grid key={kpi.key} size={{ xs: 12, sm: 6, md: 3 }}>
+              <Grid key={kpi.key} size={{ xs: 6, md: 3 }}>
                 <KpiTile
                   title={kpi.title}
                   value={kpi.value}

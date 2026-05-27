@@ -1,3 +1,4 @@
+import { useMediaQuery, useTheme } from '@mui/material'
 import {
   Bar,
   CartesianGrid,
@@ -103,6 +104,9 @@ export default function MovementWaterfallChart({
   baseline,
   height = 260,
 }) {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   const inflow = getSeriesData(series, '新入住')
   const outflow = getSeriesData(series, '退住')
   const hospitalized = getSeriesData(series, '住院')
@@ -129,16 +133,24 @@ export default function MovementWaterfallChart({
 
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <ComposedChart data={data} margin={{ top: 16, right: 16, bottom: 0, left: -8 }}>
+      <ComposedChart
+        data={data}
+        margin={{ top: 16, right: 16, bottom: isMobile ? 16 : 0, left: -8 }}
+      >
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.08)" vertical={false} />
         <XAxis
           dataKey="month"
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tick={
+            isMobile
+              ? { fontSize: 11, fill: 'rgba(0,0,0,0.6)', angle: -45, textAnchor: 'end' }
+              : { fontSize: 12, fill: 'rgba(0,0,0,0.6)' }
+          }
           tickLine={false}
           axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
+          height={isMobile ? 44 : 30}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tick={{ fontSize: isMobile ? 11 : 12, fill: 'rgba(0,0,0,0.6)' }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `${v} 人`}

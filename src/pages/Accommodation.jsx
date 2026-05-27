@@ -10,6 +10,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
 import { green } from '@mui/material/colors'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
@@ -86,18 +88,29 @@ const BRANCH_FULL_NAME = Object.fromEntries(BRANCH_INFO.map((b) => [b.short, b.f
 // ── 在職人員職位統計 (vertical bar chart) ─────────────────
 
 function PositionStatsBarChart({ data, height = 260 }) {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: -8 }}>
+      <BarChart
+        data={data}
+        margin={{ top: 4, right: 8, bottom: isMobile ? 16 : 0, left: -8 }}
+      >
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.08)" vertical={false} />
         <XAxis
           dataKey="name"
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tick={
+            isMobile
+              ? { fontSize: 11, fill: 'rgba(0,0,0,0.6)', angle: -45, textAnchor: 'end' }
+              : { fontSize: 12, fill: 'rgba(0,0,0,0.6)' }
+          }
           tickLine={false}
           axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
+          height={isMobile ? 44 : 30}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tick={{ fontSize: isMobile ? 11 : 12, fill: 'rgba(0,0,0,0.6)' }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `${v} 人`}
@@ -520,6 +533,7 @@ function OverviewResidentSection() {
                   data={overviewServiceTypes}
                   color={PRIMARY}
                   height={260}
+                  yAxisWidth={96}
                 />
               </OutlinedBlock>
             </Grid>
@@ -529,6 +543,7 @@ function OverviewResidentSection() {
                   data={overviewDischargeReasons}
                   color={PRIMARY}
                   height={260}
+                  yAxisWidth={64}
                 />
               </OutlinedBlock>
             </Grid>
@@ -574,6 +589,7 @@ function OverviewQualitySection() {
                   color={PRIMARY}
                   unit="件"
                   height={300}
+                  yAxisWidth={80}
                 />
               </OutlinedBlock>
             </Grid>
@@ -584,6 +600,7 @@ function OverviewQualitySection() {
                   color={PRIMARY}
                   unit="件"
                   height={300}
+                  yAxisWidth={64}
                 />
               </OutlinedBlock>
             </Grid>
@@ -827,6 +844,7 @@ function BranchResidentSection({ data, branchName }) {
                   data={data.serviceTypes}
                   color={PRIMARY}
                   height={260}
+                  yAxisWidth={96}
                 />
               </OutlinedBlock>
             </Grid>
@@ -836,6 +854,7 @@ function BranchResidentSection({ data, branchName }) {
                   data={data.dischargeReasons}
                   color={PRIMARY}
                   height={260}
+                  yAxisWidth={64}
                 />
               </OutlinedBlock>
             </Grid>
@@ -885,6 +904,7 @@ function BranchQualitySection({ data, branchName }) {
                   color={PRIMARY}
                   unit="件"
                   height={300}
+                  yAxisWidth={64}
                 />
               </OutlinedBlock>
             </Grid>

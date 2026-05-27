@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useMediaQuery, useTheme } from '@mui/material'
 import {
   Bar,
   BarChart,
@@ -17,7 +18,17 @@ export default function StackedBarChart({
   height = 240,
   valueFormatter,
 }) {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const [activeSeries, setActiveSeries] = useState(null)
+
+  useEffect(() => {
+    function handleDocumentClick() {
+      setActiveSeries(null)
+    }
+    document.addEventListener('click', handleDocumentClick)
+    return () => document.removeEventListener('click', handleDocumentClick)
+  }, [])
 
   const data = months.map((month, i) => ({
     month,
@@ -34,18 +45,22 @@ export default function StackedBarChart({
     <ResponsiveContainer width="100%" height={height}>
       <BarChart
         data={data}
-        margin={{ top: 4, right: 16, bottom: 0, left: -8 }}
-        onClick={() => setActiveSeries(null)}
+        margin={{ top: 4, right: 16, bottom: isMobile ? 16 : 0, left: -8 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.08)" vertical={false} />
         <XAxis
           dataKey="month"
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tick={
+            isMobile
+              ? { fontSize: 11, fill: 'rgba(0,0,0,0.6)', angle: -45, textAnchor: 'end' }
+              : { fontSize: 12, fill: 'rgba(0,0,0,0.6)' }
+          }
           tickLine={false}
           axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
+          height={isMobile ? 44 : 30}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tick={{ fontSize: isMobile ? 11 : 12, fill: 'rgba(0,0,0,0.6)' }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `${v}${yAxisSuffix}`}

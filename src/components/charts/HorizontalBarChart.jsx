@@ -20,13 +20,13 @@ const COLORS = [
   '#B2DFDB',
 ]
 
-export default function HorizontalBarChart({ data, color, height = 240, unit = '人' }) {
+export default function HorizontalBarChart({ data, color, height = 240, unit = '人', yAxisWidth = 108 }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart
         layout="vertical"
         data={data}
-        margin={{ top: 4, right: 48, bottom: 0, left: 8 }}
+        margin={{ top: 4, right: 40, bottom: 0, left: 0 }}
       >
         <CartesianGrid
           strokeDasharray="3 3"
@@ -42,7 +42,7 @@ export default function HorizontalBarChart({ data, color, height = 240, unit = '
         <YAxis
           type="category"
           dataKey="name"
-          width={108}
+          width={yAxisWidth}
           tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
           tickLine={false}
           axisLine={false}

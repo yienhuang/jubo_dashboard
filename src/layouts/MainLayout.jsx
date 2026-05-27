@@ -318,7 +318,7 @@ export default function MainLayout() {
             <Logo />
             <Typography
               variant="h6"
-              sx={{ color: '#37474F', fontWeight: 500 }}
+              sx={{ color: '#37474F', fontWeight: 500, display: { xs: 'none', lg: 'block' } }}
               component="div"
             >
               智齡照護集團
@@ -499,7 +499,7 @@ export default function MainLayout() {
         className="flex-1"
         sx={{
           pt: `${APPBAR_HEIGHT}px`,
-          px: { xs: 2, lg: 0 },
+          px: { xs: 0, lg: 0 },
           pr: { lg: 2 },
           pb: 2,
           minHeight: '100vh',

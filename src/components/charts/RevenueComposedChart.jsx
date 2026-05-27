@@ -1,3 +1,4 @@
+import { useMediaQuery, useTheme } from '@mui/material'
 import {
   Bar,
   CartesianGrid,
@@ -14,25 +15,38 @@ const YOY_COLOR = '#CDDC39'
 const LEGEND_COLOR = 'rgba(0,0,0,0.6)'
 
 export default function RevenueComposedChart({ months, series, yoy, height = 240 }) {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   const data = months.map((month, i) => ({
     month,
     ...series.reduce((acc, s) => ({ ...acc, [s.name]: s.data[i] }), {}),
     YoY: yoy[i],
   }))
 
+  const tickFontSize = isMobile ? 11 : 12
+
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <ComposedChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: -8 }}>
+      <ComposedChart
+        data={data}
+        margin={{ top: 4, right: isMobile ? 0 : 8, bottom: isMobile ? 16 : 0, left: -8 }}
+      >
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.08)" vertical={false} />
         <XAxis
           dataKey="month"
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tick={
+            isMobile
+              ? { fontSize: tickFontSize, fill: 'rgba(0,0,0,0.6)', angle: -45, textAnchor: 'end' }
+              : { fontSize: tickFontSize, fill: 'rgba(0,0,0,0.6)' }
+          }
           tickLine={false}
           axisLine={{ stroke: 'rgba(0,0,0,0.12)' }}
+          height={isMobile ? 44 : 30}
         />
         <YAxis
           yAxisId="left"
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          tick={{ fontSize: tickFontSize, fill: 'rgba(0,0,0,0.6)' }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `${v}萬`}
@@ -40,7 +54,9 @@ export default function RevenueComposedChart({ months, series, yoy, height = 240
         <YAxis
           yAxisId="right"
           orientation="right"
-          tick={{ fontSize: 12, fill: 'rgba(0,0,0,0.6)' }}
+          hide={isMobile}
+          width={44}
+          tick={{ fontSize: tickFontSize, fill: 'rgba(0,0,0,0.6)' }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `${v}%`}

@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react'
 import {
   Box,
   Grid,
@@ -7,6 +8,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
   Typography,
 } from '@mui/material'
 import { green } from '@mui/material/colors'
@@ -150,31 +152,68 @@ function HighlightsSection() {
 // ── Section 2: 財務概況 ──────────────────────────────────
 
 function FinancialRankingTable() {
+  const [sortKey, setSortKey] = useState(null)
+  const [sortDir, setSortDir] = useState('asc')
+
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
+  }
+
+  const sortedRows = useMemo(() => {
+    if (!sortKey) return financialRanking
+    return [...financialRanking].sort((a, b) => {
+      const av = a[sortKey]
+      const bv = b[sortKey]
+      if (sortKey === 'name') {
+        const typeCmp = String(a.typeLabel ?? '').localeCompare(String(b.typeLabel ?? ''), 'zh-TW')
+        if (typeCmp !== 0) return sortDir === 'asc' ? typeCmp : -typeCmp
+        const nameCmp = String(av ?? '').localeCompare(String(bv ?? ''), 'zh-TW')
+        return sortDir === 'asc' ? nameCmp : -nameCmp
+      }
+      return sortDir === 'asc'
+        ? (av ?? -Infinity) - (bv ?? -Infinity)
+        : (bv ?? -Infinity) - (av ?? -Infinity)
+    })
+  }, [sortKey, sortDir])
+
+  const slSx = {
+    color: 'inherit',
+    '&.Mui-active': { color: 'inherit' },
+    '& .MuiTableSortLabel-icon': { color: 'inherit' },
+  }
+
   return (
     <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ ...headCellSx, minWidth: 160 }}>機構</TableCell>
+            <TableCell sx={{ ...headCellSx, minWidth: 160 }}>
+              <TableSortLabel active={sortKey === 'name'} direction={sortKey === 'name' ? sortDir : 'asc'} onClick={() => handleSort('name')} sx={slSx}>機構</TableSortLabel>
+            </TableCell>
             <TableCell
               sx={{ ...headCellSx, width: { xs: 'auto', lg: 200 } }}
               align="right"
             >
-              本月營收
+              <TableSortLabel active={sortKey === 'monthRevenue'} direction={sortKey === 'monthRevenue' ? sortDir : 'asc'} onClick={() => handleSort('monthRevenue')} sx={slSx}>本月營收</TableSortLabel>
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 96, lg: 140 } }} align="right">
-              YoY
+              <TableSortLabel active={sortKey === 'yoyPct'} direction={sortKey === 'yoyPct' ? sortDir : 'asc'} onClick={() => handleSort('yoyPct')} sx={slSx}>YoY</TableSortLabel>
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 96, lg: 140 } }} align="right">
-              MoM
+              <TableSortLabel active={sortKey === 'momPct'} direction={sortKey === 'momPct' ? sortDir : 'asc'} onClick={() => handleSort('momPct')} sx={slSx}>MoM</TableSortLabel>
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 200, lg: 300 } }}>
-              收款率
+              <TableSortLabel active={sortKey === 'collectionRate'} direction={sortKey === 'collectionRate' ? sortDir : 'asc'} onClick={() => handleSort('collectionRate')} sx={slSx}>收款率</TableSortLabel>
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {financialRanking.map((row) => (
+          {sortedRows.map((row) => (
             <TableRow key={row.id} hover>
               <TableCell sx={bodyCellSx}>
                 <Box
@@ -222,7 +261,7 @@ function FinancialSection() {
       <CategoryPaper
         icon={<AttachMoneyIcon />}
         title="財務概況"
-        subtitle="當月（2026/05）"
+        subtitle="營收、收款率與各機構財務比較"
       >
         <Box className="flex flex-col gap-4">
           {/* KPI tiles */}
@@ -284,25 +323,62 @@ function FinancialSection() {
 // ── Section 3: 營運概況 ──────────────────────────────────
 
 function OperationsRankingTable() {
+  const [sortKey, setSortKey] = useState(null)
+  const [sortDir, setSortDir] = useState('asc')
+
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
+  }
+
+  const sortedRows = useMemo(() => {
+    if (!sortKey) return operationsRanking
+    return [...operationsRanking].sort((a, b) => {
+      const av = a[sortKey]
+      const bv = b[sortKey]
+      if (sortKey === 'name') {
+        const typeCmp = String(a.typeLabel ?? '').localeCompare(String(b.typeLabel ?? ''), 'zh-TW')
+        if (typeCmp !== 0) return sortDir === 'asc' ? typeCmp : -typeCmp
+        const nameCmp = String(av ?? '').localeCompare(String(bv ?? ''), 'zh-TW')
+        return sortDir === 'asc' ? nameCmp : -nameCmp
+      }
+      return sortDir === 'asc'
+        ? (av ?? -Infinity) - (bv ?? -Infinity)
+        : (bv ?? -Infinity) - (av ?? -Infinity)
+    })
+  }, [sortKey, sortDir])
+
+  const slSx = {
+    color: 'inherit',
+    '&.Mui-active': { color: 'inherit' },
+    '& .MuiTableSortLabel-icon': { color: 'inherit' },
+  }
+
   return (
     <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ ...headCellSx, minWidth: 160 }}>機構</TableCell>
+            <TableCell sx={{ ...headCellSx, minWidth: 160 }}>
+              <TableSortLabel active={sortKey === 'name'} direction={sortKey === 'name' ? sortDir : 'asc'} onClick={() => handleSort('name')} sx={slSx}>機構</TableSortLabel>
+            </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 120, lg: 160 } }} align="right">
-              立案人數
+              <TableSortLabel active={sortKey === 'beds'} direction={sortKey === 'beds' ? sortDir : 'asc'} onClick={() => handleSort('beds')} sx={slSx}>立案人數</TableSortLabel>
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 100, lg: 140 } }} align="right">
-              個案數
+              <TableSortLabel active={sortKey === 'cases'} direction={sortKey === 'cases' ? sortDir : 'asc'} onClick={() => handleSort('cases')} sx={slSx}>個案數</TableSortLabel>
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 200, lg: 300 } }}>
-              收案率
+              <TableSortLabel active={sortKey === 'intakeRate'} direction={sortKey === 'intakeRate' ? sortDir : 'asc'} onClick={() => handleSort('intakeRate')} sx={slSx}>收案率</TableSortLabel>
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {operationsRanking.map((row) => (
+          {sortedRows.map((row) => (
             <TableRow key={row.id} hover>
               <TableCell sx={bodyCellSx}>
                 <Box
@@ -341,7 +417,7 @@ function OperationsSection() {
       <CategoryPaper
         icon={<AssessmentIcon />}
         title="營運概況"
-        subtitle="當月（2026/05）"
+        subtitle="個案數、收案率與各機構營運比較"
       >
         <Box className="flex flex-col gap-4">
           {/* KPI tiles */}
@@ -397,28 +473,65 @@ function OperationsSection() {
 // ── Section 4: 人力狀況 ──────────────────────────────────
 
 function HrComparisonTable() {
+  const [sortKey, setSortKey] = useState(null)
+  const [sortDir, setSortDir] = useState('asc')
+
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
+  }
+
+  const sortedRows = useMemo(() => {
+    if (!sortKey) return hrComparison
+    return [...hrComparison].sort((a, b) => {
+      const av = a[sortKey]
+      const bv = b[sortKey]
+      if (sortKey === 'name') {
+        const typeCmp = String(a.typeLabel ?? '').localeCompare(String(b.typeLabel ?? ''), 'zh-TW')
+        if (typeCmp !== 0) return sortDir === 'asc' ? typeCmp : -typeCmp
+        const nameCmp = String(av ?? '').localeCompare(String(bv ?? ''), 'zh-TW')
+        return sortDir === 'asc' ? nameCmp : -nameCmp
+      }
+      return sortDir === 'asc'
+        ? (av ?? -Infinity) - (bv ?? -Infinity)
+        : (bv ?? -Infinity) - (av ?? -Infinity)
+    })
+  }, [sortKey, sortDir])
+
+  const slSx = {
+    color: 'inherit',
+    '&.Mui-active': { color: 'inherit' },
+    '& .MuiTableSortLabel-icon': { color: 'inherit' },
+  }
+
   return (
     <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ ...headCellSx, minWidth: 160 }}>機構</TableCell>
-            <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
-              總員工數
+            <TableCell sx={{ ...headCellSx, minWidth: 160 }}>
+              <TableSortLabel active={sortKey === 'name'} direction={sortKey === 'name' ? sortDir : 'asc'} onClick={() => handleSort('name')} sx={slSx}>機構</TableSortLabel>
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
-              全職員工
+              <TableSortLabel active={sortKey === 'staffTotal'} direction={sortKey === 'staffTotal' ? sortDir : 'asc'} onClick={() => handleSort('staffTotal')} sx={slSx}>總員工數</TableSortLabel>
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
-              兼職員工
+              <TableSortLabel active={sortKey === 'fullTime'} direction={sortKey === 'fullTime' ? sortDir : 'asc'} onClick={() => handleSort('fullTime')} sx={slSx}>全職員工</TableSortLabel>
             </TableCell>
             <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
-              離職率
+              <TableSortLabel active={sortKey === 'partTime'} direction={sortKey === 'partTime' ? sortDir : 'asc'} onClick={() => handleSort('partTime')} sx={slSx}>兼職員工</TableSortLabel>
+            </TableCell>
+            <TableCell sx={{ ...headCellSx, width: { xs: 110, lg: 150 } }} align="right">
+              <TableSortLabel active={sortKey === 'turnoverRate'} direction={sortKey === 'turnoverRate' ? sortDir : 'asc'} onClick={() => handleSort('turnoverRate')} sx={slSx}>離職率</TableSortLabel>
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {hrComparison.map((row) => (
+          {sortedRows.map((row) => (
             <TableRow key={row.id} hover>
               <TableCell sx={bodyCellSx}>
                 <Box
@@ -457,7 +570,7 @@ function HrComparisonTable() {
 function HrSection() {
   return (
     <ShareableBlock title="人力狀況">
-      <CategoryPaper icon={<BadgeIcon />} title="人力狀況" subtitle="當月（2026/05）">
+      <CategoryPaper icon={<BadgeIcon />} title="人力狀況" subtitle="員工數、離職率與各機構人力比較">
         <Box className="flex flex-col gap-4">
           {/* KPI tiles */}
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>

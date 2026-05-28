@@ -87,7 +87,7 @@ export function SectionTitle({ icon, title, subtitle }) {
       </Box>
       <Box>
         <Typography
-          variant="h6"
+          variant="subtitle4"
           sx={{ color: '#37474F', lineHeight: 1.3, letterSpacing: '0.15px' }}
         >
           {title}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   Box,
@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
   Typography,
 } from '@mui/material'
 import { green } from '@mui/material/colors'
@@ -147,6 +148,40 @@ const COLUMN_RENDERERS = {
 }
 
 function SectionComparisonTable({ title, subtitle, columns, rows }) {
+  const [sortKey, setSortKey] = useState(null)
+  const [sortDir, setSortDir] = useState('asc')
+
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
+  }
+
+  const sortedRows = useMemo(() => {
+    if (!sortKey) return rows
+    const col = columns.find((c) => c.key === sortKey)
+    return [...rows].sort((a, b) => {
+      const av = a[sortKey]
+      const bv = b[sortKey]
+      if (col?.type === 'text') {
+        const cmp = String(av ?? '').localeCompare(String(bv ?? ''), 'zh-TW')
+        return sortDir === 'asc' ? cmp : -cmp
+      }
+      const an = av ?? -Infinity
+      const bn = bv ?? -Infinity
+      return sortDir === 'asc' ? an - bn : bn - an
+    })
+  }, [rows, sortKey, sortDir, columns])
+
+  const slSx = {
+    color: 'inherit',
+    '&.Mui-active': { color: 'inherit' },
+    '& .MuiTableSortLabel-icon': { color: 'inherit' },
+  }
+
   return (
     <OutlinedBlock title={title} subtitle={subtitle}>
       <TableContainer sx={{ borderRadius: '4px', overflowX: 'auto' }}>
@@ -159,13 +194,20 @@ function SectionComparisonTable({ title, subtitle, columns, rows }) {
                   align={col.align ?? 'left'}
                   sx={{ ...headCellSx, width: col.width }}
                 >
-                  {col.label}
+                  <TableSortLabel
+                    active={sortKey === col.key}
+                    direction={sortKey === col.key ? sortDir : 'asc'}
+                    onClick={() => handleSort(col.key)}
+                    sx={slSx}
+                  >
+                    {col.label}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {sortedRows.map((row) => (
               <TableRow key={row.id} hover>
                 {columns.map((col) => {
                   const render = COLUMN_RENDERERS[col.type] ?? COLUMN_RENDERERS.text
@@ -403,7 +445,7 @@ function OverviewFinanceSection() {
       <CategoryPaper
         icon={<AttachMoneyIcon />}
         title="財務概況"
-        subtitle="本月概況與近 13 個月趨勢"
+        subtitle="營收總覽、收款率與趨勢分析"
       >
         <Box className="flex flex-col gap-4">
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
@@ -449,7 +491,7 @@ function OverviewFinanceSection() {
           </Grid>
           <SectionComparisonTable
             title="各機構財務概況比較"
-            subtitle="本月（2026/05）"
+
             columns={FINANCE_COMPARISON_COLUMNS}
             rows={financeComparison}
           />
@@ -505,7 +547,7 @@ function OverviewOperationsSection() {
           </Grid>
           <SectionComparisonTable
             title="各機構營運概況比較"
-            subtitle="本月（2026/05）"
+
             columns={OPERATION_COMPARISON_COLUMNS}
             rows={operationComparison}
           />
@@ -572,7 +614,7 @@ function OverviewReimbursementSection() {
           </OutlinedBlock>
           <SectionComparisonTable
             title="各機構核銷概況比較"
-            subtitle="本月（2026/05）"
+
             columns={REIMBURSEMENT_COMPARISON_COLUMNS}
             rows={reimbursementComparison}
           />
@@ -629,7 +671,7 @@ function OverviewCaseSection() {
           </Grid>
           <SectionComparisonTable
             title="各機構個案比較"
-            subtitle="本月（2026/05）"
+
             columns={CASE_COMPARISON_COLUMNS}
             rows={caseComparison}
           />
@@ -662,7 +704,7 @@ function OverviewQualitySection() {
           </Grid>
           <SectionComparisonTable
             title="各機構照護品質比較"
-            subtitle="本月（2026/05）"
+
             columns={QUALITY_COMPARISON_COLUMNS}
             rows={qualityComparison}
           />
@@ -691,7 +733,7 @@ function OverviewHrSection() {
           </Grid>
           <SectionComparisonTable
             title="各機構人力比較"
-            subtitle="本月（2026/05）"
+
             columns={HR_COMPARISON_COLUMNS}
             rows={hrComparison}
           />
@@ -723,7 +765,7 @@ function BranchFinanceSection({ data, branchName }) {
       <CategoryPaper
         icon={<AttachMoneyIcon />}
         title="財務概況"
-        subtitle="本月概況與近 13 個月趨勢"
+        subtitle="營收總覽、收款率與趨勢分析"
       >
         <Box className="flex flex-col gap-4">
           <Grid container spacing={2} sx={{ alignItems: 'stretch' }}>
